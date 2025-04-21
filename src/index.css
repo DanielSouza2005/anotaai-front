@@ -106,8 +106,7 @@ section {
 
 body {
 	line-height: 1;
-	font-family: var(--font-poppins);
-	background-color: #000;
+	background-color: #fff;
 	height: 100%;
 	margin: 0;
 	padding: 0;

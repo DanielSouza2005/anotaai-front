@@ -18,19 +18,25 @@ import {
     useTheme
 } from '@mui/material';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import backgroundImage from "../assets/login/fundo.png";
-import logoImage from "../assets/login/logo.png";
+import backgroundImage from "../../assets/login/fundo.png";
+import logoImage from "../../assets/login/logo.png";
 
 const LoginForm = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
+    const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
     const handleTogglePasswordVisibility = () => {
         setShowPassword(!showPassword);
+    };
+
+    const handleLogin = () => {
+        navigate('/dashboard');
     };
 
     return (
@@ -181,6 +187,7 @@ const LoginForm = () => {
                             <Button
                                 type="submit"
                                 fullWidth
+                                onClick={handleLogin}
                                 variant="contained"
                                 size={isMobile ? "medium" : "large"}
                                 sx={{

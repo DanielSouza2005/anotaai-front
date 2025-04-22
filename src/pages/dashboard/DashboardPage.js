@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import SidebarMenu from '../components/SidebarMenu';
+import SidebarMenu from '../../components/menu/SidebarMenu';
 
 const DashboardPage = () => {
 
@@ -30,7 +30,7 @@ const DashboardPage = () => {
             <SidebarMenu
                 open={drawerOpen}
                 toggleDrawer={toggleDrawer}
-            />            
+            />
 
             {/* Conteúdo principal */}
             <Box
@@ -39,7 +39,6 @@ const DashboardPage = () => {
                     flexGrow: 1,
                     p: 3,
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
-                    ml: { sm: `${drawerWidth}px` },
                 }}
             >
                 {/* Barra superior fixa apenas para dispositivos móveis */}
@@ -73,7 +72,9 @@ const DashboardPage = () => {
                 }
 
                 {/* Conteúdo da página */}
-                <Box sx={{ p: 3 }}>
+                <Box
+                    sx={{ margin: 0, padding: 0 }}
+                >
                     <Outlet />
                 </Box>
             </Box>

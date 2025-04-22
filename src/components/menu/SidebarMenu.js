@@ -3,12 +3,12 @@ import {
     Add as AddIcon,
     Business as BusinessIcon,
     ChevronLeft as ChevronLeftIcon,
+    EventNote as EventNoteIcon,
     ExpandLess as ExpandLessIcon,
     ExpandMore as ExpandMoreIcon,
     Group as GroupIcon,
     List as ListIcon,
     Logout as LogoutIcon,
-    Person as PersonIcon,
     Settings as SettingsIcon
 } from '@mui/icons-material';
 import {
@@ -32,7 +32,7 @@ import {
 import React, { useEffect, useState } from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
-import logoImage from "../assets/login/logo.png";
+import logoImage from "../../assets/login/logo.png";
 
 const SidebarMenu = ({ open, toggleDrawer }) => {
     const theme = useTheme();
@@ -51,7 +51,6 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
     const [companiesOpen, setCompaniesOpen] = useState(false);
     const [usersOpen, setUsersOpen] = useState(false);
 
-    // User menu state
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
 
@@ -83,11 +82,12 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
 
     const handleViewProfile = () => {
         handleUserMenuClose();
-        // navigate('/'); // Uncomment if you have a profile page
     };
 
-    const isActive = (path) => {
-        return location.pathname === path;
+    const isActive = (path, endsWith = false) => {
+        return endsWith
+            ? location.pathname.endsWith(path)
+            : location.pathname === path;
     };
 
     const handleNavigate = (path) => {
@@ -98,7 +98,7 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
     };
 
     useEffect(() => {
-        if (location.pathname.includes('/dashboard/contatos')) {
+        if (location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard')) {
             setContactsOpen(true);
         }
         if (location.pathname.includes('/dashboard/empresas')) {
@@ -164,24 +164,23 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                             onClick={handleContactsClick}
                             sx={{
                                 borderRadius: 1,
-                                bgcolor: location.pathname.includes('/dashboard/contatos') ? `${theme.palette.primary.light}20` : 'transparent',
+                                bgcolor: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? `${theme.palette.primary.light}20` : 'transparent',
                                 '&:hover': {
-                                    bgcolor: location.pathname.includes('/dashboard/contatos')
+                                    bgcolor: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard')
                                         ? `${theme.palette.primary.light}30`
                                         : theme.palette.action.hover
                                 }
                             }}
                         >
-                            <ListItemIcon>
-                                <PersonIcon
-                                    color={location.pathname.includes('/dashboard/contatos') ? "primary" : "inherit"}
-                                />
-                            </ListItemIcon>
+                            <EventNoteIcon
+                                sx={{ marginRight: 4 }}
+                                color={location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? "primary" : "inherit"}
+                            />
                             <ListItemText
                                 primary="Contatos"
                                 primaryTypographyProps={{
-                                    fontWeight: location.pathname.includes('/dashboard/contatos') ? 'bold' : 'normal',
-                                    color: location.pathname.includes('/dashboard/contatos') ? theme.palette.primary.main : 'inherit'
+                                    fontWeight: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? 'bold' : 'normal',
+                                    color: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? theme.palette.primary.main : 'inherit'
                                 }}
                             />
                             {contactsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -192,21 +191,21 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                                     sx={{
                                         pl: 4,
                                         borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/contatos') ? `${theme.palette.primary.light}20` : 'transparent'
+                                        bgcolor: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? `${theme.palette.primary.light}20` : 'transparent'
                                     }}
                                     onClick={() => handleNavigate('/dashboard/contatos')}
                                 >
                                     <ListItemIcon>
                                         <ListIcon
                                             fontSize="small"
-                                            color={isActive('/dashboard/contatos') ? "primary" : "inherit"}
+                                            color={isActive('/dashboard/contatos') || isActive('/dashboard', false) ? "primary" : "inherit"}
                                         />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Listar Contatos"
                                         primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/contatos') ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/contatos') ? theme.palette.primary.main : 'inherit'
+                                            fontWeight: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? 'bold' : 'normal',
+                                            color: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? theme.palette.primary.main : 'inherit'
                                         }}
                                     />
                                 </ListItemButton>
@@ -259,21 +258,21 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                                     sx={{
                                         pl: 4,
                                         borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/empresas') ? `${theme.palette.primary.light}20` : 'transparent'
+                                        bgcolor: isActive('/dashboard/empresas', true) ? `${theme.palette.primary.light}20` : 'transparent'
                                     }}
                                     onClick={() => handleNavigate('/dashboard/empresas')}
                                 >
                                     <ListItemIcon>
                                         <ListIcon
                                             fontSize="small"
-                                            color={isActive('/dashboard/empresas') ? "primary" : "inherit"}
+                                            color={isActive('/dashboard/empresas', true) ? "primary" : "inherit"}
                                         />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Listar Empresas"
                                         primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/empresas') ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/empresas') ? theme.palette.primary.main : 'inherit'
+                                            fontWeight: isActive('/dashboard/empresas', true) ? 'bold' : 'normal',
+                                            color: isActive('/dashboard/empresas', true) ? theme.palette.primary.main : 'inherit'
                                         }}
                                     />
                                 </ListItemButton>
@@ -321,21 +320,21 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                                     sx={{
                                         pl: 4,
                                         borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/usuarios') ? `${theme.palette.primary.light}20` : 'transparent'
+                                        bgcolor: isActive('/dashboard/usuarios', true) ? `${theme.palette.primary.light}20` : 'transparent'
                                     }}
                                     onClick={() => handleNavigate('/dashboard/usuarios')}
                                 >
                                     <ListItemIcon>
                                         <ListIcon
                                             fontSize="small"
-                                            color={isActive('/dashboard/usuarios') ? "primary" : "inherit"}
+                                            color={isActive('/dashboard/usuarios', true) ? "primary" : "inherit"}
                                         />
                                     </ListItemIcon>
                                     <ListItemText
                                         primary="Listar Usuários"
                                         primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/usuarios') ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/usuarios') ? theme.palette.primary.main : 'inherit'
+                                            fontWeight: isActive('/dashboard/usuarios', true) ? 'bold' : 'normal',
+                                            color: isActive('/dashboard/usuarios', true) ? theme.palette.primary.main : 'inherit'
                                         }}
                                     />
                                 </ListItemButton>

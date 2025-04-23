@@ -3,6 +3,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import NotFoundPage from './pages/notFound/NotFoundPage';
 import ContatosPage from './pages/contato/ContatosPage';
 import LoginPage from './pages/login/LoginPage';
+import EmpresasPage from './pages/empresa/EmpresasPage';
 
 function AppRoutes() {
   return (
@@ -14,7 +15,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<DashboardPage />}>
           <Route index element={<ContatosPage />} />
           <Route path="/dashboard/contatos" element={<ContatosPage />} />
-          <Route path="/dashboard/empresas" element={"Rota Teste Empresas"} />
+          <Route path="/dashboard/empresas" element={<EmpresasPage />} />
           <Route path="/dashboard/usuarios" element={"Rota Teste Usuários"} />
         </Route>
 

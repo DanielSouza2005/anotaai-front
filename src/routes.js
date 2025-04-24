@@ -4,6 +4,7 @@ import NotFoundPage from './pages/notFound/NotFoundPage';
 import ContatosPage from './pages/contato/ContatosPage';
 import LoginPage from './pages/login/LoginPage';
 import EmpresasPage from './pages/empresa/EmpresasPage';
+import UsuariosPage from './pages/usuario/UsuariosPage';
 
 function AppRoutes() {
   return (
@@ -16,7 +17,7 @@ function AppRoutes() {
           <Route index element={<ContatosPage />} />
           <Route path="/dashboard/contatos" element={<ContatosPage />} />
           <Route path="/dashboard/empresas" element={<EmpresasPage />} />
-          <Route path="/dashboard/usuarios" element={"Rota Teste Usuários"} />
+          <Route path="/dashboard/usuarios" element={<UsuariosPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

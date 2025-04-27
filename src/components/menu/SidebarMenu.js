@@ -1,13 +1,14 @@
-import { Drawer, Box, Divider, List, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { Box, Divider, Drawer, IconButton, List, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 import logoImage from "../../assets/login/logo.png";
+import { menuItems } from '../../config/menu/menuConfig';
 import SidebarExpandableItem from './SidebarExpandableItem';
 import UserMenu from './SidebarUserMenu';
-import { menuItems } from '../../config/menu/menuConfig';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import authService from '../../services/auth/authService';
 
 const SidebarMenu = ({ open, toggleDrawer }) => {
     const theme = useTheme();
@@ -21,6 +22,7 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
     const user = { name: "João Silva", email: "joao.silva@example.com" };
 
     const handleLogout = () => {
+        authService.logout();
         navigate('/login');
     };
 

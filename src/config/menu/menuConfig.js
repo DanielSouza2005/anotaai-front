@@ -1,12 +1,9 @@
 import {
-    EventNote as EventNoteIcon,
     Business as BusinessIcon,
+    EventNote as EventNoteIcon,
     Group as GroupIcon,
-    List as ListIcon,
-    Add as AddIcon
+    List as ListIcon
 } from '@mui/icons-material';
-
-
 
 export const menuItems = [
     {

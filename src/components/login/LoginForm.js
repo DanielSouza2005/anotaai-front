@@ -1,7 +1,7 @@
 import {
+    Email,
     Lock as LockIcon,
     Login as LoginIcon,
-    Person as PersonIcon,
     Visibility as VisibilityIcon,
     VisibilityOff as VisibilityOffIcon
 } from '@mui/icons-material';
@@ -22,21 +22,46 @@ import { useNavigate } from 'react-router-dom';
 
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
+import authService from '../../services/auth/authService';
 
 const LoginForm = () => {
 
-    const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
-    const navigate = useNavigate();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
+    const [email, setEmail] = useState('');
+    const [pass, setPass] = useState('');
 
     const handleTogglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleLogin = () => {
-        navigate('/dashboard/contatos');
+    const handleLogin = async (event) => {
+        event.preventDefault();
+
+        if (!email || !pass) {
+            alert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Por favor, insira um e-mail válido.");
+            return;
+        }
+
+        try {
+            await authService.login(email, pass);
+            navigate("/dashboard/contatos");
+        }
+        catch (err) {
+            // console.error(err);
+            alert("Login Inválido!");
+        }
     };
 
     return (
@@ -73,7 +98,6 @@ const LoginForm = () => {
                         borderRadius: 2,
                     }}
                 >
-                    {/* Lado esquerdo - Logo */}
                     <Box
                         sx={{
                             bgcolor: 'primary.main',
@@ -87,7 +111,6 @@ const LoginForm = () => {
                             color: 'white',
                         }}
                     >
-                        {/* Placeholder para o logo */}
                         <Box
                             sx={{
                                 width: isMobile ? '70%' : '80%',
@@ -107,7 +130,6 @@ const LoginForm = () => {
                         </Box>
                     </Box>
 
-                    {/* Lado direito - Formulário de login */}
                     <Box
                         sx={{
                             width: isTablet ? '100%' : '50%',
@@ -135,21 +157,22 @@ const LoginForm = () => {
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="username"
-                                label="Usuário"
-                                name="username"
-                                autoComplete="username"
+                                id="email"
+                                label="E-mail"
+                                name="email"
+                                autoComplete="email"
                                 autoFocus
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <PersonIcon color="primary" />
+                                            <Email color="primary" />
                                         </InputAdornment>
                                     ),
                                 }}
                                 sx={{ mb: isMobile ? 2 : 3 }}
                                 variant="outlined"
                                 size={isMobile ? "small" : "medium"}
+                                onChange={e => setEmail(e.target.value)}
                             />
 
                             <TextField
@@ -182,12 +205,13 @@ const LoginForm = () => {
                                 }}
                                 sx={{ mb: isMobile ? 3 : 4 }}
                                 size={isMobile ? "small" : "medium"}
+                                onChange={e => setPass(e.target.value)}
                             />
 
                             <Button
                                 type="submit"
                                 fullWidth
-                                onClick={handleLogin}
+                                onClick={(event) => handleLogin(event)}
                                 variant="contained"
                                 size={isMobile ? "medium" : "large"}
                                 sx={{

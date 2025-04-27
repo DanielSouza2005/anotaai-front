@@ -1,15 +1,18 @@
 import {
+    Add as AddIcon,
     Group as GroupIcon,
     MoreVert as MoreVertIcon
 } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { Box, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Fab as FloatingActionButton, IconButton, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { useState } from "react";
-import SearchBar from '../../components/utils/SearchBar';
 import EditDialog from '../../components/utils/EditDialog';
+import SearchBar from '../../components/utils/SearchBar';
+import CreateDialog from '../../components/utils/CreateDialog';
+import DetailDialog from '../../components/utils/DetailDialog';
 
 const initialRows = [
     {
@@ -26,7 +29,7 @@ const initialRows = [
 
 const usuarioFields = [
     { name: 'nome', label: 'Nome' },
-    { email: 'email', label: 'Email' }
+    { name: 'email', label: 'Email' }
 ];
 
 const UsuariosPage = () => {
@@ -35,8 +38,14 @@ const UsuariosPage = () => {
     const [rows, setRows] = useState(initialRows);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedRowId, setSelectedRowId] = useState(null);
+
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [formData, setFormData] = useState({});
+
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [newFormData, setNewFormData] = useState({});
+
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
     const handleMenuOpen = (event, rowId) => {
         setAnchorEl(event.currentTarget);
@@ -65,9 +74,26 @@ const UsuariosPage = () => {
         setEditDialogOpen(false);
     };
 
+    const handleNewUsuario = () => {
+        setNewFormData({});
+        setCreateDialogOpen(true);
+    };
+
+    const handleCreate = () => {
+        const newId = Math.max(...rows.map(r => r.id)) + 1;
+        const newContato = { id: newId, ...newFormData };
+        setRows(prevRows => [...prevRows, newContato]);
+        setCreateDialogOpen(false);
+    };
+
     const filteredRows = rows.filter((row) =>
         row.nome.toLowerCase().includes(search.toLowerCase())
     );
+
+    const handleRowDoubleClick = (params) => {
+        setFormData(params.row);
+        setDetailDialogOpen(true);
+    };
 
     const columns = [
         { field: 'nome', headerName: 'Nome', flex: 1 },
@@ -110,6 +136,7 @@ const UsuariosPage = () => {
                         rowsPerPageOptions={[5]}
                         disableRowSelectionOnClick
                         localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                        onRowDoubleClick={handleRowDoubleClick}
                     />
                 </Box>
             </Paper>
@@ -130,6 +157,33 @@ const UsuariosPage = () => {
                 </MenuItem>
             </Menu>
 
+            <FloatingActionButton
+                color="primary"
+                sx={{
+                    position: 'fixed',
+                    bottom: 16,
+                    right: 16,
+                }}
+                onClick={handleNewUsuario}
+            >
+                <AddIcon />
+            </FloatingActionButton>
+
+            <CreateDialog
+                open={createDialogOpen}
+                onClose={() => setCreateDialogOpen(false)}
+                onCreate={handleCreate}
+                formData={newFormData}
+                onChange={(e) =>
+                    setNewFormData(prev => ({
+                        ...prev,
+                        [e.target.name]: e.target.value,
+                    }))
+                }
+                fields={usuarioFields}
+                title="Novo Usuário"
+            />
+
             {/* Dialog de Edição */}
             <EditDialog
                 open={editDialogOpen}
@@ -144,6 +198,13 @@ const UsuariosPage = () => {
                 }
                 fields={usuarioFields}
                 title="Editar Usuário"
+            />
+
+            <DetailDialog
+                open={detailDialogOpen}
+                onClose={() => setDetailDialogOpen(false)}
+                formData={formData}
+                title="Detalhes da Empresa"
             />
         </Box>
     );

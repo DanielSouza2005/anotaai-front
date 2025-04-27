@@ -1,4 +1,5 @@
 import {
+    Add as AddIcon,
     EventNote as EventNoteIcon,
     MoreVert as MoreVertIcon
 } from '@mui/icons-material';
@@ -6,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import {
     Box,
+    Fab as FloatingActionButton,
     IconButton,
     Menu,
     MenuItem,
@@ -15,8 +17,10 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import React, { useState } from 'react';
+import CreateDialog from '../../components/utils/CreateDialog';
 import EditDialog from '../../components/utils/EditDialog';
 import SearchBar from '../../components/utils/SearchBar';
+import DetailDialog from '../../components/utils/DetailDialog';
 
 const initialRows = [
     {
@@ -63,8 +67,14 @@ const ContatosPage = () => {
     const [rows, setRows] = useState(initialRows);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedRowId, setSelectedRowId] = useState(null);
+
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [formData, setFormData] = useState({});
+
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [newFormData, setNewFormData] = useState({});
+
+    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
     const handleMenuOpen = (event, rowId) => {
         setAnchorEl(event.currentTarget);
@@ -91,6 +101,23 @@ const ContatosPage = () => {
     const handleSave = () => {
         setRows(rows.map(row => row.id === formData.id ? formData : row));
         setEditDialogOpen(false);
+    };
+
+    const handleNewContato = () => {
+        setNewFormData({});
+        setCreateDialogOpen(true);
+    };
+
+    const handleCreate = () => {
+        const newId = Math.max(...rows.map(r => r.id)) + 1;
+        const newContato = { id: newId, ...newFormData };
+        setRows(prevRows => [...prevRows, newContato]);
+        setCreateDialogOpen(false);
+    };
+
+    const handleRowDoubleClick = (params) => {
+        setFormData(params.row);
+        setDetailDialogOpen(true); 
     };
 
     const filteredRows = rows.filter((row) =>
@@ -142,6 +169,7 @@ const ContatosPage = () => {
                         rowsPerPageOptions={[5]}
                         disableRowSelectionOnClick
                         localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                        onRowDoubleClick={handleRowDoubleClick}
                     />
                 </Box>
             </Paper>
@@ -162,7 +190,33 @@ const ContatosPage = () => {
                 </MenuItem>
             </Menu>
 
-            {/* Dialog de Edição */}
+            <FloatingActionButton
+                color="primary"
+                sx={{
+                    position: 'fixed',
+                    bottom: 16,
+                    right: 16,
+                }}
+                onClick={handleNewContato}
+            >
+                <AddIcon />
+            </FloatingActionButton>
+
+            <CreateDialog
+                open={createDialogOpen}
+                onClose={() => setCreateDialogOpen(false)}
+                onCreate={handleCreate}
+                formData={newFormData}
+                onChange={(e) =>
+                    setNewFormData(prev => ({
+                        ...prev,
+                        [e.target.name]: e.target.value,
+                    }))
+                }
+                fields={contatoFields}
+                title="Novo Contato"
+            />
+
             <EditDialog
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}
@@ -176,7 +230,14 @@ const ContatosPage = () => {
                 }
                 fields={contatoFields}
                 title="Editar Contato"
-            />            
+            />
+
+            <DetailDialog
+                open={detailDialogOpen}
+                onClose={() => setDetailDialogOpen(false)}
+                formData={formData}
+                title="Detalhes do Contato"
+            />
         </Box >
     );
 }

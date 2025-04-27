@@ -1,113 +1,28 @@
-import {
-    AccountCircle as AccountCircleIcon,
-    Add as AddIcon,
-    Business as BusinessIcon,
-    ChevronLeft as ChevronLeftIcon,
-    EventNote as EventNoteIcon,
-    ExpandLess as ExpandLessIcon,
-    ExpandMore as ExpandMoreIcon,
-    Group as GroupIcon,
-    List as ListIcon,
-    Logout as LogoutIcon,
-    Settings as SettingsIcon
-} from '@mui/icons-material';
-import {
-    Avatar,
-    Box,
-    Collapse,
-    Divider,
-    Drawer,
-    IconButton,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    Typography,
-    useMediaQuery,
-    useTheme
-} from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Drawer, Box, Divider, List, IconButton, Typography, useMediaQuery, useTheme } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
-import { useLocation, useNavigate } from 'react-router-dom';
 import logoImage from "../../assets/login/logo.png";
+import SidebarExpandableItem from './SidebarExpandableItem';
+import UserMenu from './SidebarUserMenu';
+import { menuItems } from '../../config/menu/menuConfig';
+
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SidebarMenu = ({ open, toggleDrawer }) => {
     const theme = useTheme();
-    const navigate = useNavigate();
-    const location = useLocation();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate();
     const drawerWidth = 280;
-
-    const user = {
-        name: "João Silva",
-        email: "joao.silva@example.com",
-        photoUrl: null
-    };
-
-    const [contactsOpen, setContactsOpen] = useState(false);
-    const [companiesOpen, setCompaniesOpen] = useState(false);
-    const [usersOpen, setUsersOpen] = useState(false);
 
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
 
-    const handleContactsClick = () => {
-        setContactsOpen(!contactsOpen);
-    };
-
-    const handleCompaniesClick = () => {
-        setCompaniesOpen(!companiesOpen);
-    };
-
-    const handleUsersClick = () => {
-        setUsersOpen(!usersOpen);
-    };
-
-    const handleUserMenuOpen = (event) => {
-        setUserMenuAnchor(event.currentTarget);
-    };
-
-    const handleUserMenuClose = () => {
-        setUserMenuAnchor(null);
-    };
+    const user = { name: "João Silva", email: "joao.silva@example.com" };
 
     const handleLogout = () => {
-        // Implement logout functionality
-        handleUserMenuClose();
         navigate('/login');
     };
-
-    const handleViewProfile = () => {
-        handleUserMenuClose();
-    };
-
-    const isActive = (path, endsWith = false) => {
-        return endsWith
-            ? location.pathname.endsWith(path)
-            : location.pathname === path;
-    };
-
-    const handleNavigate = (path) => {
-        navigate(path);
-        if (isMobile) {
-            toggleDrawer();
-        }
-    };
-
-    useEffect(() => {
-        if (location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard')) {
-            setContactsOpen(true);
-        }
-        if (location.pathname.includes('/dashboard/empresas')) {
-            setCompaniesOpen(true);
-        }
-        if (location.pathname.includes('/dashboard/usuarios')) {
-            setUsersOpen(true);
-        }
-    }, [location.pathname]);
 
     return (
         <Drawer
@@ -155,309 +70,29 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                 <Divider sx={{ mt: 2 }} />
             </Box>
 
-            {/* Menu principal */}
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <List component="nav" sx={{ p: 1 }}>
-                    {/* Contatos */}
-                    <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                        <ListItemButton
-                            onClick={handleContactsClick}
-                            sx={{
-                                borderRadius: 1,
-                                bgcolor: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? `${theme.palette.primary.light}20` : 'transparent',
-                                '&:hover': {
-                                    bgcolor: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard')
-                                        ? `${theme.palette.primary.light}30`
-                                        : theme.palette.action.hover
-                                }
-                            }}
-                        >
-                            <EventNoteIcon
-                                sx={{ marginRight: 4 }}
-                                color={location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? "primary" : "inherit"}
-                            />
-                            <ListItemText
-                                primary="Contatos"
-                                primaryTypographyProps={{
-                                    fontWeight: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? 'bold' : 'normal',
-                                    color: location.pathname.includes('/dashboard/contatos') || location.pathname.endsWith('/dashboard') ? theme.palette.primary.main : 'inherit'
-                                }}
-                            />
-                            {contactsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </ListItemButton>
-                        <Collapse in={contactsOpen} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                <ListItemButton
-                                    sx={{
-                                        pl: 4,
-                                        borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? `${theme.palette.primary.light}20` : 'transparent'
-                                    }}
-                                    onClick={() => handleNavigate('/dashboard/contatos')}
-                                >
-                                    <ListItemIcon>
-                                        <ListIcon
-                                            fontSize="small"
-                                            color={isActive('/dashboard/contatos') || isActive('/dashboard', false) ? "primary" : "inherit"}
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Listar Contatos"
-                                        primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/contatos') || isActive('/dashboard', false) ? theme.palette.primary.main : 'inherit'
-                                        }}
-                                    />
-                                </ListItemButton>
-                                <ListItemButton
-                                    sx={{
-                                        pl: 4,
-                                        borderRadius: 1,
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <AddIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Novo Contato" />
-                                </ListItemButton>
-                            </List>
-                        </Collapse>
-                    </ListItem>
-
-                    {/* Empresas */}
-                    <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                        <ListItemButton
-                            onClick={handleCompaniesClick}
-                            sx={{
-                                borderRadius: 1,
-                                bgcolor: location.pathname.includes('/dashboard/empresas') ? `${theme.palette.primary.light}20` : 'transparent',
-                                '&:hover': {
-                                    bgcolor: location.pathname.includes('/dashboard/empresas')
-                                        ? `${theme.palette.primary.light}30`
-                                        : theme.palette.action.hover
-                                }
-                            }}
-                        >
-                            <ListItemIcon>
-                                <BusinessIcon
-                                    color={location.pathname.includes('/dashboard/empresas') ? "primary" : "inherit"}
-                                />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Empresas"
-                                primaryTypographyProps={{
-                                    fontWeight: location.pathname.includes('/dashboard/empresas') ? 'bold' : 'normal',
-                                    color: location.pathname.includes('/dashboard/empresas') ? theme.palette.primary.main : 'inherit'
-                                }}
-                            />
-                            {companiesOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </ListItemButton>
-                        <Collapse in={companiesOpen} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                <ListItemButton
-                                    sx={{
-                                        pl: 4,
-                                        borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/empresas', true) ? `${theme.palette.primary.light}20` : 'transparent'
-                                    }}
-                                    onClick={() => handleNavigate('/dashboard/empresas')}
-                                >
-                                    <ListItemIcon>
-                                        <ListIcon
-                                            fontSize="small"
-                                            color={isActive('/dashboard/empresas', true) ? "primary" : "inherit"}
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Listar Empresas"
-                                        primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/empresas', true) ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/empresas', true) ? theme.palette.primary.main : 'inherit'
-                                        }}
-                                    />
-                                </ListItemButton>
-                                <ListItemButton sx={{ pl: 4, borderRadius: 1 }}>
-                                    <ListItemIcon>
-                                        <AddIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Nova Empresa" />
-                                </ListItemButton>
-                            </List>
-                        </Collapse>
-                    </ListItem>
-
-                    {/* Usuários */}
-                    <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                        <ListItemButton
-                            onClick={handleUsersClick}
-                            sx={{
-                                borderRadius: 1,
-                                bgcolor: location.pathname.includes('/dashboard/usuarios') ? `${theme.palette.primary.light}20` : 'transparent',
-                                '&:hover': {
-                                    bgcolor: location.pathname.includes('/dashboard/usuarios')
-                                        ? `${theme.palette.primary.light}30`
-                                        : theme.palette.action.hover
-                                }
-                            }}
-                        >
-                            <ListItemIcon>
-                                <GroupIcon
-                                    color={location.pathname.includes('/dashboard/usuarios') ? "primary" : "inherit"}
-                                />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Usuários"
-                                primaryTypographyProps={{
-                                    fontWeight: location.pathname.includes('/dashboard/usuarios') ? 'bold' : 'normal',
-                                    color: location.pathname.includes('/dashboard/usuarios') ? theme.palette.primary.main : 'inherit'
-                                }}
-                            />
-                            {usersOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </ListItemButton>
-                        <Collapse in={usersOpen} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding>
-                                <ListItemButton
-                                    sx={{
-                                        pl: 4,
-                                        borderRadius: 1,
-                                        bgcolor: isActive('/dashboard/usuarios', true) ? `${theme.palette.primary.light}20` : 'transparent'
-                                    }}
-                                    onClick={() => handleNavigate('/dashboard/usuarios')}
-                                >
-                                    <ListItemIcon>
-                                        <ListIcon
-                                            fontSize="small"
-                                            color={isActive('/dashboard/usuarios', true) ? "primary" : "inherit"}
-                                        />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary="Listar Usuários"
-                                        primaryTypographyProps={{
-                                            fontWeight: isActive('/dashboard/usuarios', true) ? 'bold' : 'normal',
-                                            color: isActive('/dashboard/usuarios', true) ? theme.palette.primary.main : 'inherit'
-                                        }}
-                                    />
-                                </ListItemButton>
-                                <ListItemButton sx={{ pl: 4, borderRadius: 1 }}>
-                                    <ListItemIcon>
-                                        <AddIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Novo Usuário" />
-                                </ListItemButton>
-                            </List>
-                        </Collapse>
-                    </ListItem>
+                    {menuItems.map((menu) => (
+                        <SidebarExpandableItem
+                            key={menu.title}
+                            title={menu.title}
+                            icon={menu.icon}
+                            basePath={menu.basePath}
+                            subItems={menu.subItems}
+                        />
+                    ))}
                 </List>
             </Box>
 
-            <Box>
-                <Divider />
-                {/* Seção do usuário */}
-                <Box sx={{ p: 2 }}>
-                    <Box
-                        onClick={handleUserMenuOpen}
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            p: 1,
-                            borderRadius: 1,
-                            cursor: 'pointer',
-                            '&:hover': {
-                                bgcolor: theme.palette.action.hover
-                            }
-                        }}
-                    >
-                        <Avatar
-                            src={user.photoUrl}
-                            alt={user.name}
-                            sx={{
-                                width: 40,
-                                height: 40,
-                                mr: 2,
-                                bgcolor: user.photoUrl ? 'transparent' : theme.palette.primary.main
-                            }}
-                        >
-                            {!user.photoUrl && user.name.charAt(0)}
-                        </Avatar>
-                        <Box sx={{ flex: 1, overflow: 'hidden' }}>
-                            <Typography variant="subtitle2" noWrap fontWeight="bold">
-                                {user.name}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary" noWrap>
-                                {user.email}
-                            </Typography>
-                        </Box>
-                        <ExpandMoreIcon fontSize="small" color="action" />
-                    </Box>
+            <UserMenu
+                anchorEl={userMenuAnchor}
+                open={userMenuOpen}
+                onOpen={(event) => setUserMenuAnchor(event.currentTarget)}
+                onClose={() => setUserMenuAnchor(null)}
+                onLogout={handleLogout}
+                user={user}
+            />
 
-                    {/* Menu do Usuário */}
-                    <Menu
-                        anchorEl={userMenuAnchor}
-                        open={userMenuOpen}
-                        onClose={handleUserMenuClose}
-                        PaperProps={{
-                            sx: {
-                                width: 220,
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-                            }
-                        }}
-                    >
-                        <Box sx={{ p: 2, textAlign: 'center' }}>
-                            <Avatar
-                                src={user.photoUrl}
-                                alt={user.name}
-                                sx={{
-                                    width: 60,
-                                    height: 60,
-                                    mx: 'auto',
-                                    mb: 1,
-                                    bgcolor: user.photoUrl ? 'transparent' : theme.palette.primary.main
-                                }}
-                            >
-                                {!user.photoUrl && user.name.charAt(0)}
-                            </Avatar>
-                            <Typography variant="subtitle1" fontWeight="bold">
-                                {user.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {user.email}
-                            </Typography>
-                            <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>
-                                {user.role}
-                            </Typography>
-                        </Box>
-
-                        <Divider />
-
-                        <MenuItem onClick={handleViewProfile}>
-                            <ListItemIcon>
-                                <AccountCircleIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText primary="Meu Perfil" />
-                        </MenuItem>
-
-                        <MenuItem onClick={handleUserMenuClose}>
-                            <ListItemIcon>
-                                <SettingsIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText primary="Configurações" />
-                        </MenuItem>
-
-                        <Divider />
-
-                        <MenuItem onClick={handleLogout}>
-                            <ListItemIcon>
-                                <LogoutIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText primary="Sair" />
-                        </MenuItem>
-                    </Menu>
-                </Box>
-
-                <Divider />
-            </Box>
-
-            {/* Rodapé com configurações */}
             <Box>
                 <Box sx={{ p: 2, textAlign: 'center' }}>
                     <Typography variant="caption" color="text.secondary">
@@ -465,8 +100,9 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
                     </Typography>
                 </Box>
             </Box>
+
         </Drawer>
-    )
+    );
 }
 
 export default SidebarMenu;

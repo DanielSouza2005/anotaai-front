@@ -36,7 +36,7 @@ const LoginForm = () => {
     };
 
     const handleLogin = () => {
-        navigate('/dashboard');
+        navigate('/dashboard/contatos');
     };
 
     return (

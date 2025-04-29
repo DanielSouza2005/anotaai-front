@@ -1,12 +1,17 @@
 import api from '../api/api';
 
 const login = async (email, senha) => {
-    const response = await api.post('/login', { email, senha });
-    const token = response.data.token;
+    try {
+        const response = await api.post('/login', { email, senha });
+        const token = response.data.token;
 
-    localStorage.setItem('token', token);
+        localStorage.setItem('token', token);
 
-    return token;
+        return Promise.resolve();
+    } catch (error) {
+        return Promise.reject(error); 
+    }
+
 };
 
 const logout = () => {

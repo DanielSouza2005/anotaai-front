@@ -55,8 +55,9 @@ const LoginForm = () => {
         }
 
         try {
-            await authService.login(email, pass);
-            navigate("/dashboard/contatos");
+            await authService.login(email, pass).then(() => {
+                navigate("/dashboard/contatos");
+            });
         }
         catch (err) {
             // console.error(err);

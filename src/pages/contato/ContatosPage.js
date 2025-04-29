@@ -16,38 +16,12 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreateDialog from '../../components/utils/CreateDialog';
 import EditDialog from '../../components/utils/EditDialog';
 import SearchBar from '../../components/utils/SearchBar';
 import DetailDialog from '../../components/utils/DetailDialog';
-
-const initialRows = [
-    {
-        id: 1,
-        nome: 'João Silva',
-        cpf: '123.456.789-00',
-        celular: '(11) 99999-1111',
-        telefone: '(11) 3333-2222',
-        email_pessoal: 'joao@email.com',
-        email_corp: 'joao@empresa.com',
-        cargo: 'Analista',
-        departamento: 'TI',
-        obs: 'Contato antigo',
-    },
-    {
-        id: 2,
-        nome: 'Maria Oliveira',
-        cpf: '987.654.321-00',
-        celular: '(11) 98888-2222',
-        telefone: '(11) 3444-2222',
-        email_pessoal: 'maria@email.com',
-        email_corp: 'maria@empresa.com',
-        cargo: 'Gerente',
-        departamento: 'RH',
-        obs: '',
-    },
-];
+import api from '../../services/api/api';
 
 const contatoFields = [
     { name: 'nome', label: 'Nome' },
@@ -64,7 +38,13 @@ const contatoFields = [
 const ContatosPage = () => {
 
     const [search, setSearch] = useState('');
-    const [rows, setRows] = useState(initialRows);
+    const [rows, setRows] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+    const [totalRows, setTotalRows] = useState(0);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(100);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedRowId, setSelectedRowId] = useState(null);
 
@@ -75,6 +55,39 @@ const ContatosPage = () => {
     const [newFormData, setNewFormData] = useState({});
 
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+
+    const fetchContatos = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get(`/contato?page=${page}&size=${pageSize}`);
+            setRows(response.data.content);
+            setTotalRows(response.data.totalElements);
+            console.log(response.data.content);
+        } catch (error) {
+            console.error("Erro ao buscar contatos:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchContatos();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, pageSize, search]);
+
+    const handleSearchChange = (e) => {
+        setSearch(e.target.value);
+        setPage(0);
+    };
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
+
+    const handlePageSizeChange = (newPageSize) => {
+        setPageSize(newPageSize);
+        setPage(0);
+    };
 
     const handleMenuOpen = (event, rowId) => {
         setAnchorEl(event.currentTarget);
@@ -87,20 +100,30 @@ const ContatosPage = () => {
     };
 
     const handleEdit = () => {
-        const rowToEdit = rows.find(row => row.id === selectedRowId);
+        const rowToEdit = rows.find(row => row.cod_contato === selectedRowId);
         setFormData(rowToEdit);
         setEditDialogOpen(true);
         handleMenuClose();
     };
 
-    const handleDelete = () => {
-        setRows(rows.filter((row) => row.id !== selectedRowId));
+    const handleDelete = async () => {
+        try {
+            await api.delete(`/contato/${selectedRowId}`);
+            fetchContatos();
+        } catch (error) {
+            console.error("Erro ao excluir contato:", error);
+        }
         handleMenuClose();
     };
 
-    const handleSave = () => {
-        setRows(rows.map(row => row.id === formData.id ? formData : row));
-        setEditDialogOpen(false);
+    const handleSave = async () => {
+        try {
+            await api.put(`/contato`, formData);
+            fetchContatos();
+            setEditDialogOpen(false);
+        } catch (error) {
+            console.error("Erro ao salvar contato:", error);
+        }
     };
 
     const handleNewContato = () => {
@@ -108,23 +131,26 @@ const ContatosPage = () => {
         setCreateDialogOpen(true);
     };
 
-    const handleCreate = () => {
-        const newId = Math.max(...rows.map(r => r.id)) + 1;
-        const newContato = { id: newId, ...newFormData };
-        setRows(prevRows => [...prevRows, newContato]);
-        setCreateDialogOpen(false);
+    const handleCreate = async () => {
+        try {
+            await api.post('/contato', newFormData);
+            fetchContatos();
+            setCreateDialogOpen(false);
+        } catch (error) {
+            console.error("Erro ao criar contato:", error);
+        }
     };
 
     const handleRowDoubleClick = (params) => {
         setFormData(params.row);
-        setDetailDialogOpen(true); 
+        setDetailDialogOpen(true);
     };
 
     const filteredRows = rows.filter((row) =>
         row.nome.toLowerCase().includes(search.toLowerCase())
     );
 
-    const columns = [
+    const columns = [ 
         { field: 'nome', headerName: 'Nome', flex: 1 },
         { field: 'email_pessoal', headerName: 'E-mail Pessoal', flex: 1 },
         { field: 'celular', headerName: 'Celular', flex: 1 },
@@ -137,7 +163,7 @@ const ContatosPage = () => {
             width: 50,
             sortable: false,
             renderCell: (params) => (
-                <IconButton onClick={(event) => handleMenuOpen(event, params.row.id)}>
+                <IconButton onClick={(event) => handleMenuOpen(event, params.row.cod_contato)}>
                     <MoreVertIcon />
                 </IconButton>
             ),
@@ -163,13 +189,20 @@ const ContatosPage = () => {
             <Paper elevation={1}>
                 <Box sx={{ height: 400 }}>
                     <DataGrid
-                        rows={filteredRows}
+                        rows={rows}
                         columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
+                        loading={loading}
+                        rowCount={totalRows}
+                        paginationMode="server"
+                        pagination
+                        page={page}
+                        pageSize={pageSize}
+                        onPageChange={handlePageChange}
+                        onPageSizeChange={handlePageSizeChange}
                         disableRowSelectionOnClick
                         localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                         onRowDoubleClick={handleRowDoubleClick}
+                        getRowId={(row) => row.cod_contato}
                     />
                 </Box>
             </Paper>

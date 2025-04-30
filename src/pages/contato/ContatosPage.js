@@ -18,22 +18,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import React, { useEffect, useState } from 'react';
 import CreateDialog from '../../components/utils/CreateDialog';
+import DetailDialog from '../../components/utils/DetailDialog';
 import EditDialog from '../../components/utils/EditDialog';
 import SearchBar from '../../components/utils/SearchBar';
-import DetailDialog from '../../components/utils/DetailDialog';
 import api from '../../services/api/api';
-
-const contatoFields = [
-    { name: 'nome', label: 'Nome' },
-    { name: 'cpf', label: 'CPF' },
-    { name: 'celular', label: 'Celular' },
-    { name: 'telefone', label: 'Telefone' },
-    { name: 'email_pessoal', label: 'E-mail Pessoal', type: 'email' },
-    { name: 'email_corp', label: 'E-mail Corporativo', type: 'email' },
-    { name: 'cargo', label: 'Cargo' },
-    { name: 'departamento', label: 'Departamento' },
-    { name: 'obs', label: 'Observações', type: 'textarea' },
-];
+import { addContatoEnderecoFields, addContatoFields, contatoFields, enderecoFields } from './contatoFields';
+import { contatoValidationSchema } from './contatoValidation';
 
 const ContatosPage = () => {
 
@@ -62,7 +52,6 @@ const ContatosPage = () => {
             const response = await api.get(`/contato?page=${page}&size=${pageSize}`);
             setRows(response.data.content);
             setTotalRows(response.data.totalElements);
-            console.log(response.data.content);
         } catch (error) {
             console.error("Erro ao buscar contatos:", error);
         } finally {
@@ -116,13 +105,40 @@ const ContatosPage = () => {
         handleMenuClose();
     };
 
-    const handleSave = async () => {
+    const handleEditChange = async (values, { setSubmitting, setErrors }) => {
         try {
-            await api.put(`/contato`, formData);
+            await api.put(`/contato`, values);
             fetchContatos();
             setEditDialogOpen(false);
         } catch (error) {
-            console.error("Erro ao salvar contato:", error);
+            if (error.response && error.response.data) {
+                const apiErrors = error.response.data;
+
+                if (Array.isArray(apiErrors)) {
+                    const formikErrors = {};
+                    apiErrors.forEach(err => {
+                        if (err.campo.includes('.')) {
+                            const [obj, field] = err.campo.split('.');
+                            formikErrors[obj] = {
+                                ...(formikErrors[obj] || {}),
+                                [field]: err.mensagem
+                            };
+                        } else {
+                            formikErrors[err.campo] = err.mensagem;
+                        }
+                    });
+
+                    setErrors(formikErrors);
+                } else {
+                    // fallback genérico para erros não padronizados
+                    alert(apiErrors.message || "Erro inesperado ao criar contato.");
+                    console.error("Erro da API:", error.response.data);
+                }
+            } else {
+                alert("Erro ao criar contato. Tente novamente.");
+            }
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -131,13 +147,41 @@ const ContatosPage = () => {
         setCreateDialogOpen(true);
     };
 
-    const handleCreate = async () => {
+    const handleCreate = async (values, { setSubmitting, setErrors }) => {
         try {
-            await api.post('/contato', newFormData);
+            console.log(values);
+            await api.post('/contato', values);
             fetchContatos();
             setCreateDialogOpen(false);
         } catch (error) {
-            console.error("Erro ao criar contato:", error);
+            if (error.response && error.response.data) {
+                const apiErrors = error.response.data;
+
+                if (Array.isArray(apiErrors)) {
+                    const formikErrors = {};
+                    apiErrors.forEach(err => {
+                        if (err.campo.includes('.')) {
+                            const [obj, field] = err.campo.split('.');
+                            formikErrors[obj] = {
+                                ...(formikErrors[obj] || {}),
+                                [field]: err.mensagem
+                            };
+                        } else {
+                            formikErrors[err.campo] = err.mensagem;
+                        }
+                    });
+
+                    setErrors(formikErrors);
+                } else {
+                    // fallback genérico para erros não padronizados
+                    alert(apiErrors.message || "Erro inesperado ao criar contato.");
+                    console.error("Erro da API:", error.response.data);
+                }
+            } else {
+                alert("Erro ao criar contato. Tente novamente.");
+            }
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -150,7 +194,7 @@ const ContatosPage = () => {
         row.nome.toLowerCase().includes(search.toLowerCase())
     );
 
-    const columns = [ 
+    const columns = [
         { field: 'nome', headerName: 'Nome', flex: 1 },
         { field: 'email_pessoal', headerName: 'E-mail Pessoal', flex: 1 },
         { field: 'celular', headerName: 'Celular', flex: 1 },
@@ -246,14 +290,18 @@ const ContatosPage = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
-                fields={contatoFields}
+                fields={addContatoFields}
+                enderecoFields={addContatoEnderecoFields}
                 title="Novo Contato"
+                titleTab={"Contato"}
+                titleTab2={"Endereço"}
+                validationSchema={contatoValidationSchema}
             />
 
             <EditDialog
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}
-                onSave={handleSave}
+                onSave={handleEditChange}
                 formData={formData}
                 onChange={(e) =>
                     setFormData(prev => ({
@@ -261,8 +309,12 @@ const ContatosPage = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
-                fields={contatoFields}
+                fields={addContatoFields}
+                enderecoFields={addContatoEnderecoFields}
                 title="Editar Contato"
+                titleTab={"Contato"}
+                titleTab2={"Endereço"}
+                validationSchema={contatoValidationSchema}
             />
 
             <DetailDialog
@@ -270,6 +322,10 @@ const ContatosPage = () => {
                 onClose={() => setDetailDialogOpen(false)}
                 formData={formData}
                 title="Detalhes do Contato"
+                fields={contatoFields}
+                enderecoFields={enderecoFields}
+                titleTab={"Contato"}
+                titleTab2={"Endereço"}
             />
         </Box >
     );

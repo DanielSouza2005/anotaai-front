@@ -8,21 +8,20 @@ import UserMenu from './SidebarUserMenu';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from '../../services/auth/authService';
+import { useAuth } from '../../context/auth/AuthContext';
 
 const SidebarMenu = ({ open, toggleDrawer }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const { logout, user } = useAuth();
     const navigate = useNavigate();
     const drawerWidth = 280;
 
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
 
-    const user = { name: "João Silva", email: "joao.silva@example.com" };
-
     const handleLogout = () => {
-        authService.logout();
+        logout();
         navigate('/login');
     };
 

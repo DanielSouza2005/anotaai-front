@@ -27,21 +27,20 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                     }}
                 >
                     <Avatar
-                        src={user.photoUrl}
-                        alt={user.name}
+                        alt={user.nome}
                         sx={{
                             width: 40,
                             height: 40,
                             mr: 2,
-                            bgcolor: user.photoUrl ? 'transparent' : theme.palette.primary.main
+                            bgcolor: theme.palette.primary.main
                         }}
                     >
-                        {!user.photoUrl && user.name.charAt(0)}
+                        {user.nome.charAt(0)}
                     </Avatar>
 
                     <Box sx={{ flex: 1, overflow: 'hidden' }}>
                         <Typography variant="subtitle2" noWrap fontWeight="bold">
-                            {user.name}
+                            {user.nome}
                         </Typography>
                         <Typography variant="caption" color="text.secondary" noWrap>
                             {user.email}
@@ -63,19 +62,18 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                 >
                     <Box sx={{ p: 2, textAlign: 'center' }}>
                         <Avatar
-                            src={user.photoUrl}
-                            alt={user.name}
+                            alt={user.nome}
                             sx={{
                                 width: 60,
                                 height: 60,
                                 mx: 'auto',
                                 mb: 1,
-                                bgcolor: user.photoUrl ? 'transparent' : theme.palette.primary.main
+                                bgcolor: theme.palette.primary.main
                             }}
                         >
-                            {!user.photoUrl && user.name.charAt(0)}
+                            {user.nome.charAt(0)}
                         </Avatar>
-                        <Typography variant="subtitle1" fontWeight="bold">{user.name}</Typography>
+                        <Typography variant="subtitle1" fontWeight="bold">{user.nome}</Typography>
                         <Typography variant="body2" color="text.secondary">{user.email}</Typography>
                     </Box>
 

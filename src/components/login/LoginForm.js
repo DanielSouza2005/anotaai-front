@@ -18,19 +18,20 @@ import {
     useTheme
 } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
+import { useNavigate } from 'react-router-dom';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
-import authService from '../../services/auth/authService';
+import { useAuth } from '../../context/auth/AuthContext';
 
 const LoginForm = () => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.down('md'));
-
+    const { login } = useAuth();
     const navigate = useNavigate();
+
     const [showPassword, setShowPassword] = useState(false);
 
     const [email, setEmail] = useState('');
@@ -55,9 +56,8 @@ const LoginForm = () => {
         }
 
         try {
-            await authService.login(email, pass).then(() => {
-                navigate("/dashboard/contatos");
-            });
+            await login(email, pass);
+            navigate('/dashboard/contatos');
         }
         catch (err) {
             // console.error(err);

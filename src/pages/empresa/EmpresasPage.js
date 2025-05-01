@@ -13,10 +13,10 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { useState } from 'react';
-import CreateDialog from '../../components/utils/CreateDialog';
-import EditDialog from '../../components/utils/EditDialog';
-import SearchBar from '../../components/utils/SearchBar';
-import DetailDialog from '../../components/utils/DetailDialog';
+import SearchBar from '../../components/search/SearchBar';
+import CreateDialog from '../../components/utils/dialogs/CreateDialog';
+import DetailDialog from '../../components/utils/dialogs/DetailDialog';
+import EditDialog from '../../components/utils/dialogs/EditDialog';
 
 const initialRows = [
     {

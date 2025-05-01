@@ -11,34 +11,28 @@ import {
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import convertEmptyStringsToNull from './FieldCleaner';
+import convertEmptyStringsToNull from '../FieldCleaner';
+import { fetchEnderecoByCEP } from '../cepUtils';
 
-const CreateDialog = ({
+const EditDialog = ({
   open,
   onClose,
-  onCreate,
+  onSave,
   formData = {},
   fields,
   enderecoFields,
-  title = 'Novo Contato',
+  title = 'Editar Contato',
   titleTab = 'Contato',
   titleTab2 = 'Endereço',
   validationSchema
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
 
-  const initialValues = {
-    ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
-    endereco: enderecoFields.reduce((acc, f) => ({
-      ...acc,
-      [f.name]: formData?.endereco?.[f.name] || '',
-    }), {}),
-  };
-
-  const renderField = (field, values, errors, touched, prefix = '') => {
+  const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
+    const isReadOnly = field.readonly === true;
 
     return (
       <Grid item xs={12} sm={field.type === 'textarea' ? 12 : 6} key={fullName}>
@@ -54,6 +48,26 @@ const CreateDialog = ({
           error={Boolean(isTouched && error)}
           helperText={isTouched && error}
           InputLabelProps={field.type === 'date' ? { shrink: true } : undefined}
+          InputProps={{
+            readOnly: isReadOnly,
+            sx: {
+              backgroundColor: isReadOnly ? '#e3f2fd' : '#ffffff',
+              borderRadius: 1,
+            },
+          }}
+          onBlur={async (e) => {
+            if (field.name === 'cep') {
+              const endereco = await fetchEnderecoByCEP(e.target.value);
+              if (endereco) {
+                setFieldValue('endereco.pais', 'Brasil');
+                setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+              }
+            }
+          }}
         />
       </Grid>
     );
@@ -62,14 +76,15 @@ const CreateDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <Formik
-        initialValues={initialValues}
+        initialValues={formData}
         validationSchema={validationSchema}
+        enableReinitialize
         onSubmit={(values, formikBag) => {
           const cleanValues = convertEmptyStringsToNull(values);
-          onCreate(cleanValues, formikBag);
+          onSave(cleanValues, formikBag); 
         }}
       >
-        {({ values, errors, touched }) => (
+        {({ values, errors, touched, setFieldValue }) => (
           <Form>
             <DialogTitle>{title}</DialogTitle>
 
@@ -86,7 +101,7 @@ const CreateDialog = ({
               {tabIndex === 0 && (
                 <Grid container spacing={2}>
                   {fields.map(field =>
-                    renderField(field, values, errors, touched)
+                    renderField(field, values, errors, touched, setFieldValue)
                   )}
                 </Grid>
               )}
@@ -94,7 +109,7 @@ const CreateDialog = ({
               {tabIndex === 1 && (
                 <Grid container spacing={2}>
                   {enderecoFields.map(field =>
-                    renderField(field, values, errors, touched, 'endereco')
+                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
                   )}
                 </Grid>
               )}
@@ -102,7 +117,7 @@ const CreateDialog = ({
 
             <DialogActions>
               <Button onClick={onClose}>Cancelar</Button>
-              <Button variant="contained" type="submit">Criar</Button>
+              <Button variant="contained" type="submit">Salvar</Button>
             </DialogActions>
           </Form>
         )}
@@ -111,4 +126,4 @@ const CreateDialog = ({
   );
 };
 
-export default CreateDialog;
+export default EditDialog;

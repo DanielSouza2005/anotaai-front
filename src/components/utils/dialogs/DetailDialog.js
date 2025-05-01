@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, TextField, Tabs, Tab, Box,
-  Grid
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Tab,
+  Tabs,
+  TextField
 } from '@mui/material';
-import { formatValue, maskCEP, maskPhone } from './Masks';
+import React, { useState } from 'react';
+import { formatValue } from '../Masks';
 
 const renderMaskedField = (field, value) => {
   let displayValue = value;
-
-  if (field.name.includes('telefone') || field.name.includes('celular')) {
-    displayValue = maskPhone(value);
-  }
-
-  if (field.name === 'cep') {
-    displayValue = maskCEP(value);
-  }
 
   displayValue = formatValue(field, displayValue);
 
@@ -31,7 +29,7 @@ const renderMaskedField = (field, value) => {
         InputProps={{
           readOnly: true,
           sx: {
-            backgroundColor: '#e3f2fd', 
+            backgroundColor: '#e3f2fd',
             borderRadius: 1,
           },
         }}
@@ -47,7 +45,7 @@ const DetailDialog = ({ open, onClose, formData, title, titleTab, titleTab2, fie
   const dataFieldsView = (
     <Grid container spacing={2}>
       {fields
-        .filter(field => field.name !== 'cod_contato' && field.name !== 'cod_usuario' && field.name !== 'cod_empresa') 
+        .filter(field => field.name !== 'cod_contato' && field.name !== 'cod_usuario' && field.name !== 'cod_empresa')
         .map(field => renderMaskedField(field, formData?.[field.name]))}
     </Grid>
   );

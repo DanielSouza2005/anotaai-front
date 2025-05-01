@@ -17,10 +17,10 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import React, { useCallback, useEffect, useState } from 'react';
-import CreateDialog from '../../components/utils/CreateDialog';
-import DetailDialog from '../../components/utils/DetailDialog';
-import EditDialog from '../../components/utils/EditDialog';
-import SearchBar from '../../components/utils/SearchBar';
+import CreateDialog from '../../components/utils/dialogs/CreateDialog';
+import DetailDialog from '../../components/utils/dialogs/DetailDialog';
+import EditDialog from '../../components/utils/dialogs/EditDialog';
+import SearchBar from '../../components/search/SearchBar';
 import api from '../../services/api/api';
 import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, enderecoFields, searchContatoFields } from './contatoFields';
 import { contatoValidationSchema } from './contatoValidation';

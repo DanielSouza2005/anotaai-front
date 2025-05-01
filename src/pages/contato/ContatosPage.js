@@ -24,6 +24,7 @@ import SearchBar from '../../components/utils/SearchBar';
 import api from '../../services/api/api';
 import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, enderecoFields, searchContatoFields } from './contatoFields';
 import { contatoValidationSchema } from './contatoValidation';
+import { toast } from 'react-toastify';
 
 const ContatosPage = () => {
 
@@ -85,7 +86,9 @@ const ContatosPage = () => {
         try {
             await api.delete(`/contato/${selectedRowId}`);
             fetchContatos();
+            toast.success("Contato excluído com sucesso!");
         } catch (error) {
+            toast.error("Erro ao excluir contato.");
             console.error("Erro ao excluir contato:", error);
         }
         handleMenuClose();
@@ -95,6 +98,7 @@ const ContatosPage = () => {
         try {
             await api.put(`/contato`, values);
             fetchContatos();
+            toast.success("Contato atualizado com sucesso!");
             setEditDialogOpen(false);
         } catch (error) {
             if (error.response && error.response.data) {
@@ -116,11 +120,11 @@ const ContatosPage = () => {
 
                     setErrors(formikErrors);
                 } else {
-                    alert(apiErrors.message || "Erro inesperado ao criar contato.");
+                    alert(apiErrors.message || "Erro inesperado ao atualizar contato.");
                     console.error("Erro da API:", error.response.data);
                 }
             } else {
-                alert("Erro ao criar contato. Tente novamente.");
+                toast.error("Erro ao atualizar contato.");
             }
         } finally {
             setSubmitting(false);
@@ -136,6 +140,7 @@ const ContatosPage = () => {
         try {
             await api.post('/contato', values);
             fetchContatos();
+            toast.success("Contato incluído com sucesso!");
             setCreateDialogOpen(false);
         } catch (error) {
             if (error.response && error.response.data) {

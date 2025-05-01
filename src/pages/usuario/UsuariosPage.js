@@ -137,6 +137,18 @@ const UsuariosPage = () => {
                         disableRowSelectionOnClick
                         localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                         onRowDoubleClick={handleRowDoubleClick}
+                        getRowClassName={(params) => params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'}
+                        sx={{
+                            '& .even': {
+                                backgroundColor: '#f3f3f3',
+                            },
+                            '& .odd': {
+                                backgroundColor: '#ffffff',
+                            },
+                            '& .MuiDataGrid-row:hover': {
+                                backgroundColor: '#e3f2fd',
+                            }
+                        }}
                     />
                 </Box>
             </Paper>

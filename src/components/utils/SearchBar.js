@@ -1,26 +1,31 @@
-import {
-    Search as SearchIcon
-} from '@mui/icons-material';
-import { InputAdornment, TextField } from "@mui/material";
+import { Box, MenuItem, TextField } from "@mui/material";
 
-const SearchBar = ({ value, onChange }) => {
+const SearchBar = ({ value, fieldsAvailable, fieldSelected, onFieldChange, onChange }) => {
     return (
-        <TextField
-            placeholder="Pesquisar..."
-            variant="outlined"
-            size="small"
-            fullWidth
-            value={value}
-            onChange={onChange}
-            sx={{ mb: 2, maxWidth: 400 }}
-            InputProps={{
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <SearchIcon />
-                    </InputAdornment>
-                ),
-            }}
-        />
+        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField
+                select
+                label="Campo"
+                value={fieldSelected}
+                onChange={onFieldChange}
+                size="small"
+                sx={{ minWidth: 200 }}
+            >
+                {fieldsAvailable.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                ))}
+            </TextField>
+
+            <TextField
+                label="Pesquisar"
+                value={value}
+                onChange={onChange}
+                size="small"
+                fullWidth
+            />
+        </Box>
     );
 }
 

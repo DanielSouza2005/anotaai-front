@@ -16,18 +16,19 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CreateDialog from '../../components/utils/CreateDialog';
 import DetailDialog from '../../components/utils/DetailDialog';
 import EditDialog from '../../components/utils/EditDialog';
 import SearchBar from '../../components/utils/SearchBar';
 import api from '../../services/api/api';
-import { addContatoEnderecoFields, addContatoFields, contatoFields, enderecoFields } from './contatoFields';
+import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, enderecoFields, searchContatoFields } from './contatoFields';
 import { contatoValidationSchema } from './contatoValidation';
 
 const ContatosPage = () => {
 
     const [search, setSearch] = useState('');
+    const [searchField, setSearchField] = useState('nome');
     const [rows, setRows] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ const ContatosPage = () => {
 
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
-    const fetchContatos = async () => {
+    const fetchContatos = useCallback(async () => {
         setLoading(true);
         try {
             const response = await api.get(`/contato?page=${page}&size=${pageSize}`);
@@ -57,26 +58,11 @@ const ContatosPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, pageSize]);
 
     useEffect(() => {
         fetchContatos();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, pageSize, search]);
-
-    const handleSearchChange = (e) => {
-        setSearch(e.target.value);
-        setPage(0);
-    };
-
-    const handlePageChange = (newPage) => {
-        setPage(newPage);
-    };
-
-    const handlePageSizeChange = (newPageSize) => {
-        setPageSize(newPageSize);
-        setPage(0);
-    };
+    }, [page, pageSize, search, fetchContatos]);
 
     const handleMenuOpen = (event, rowId) => {
         setAnchorEl(event.currentTarget);
@@ -130,7 +116,6 @@ const ContatosPage = () => {
 
                     setErrors(formikErrors);
                 } else {
-                    // fallback genérico para erros não padronizados
                     alert(apiErrors.message || "Erro inesperado ao criar contato.");
                     console.error("Erro da API:", error.response.data);
                 }
@@ -149,7 +134,6 @@ const ContatosPage = () => {
 
     const handleCreate = async (values, { setSubmitting, setErrors }) => {
         try {
-            console.log(values);
             await api.post('/contato', values);
             fetchContatos();
             setCreateDialogOpen(false);
@@ -173,7 +157,6 @@ const ContatosPage = () => {
 
                     setErrors(formikErrors);
                 } else {
-                    // fallback genérico para erros não padronizados
                     alert(apiErrors.message || "Erro inesperado ao criar contato.");
                     console.error("Erro da API:", error.response.data);
                 }
@@ -191,7 +174,7 @@ const ContatosPage = () => {
     };
 
     const filteredRows = rows.filter((row) =>
-        row.nome.toLowerCase().includes(search.toLowerCase())
+        row[searchField]?.toString().toLowerCase().includes(search.toLowerCase())
     );
 
     const columns = [
@@ -227,26 +210,43 @@ const ContatosPage = () => {
 
             <SearchBar
                 value={search}
+                fieldSelected={searchField}
+                fieldsAvailable={searchContatoFields}
                 onChange={(e) => setSearch(String(e.target.value))}
+                onFieldChange={(e) => setSearchField(e.target.value)}
             />
 
             <Paper elevation={1}>
                 <Box sx={{ height: 400 }}>
                     <DataGrid
-                        rows={rows}
+                        rows={filteredRows}
                         columns={columns}
                         loading={loading}
                         rowCount={totalRows}
                         paginationMode="server"
-                        pagination
-                        page={page}
-                        pageSize={pageSize}
-                        onPageChange={handlePageChange}
-                        onPageSizeChange={handlePageSizeChange}
+                        paginationModel={{ page, pageSize }}
+                        onPaginationModelChange={(model) => {
+                            setPage(model.page);
+                            setPageSize(model.pageSize);
+                        }}
                         disableRowSelectionOnClick
                         localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                         onRowDoubleClick={handleRowDoubleClick}
                         getRowId={(row) => row.cod_contato}
+                        getRowClassName={(params) =>
+                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                        }
+                        sx={{
+                            '& .even': {
+                                backgroundColor: '#f3f3f3',
+                            },
+                            '& .odd': {
+                                backgroundColor: '#ffffff',
+                            },
+                            '& .MuiDataGrid-row:hover': {
+                                backgroundColor: '#e3f2fd',
+                            },
+                        }}
                     />
                 </Box>
             </Paper>
@@ -309,8 +309,8 @@ const ContatosPage = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
-                fields={addContatoFields}
-                enderecoFields={addContatoEnderecoFields}
+                fields={editContatoFields}
+                enderecoFields={editContatoEnderecoFields}
                 title="Editar Contato"
                 titleTab={"Contato"}
                 titleTab2={"Endereço"}

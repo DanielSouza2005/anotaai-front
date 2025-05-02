@@ -9,17 +9,18 @@ import {
   TextField
 } from '@mui/material';
 import React, { useState } from 'react';
-import { formatValue } from '../Masks';
+import { formatValue } from '../../../utils/Masks';
 
 const renderMaskedField = (field, value) => {
   let displayValue = value;
 
   displayValue = formatValue(field, displayValue);
 
-  const fullWidthField = field.type === 'textarea';
-
   return (
-    <Grid item xs={12} sm={fullWidthField ? 12 : 6} key={field.name}>
+    <Grid item
+      sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
+      key={field.name}
+    >
       <TextField
         label={field.label}
         value={displayValue}

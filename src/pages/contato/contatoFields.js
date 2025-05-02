@@ -1,3 +1,12 @@
+const gridContatoColumns = [
+    { field: 'nome', headerName: 'Nome', flex: 1 },
+    { field: 'email_pessoal', headerName: 'E-mail Pessoal', flex: 1 },
+    { field: 'celular', headerName: 'Celular', flex: 1 },
+    { field: 'telefone', headerName: 'Telefone', flex: 1 },
+    { field: 'cargo', headerName: 'Cargo', flex: 1 },
+    { field: 'departamento', headerName: 'Departamento', flex: 1 },
+];
+
 const contatoFields = [
     { name: 'nome', label: 'Nome', type: 'text' },
     { name: 'cpf', label: 'CPF', type: 'text' },
@@ -77,22 +86,22 @@ const editContatoEnderecoFields = [
 ];
 
 const searchContatoFields = [
-    { value: 'nome', label: 'Nome' },
-    { value: 'cpf', label: 'CPF' },
-    { value: 'celular', label: 'Celular' },
-    { value: 'telefone', label: 'Telefone' },
-    { value: 'telefone2', label: 'Telefone 2' },
-    { value: 'email_pessoal', label: 'E-mail Pessoal'},
-    { value: 'email_corp', label: 'E-mail Corporativo' },
-    { value: 'cargo', label: 'Cargo' },
-    { value: 'departamento', label: 'Departamento' },
-    { value: 'cod_empresa', label: 'Empresa' },
-    { value: 'obs', label: 'Observações' },
+    { name: 'nome', label: 'Nome' },
+    { name: 'cpf', label: 'CPF' },
+    { name: 'celular', label: 'Celular' },
+    { name: 'telefone', label: 'Telefone' },
+    { name: 'telefone2', label: 'Telefone 2' },
+    { name: 'email_pessoal', label: 'E-mail Pessoal' },
+    { name: 'email_corp', label: 'E-mail Corporativo' },
+    { name: 'cargo', label: 'Cargo' },
+    { name: 'departamento', label: 'Departamento' },
+    { name: 'cod_empresa', label: 'Empresa' },
+    { name: 'obs', label: 'Observações' },
 ];
 
 export {
     contatoFields, enderecoFields,
     addContatoFields, addContatoEnderecoFields,
     editContatoFields, editContatoEnderecoFields,
-    searchContatoFields
+    searchContatoFields, gridContatoColumns
 };

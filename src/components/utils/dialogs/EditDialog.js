@@ -11,8 +11,8 @@ import {
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import convertEmptyStringsToNull from '../FieldCleaner';
-import { fetchEnderecoByCEP } from '../cepUtils';
+import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
+import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 
 const EditDialog = ({
   open,
@@ -35,12 +35,16 @@ const EditDialog = ({
     const isReadOnly = field.readonly === true;
 
     return (
-      <Grid item xs={12} sm={field.type === 'textarea' ? 12 : 6} key={fullName}>
+      <Grid
+        key={fullName}
+        sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
+      >
         <Field
           name={fullName}
           as={TextField}
           label={field.label}
           fullWidth
+          value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
           rows={field.type === 'textarea' ? 3 : 1}
           type={field.type === 'email' ? 'email' : field.type === 'date' ? 'date' : 'text'}
@@ -81,7 +85,7 @@ const EditDialog = ({
         enableReinitialize
         onSubmit={(values, formikBag) => {
           const cleanValues = convertEmptyStringsToNull(values);
-          onSave(cleanValues, formikBag); 
+          onSave(cleanValues, formikBag);
         }}
       >
         {({ values, errors, touched, setFieldValue }) => (
@@ -99,7 +103,7 @@ const EditDialog = ({
               </Tabs>
 
               {tabIndex === 0 && (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} columns={12}>
                   {fields.map(field =>
                     renderField(field, values, errors, touched, setFieldValue)
                   )}
@@ -107,7 +111,7 @@ const EditDialog = ({
               )}
 
               {tabIndex === 1 && (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} columns={12}>
                   {enderecoFields.map(field =>
                     renderField(field, values, errors, touched, setFieldValue, 'endereco')
                   )}

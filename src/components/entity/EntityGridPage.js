@@ -226,7 +226,7 @@ const EntityGridPage = ({
             />
 
             <Paper elevation={1}>
-                <Box sx={{ height: 400 }}>
+                <Box sx={{ height: 500 }}>
                     <DataGrid
                         rows={filteredRows}
                         columns={columnsWithActions}

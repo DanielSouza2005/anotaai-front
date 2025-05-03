@@ -55,7 +55,7 @@ const EntityGridPage = ({
             setRows(data.content);
             setTotalRows(data.totalElements);
         } catch (err) {
-            toast.error('Erro ao buscar dados.');
+            toast.error('Erro ao buscar dados.' + err);
         } finally {
             setLoading(false);
         }
@@ -147,11 +147,10 @@ const EntityGridPage = ({
 
                     setErrors(formikErrors);
                 } else {
-                    alert(apiErrors.message || `Erro inesperado ao criar ${entityName}.`);
-                    console.error("Erro da API:", error.response.data);
+                    toast.error(apiErrors.message || `Erro inesperado ao criar ${entityName}.`);
                 }
             } else {
-                alert(`Erro ao criar ${entityName}. Tente novamente.`);
+                toast.error(`Erro ao criar ${entityName}. Tente novamente.`);
             }
         } finally {
             setSubmitting(false);
@@ -184,8 +183,7 @@ const EntityGridPage = ({
 
                     setErrors(formikErrors);
                 } else {
-                    alert(apiErrors.message || `Erro inesperado ao atualizar ${entityName}.`);
-                    console.error("Erro da API:", error.response.data);
+                    toast.error(apiErrors.message || `Erro inesperado ao atualizar ${entityName}.`);
                 }
             } else {
                 toast.error(`Erro ao atualizar ${entityName}.`);
@@ -201,8 +199,7 @@ const EntityGridPage = ({
             fetchData();
             toast.success(`${capitalizeFirstLetter(entityName)} excluído(a) com sucesso!`);
         } catch (error) {
-            toast.error(`Erro ao excluir ${entityName}.`);
-            console.error(`Erro ao excluir ${entityName}:`, error);
+            toast.error(`Erro ao excluir ${entityName}.` + error);
         }
         handleMenuClose();
     };

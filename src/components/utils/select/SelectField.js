@@ -3,6 +3,7 @@ import { Field } from 'formik';
 import React, { useEffect, useState } from 'react';
 import api from '../../../services/api/api';
 import { getEntityIdKey } from '../../../utils/entityUtils';
+import { toast } from 'react-toastify';
 
 const SelectField = ({ name, label, source, displayField = 'nome', error, touched }) => {
     const [options, setOptions] = useState([]);
@@ -13,7 +14,7 @@ const SelectField = ({ name, label, source, displayField = 'nome', error, touche
                 const { data } = await api.get(`/${source}?size=100000&page=0`);
                 setOptions(data.content);
             } catch (err) {
-                console.error(`Erro ao buscar dados de ${source}:`, err);
+                toast.error(`Erro ao buscar dados de ${source}:` + err);
             }
         };
 

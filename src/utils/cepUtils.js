@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 /**
  * Consulta a API ViaCEP e retorna os dados de endereço.
@@ -18,7 +19,7 @@ export const fetchEnderecoByCEP = async (cep) => {
 
     return { logradouro, bairro, cidade, uf, complemento };
   } catch (error) {
-    console.error('Erro ao buscar CEP:', error);
+    toast.error('Erro ao buscar CEP:' + error);
     return null;
   }
 };

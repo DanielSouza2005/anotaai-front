@@ -17,3 +17,4 @@ Este projeto foi desenvolvido como parte da matéria de Tópicos Integradores do
 - 👤 `Gestão de Usuários`: Administração dos usuários do sistema.
 - ✅ `Validações`: Validação de dados no front-end para garantir a integridade das requisições com Formik e Yup.
 - 🔗 `Conexão com API`: Uso da biblioteca Axios para enviar requisições à API do back-end, como login, cadastro de contatos e empresas, e manipulação de dados.
+- 🔔 `Notificações`: Uso do React Toastify para notificar o usuário.

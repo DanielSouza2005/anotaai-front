@@ -1,11 +1,9 @@
 const gridContatoColumns = [
     { field: 'nome', headerName: 'Nome', flex: 1 },
     { field: 'email_pessoal', headerName: 'E-mail Pessoal', flex: 1 },
-    { field: 'cod_empresa', headerName: 'Empresa (Código)', flex: 1 },
     { field: 'celular', headerName: 'Celular', flex: 1 },
     { field: 'telefone', headerName: 'Telefone', flex: 1 },
-    { field: 'cargo', headerName: 'Cargo', flex: 1 },
-    { field: 'departamento', headerName: 'Departamento', flex: 1 },
+    { field: 'cod_empresa', headerName: 'Empresa (Código)', flex: 1 },
 ];
 
 const contatoFields = [

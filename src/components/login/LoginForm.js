@@ -20,9 +20,11 @@ import {
 import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
 import { useAuth } from '../../context/auth/AuthContext';
+import HealthButton from '../healthButton/HealthButton.js';
 
 const LoginForm = () => {
 
@@ -45,13 +47,13 @@ const LoginForm = () => {
         event.preventDefault();
 
         if (!email || !pass) {
-            alert("Por favor, preencha todos os campos.");
+            toast.error('Por favor, preencha todos os campos.');
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert("Por favor, insira um e-mail válido.");
+            toast.error('Por favor, insira um e-mail válido.');
             return;
         }
 
@@ -60,8 +62,8 @@ const LoginForm = () => {
             navigate('/dashboard/contatos');
         }
         catch (err) {
-            // console.error(err);
-            alert("Login Inválido!");
+            toast.error('Login Inválido!');
+            console.error(err);
         }
     };
 
@@ -236,6 +238,8 @@ const LoginForm = () => {
                     </Box>
                 </Paper>
             </Container>
+
+            <HealthButton />
         </Box>
     )
 }

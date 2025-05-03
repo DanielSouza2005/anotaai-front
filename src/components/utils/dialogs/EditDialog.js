@@ -21,9 +21,9 @@ const EditDialog = ({
   formData = {},
   fields,
   enderecoFields,
-  title = 'Editar Contato',
-  titleTab = 'Contato',
-  titleTab2 = 'Endereço',
+  title,
+  titleTab,
+  titleTab2,
   validationSchema
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -33,6 +33,7 @@ const EditDialog = ({
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
     const isReadOnly = field.readonly === true;
+    const fieldType = field.type;
 
     return (
       <Grid
@@ -47,7 +48,7 @@ const EditDialog = ({
           value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
           rows={field.type === 'textarea' ? 3 : 1}
-          type={field.type === 'email' ? 'email' : field.type === 'date' ? 'date' : 'text'}
+          type={fieldType}
           margin="dense"
           error={Boolean(isTouched && error)}
           helperText={isTouched && error}
@@ -112,9 +113,10 @@ const EditDialog = ({
 
               {tabIndex === 1 && (
                 <Grid container spacing={2} columns={12}>
-                  {enderecoFields.map(field =>
-                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                  )}
+                  {formData?.endereco &&
+                    enderecoFields.map(field =>
+                      renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                    )}
                 </Grid>
               )}
             </DialogContent>

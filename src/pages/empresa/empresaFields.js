@@ -6,6 +6,7 @@ const gridEmpresaFields = [
 ];
 
 const empresaFields = [
+    { name: 'cod_empresa', label: 'Código (Empresa)', type: 'text' },
     { name: 'razao', label: 'Razão Social', type: 'text' },
     { name: 'fantasia', label: 'Fantasia', type: 'text' },
     { name: 'cnpj', label: 'CNPJ', type: 'text' },
@@ -44,6 +45,7 @@ const addEmpresaEnderecoFields = [
 ];
 
 const editEmpresaFields = [
+    { name: 'cod_empresa', label: 'Código (Empresa)', type: 'text', readonly: true },
     { name: 'razao', label: 'Razão Social', type: 'text' },
     { name: 'fantasia', label: 'Fantasia', type: 'text' },
     { name: 'cnpj', label: 'CNPJ', type: 'text' },

@@ -30,7 +30,8 @@ const EntityGridPage = ({
     titleTab,
     titleTab2,
     searchFields,
-    validationSchema
+    validationSchema,
+    editValidationSchema
 }) => {
     const [search, setSearch] = useState('');
     const [searchField, setSearchField] = useState(searchFields?.[0]?.name || '');
@@ -321,7 +322,7 @@ const EntityGridPage = ({
                 title={editDialogTitle}
                 titleTab={titleTab}
                 titleTab2={titleTab2}
-                validationSchema={validationSchema}
+                validationSchema={editValidationSchema ? editValidationSchema : validationSchema}
             />
 
             <DetailDialog

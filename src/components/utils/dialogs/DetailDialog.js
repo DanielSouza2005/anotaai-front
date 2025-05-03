@@ -13,7 +13,6 @@ import { formatValue } from '../../../utils/Masks';
 
 const renderMaskedField = (field, value) => {
   let displayValue = value;
-
   displayValue = formatValue(field, displayValue);
 
   return (
@@ -53,7 +52,10 @@ const DetailDialog = ({ open, onClose, formData, title, titleTab, titleTab2, fie
 
   const enderecoFieldsView = (
     <Grid container spacing={2}>
-      {enderecoFields.map(field => renderMaskedField(field, formData?.endereco?.[field.name]))}
+      {formData?.endereco
+        && enderecoFields.map(field =>
+          renderMaskedField(field, formData.endereco?.[field.name])
+        )}
     </Grid>
   );
 

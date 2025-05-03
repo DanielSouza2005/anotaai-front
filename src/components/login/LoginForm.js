@@ -62,8 +62,7 @@ const LoginForm = () => {
             navigate('/dashboard/contatos');
         }
         catch (err) {
-            toast.error('Login Inválido!');
-            console.error(err);
+            toast.error('Login Inválido!' + err);
         }
     };
 

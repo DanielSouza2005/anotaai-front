@@ -13,6 +13,7 @@ import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
+import SelectField from '../select/SelectField';
 
 const CreateDialog = ({
   open,
@@ -40,7 +41,21 @@ const CreateDialog = ({
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
-    const fieldType = field.type;
+
+    if (field.type === 'select' && field.source) {
+      return (
+        <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
+          <SelectField
+            name={fullName}
+            label={field.label}
+            source={field.source}
+            displayField={field.displayField}
+            error={error}
+            touched={isTouched}
+          />
+        </Grid>
+      );
+    }
 
     return (
       <Grid
@@ -55,7 +70,7 @@ const CreateDialog = ({
           value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
           rows={field.type === 'textarea' ? 3 : 1}
-          type={fieldType}
+          type={field.type}
           margin="dense"
           error={Boolean(isTouched && error)}
           helperText={isTouched && error}
@@ -112,10 +127,9 @@ const CreateDialog = ({
 
               {tabIndex === 1 && (
                 <Grid container spacing={2} columns={12}>
-                  {formData?.endereco &&
-                    enderecoFields.map(field =>
-                      renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                    )}
+                  {enderecoFields.map(field =>
+                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                  )}
                 </Grid>
               )}
             </DialogContent>

@@ -13,6 +13,7 @@ import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
+import SelectField from '../select/SelectField';
 
 const EditDialog = ({
   open,
@@ -28,12 +29,34 @@ const EditDialog = ({
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
 
+  const initialValues = {
+    ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
+    endereco: enderecoFields.reduce((acc, f) => ({
+      ...acc,
+      [f.name]: formData?.endereco?.[f.name] || '',
+    }), {}),
+  };
+
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
     const isReadOnly = field.readonly === true;
-    const fieldType = field.type;
+
+    if (field.type === 'select' && field.source) {
+      return (
+        <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
+          <SelectField
+            name={fullName}
+            label={field.label}
+            source={field.source}
+            displayField={field.displayField}
+            error={error}
+            touched={isTouched}
+          />
+        </Grid>
+      );
+    }
 
     return (
       <Grid
@@ -48,7 +71,7 @@ const EditDialog = ({
           value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
           rows={field.type === 'textarea' ? 3 : 1}
-          type={fieldType}
+          type={field.type}
           margin="dense"
           error={Boolean(isTouched && error)}
           helperText={isTouched && error}
@@ -81,7 +104,7 @@ const EditDialog = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <Formik
-        initialValues={formData}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         enableReinitialize
         onSubmit={(values, formikBag) => {
@@ -113,10 +136,9 @@ const EditDialog = ({
 
               {tabIndex === 1 && (
                 <Grid container spacing={2} columns={12}>
-                  {formData?.endereco &&
-                    enderecoFields.map(field =>
-                      renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                    )}
+                  {enderecoFields.map(field =>
+                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                  )}
                 </Grid>
               )}
             </DialogContent>

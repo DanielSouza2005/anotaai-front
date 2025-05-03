@@ -12,13 +12,17 @@ import React, { useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
 
 const renderMaskedField = (field, value) => {
-  let displayValue = value;
-  displayValue = formatValue(field, displayValue);
+  let displayValue = formatValue(field, value ?? '');
+
+  if (field.type === 'select' && Array.isArray(field.options)) {
+    const option = field.options.find(opt => opt.value === value);
+    displayValue = option?.label ?? value;
+  }
 
   return (
-    <Grid item
-      sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
+    <Grid
       key={field.name}
+      sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
     >
       <TextField
         label={field.label}
@@ -39,37 +43,46 @@ const renderMaskedField = (field, value) => {
   );
 };
 
-const DetailDialog = ({ open, onClose, formData, title, titleTab, titleTab2, fields = [], enderecoFields = [] }) => {
+const DetailDialog = ({
+  open,
+  onClose,
+  formData,
+  title,
+  titleTab,
+  titleTab2,
+  fields = [],
+  enderecoFields = [],
+}) => {
   const [tabIndex, setTabIndex] = useState(0);
 
-  const dataFieldsView = (
-    <Grid container spacing={2}>
-      {fields
-        .filter(field => field.name !== 'cod_contato' && field.name !== 'cod_usuario' && field.name !== 'cod_empresa')
-        .map(field => renderMaskedField(field, formData?.[field.name]))}
-    </Grid>
+  const filteredFields = fields.filter(
+    f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
   );
 
-  const enderecoFieldsView = (
-    <Grid container spacing={2}>
-      {formData?.endereco
-        && enderecoFields.map(field =>
-          renderMaskedField(field, formData.endereco?.[field.name])
-        )}
+  const renderFields = (fieldList, data = {}) => (
+    <Grid container spacing={2} columns={12}>
+      {fieldList.map(field =>
+        renderMaskedField(field, data?.[field.name])
+      )}
     </Grid>
   );
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <Tabs value={tabIndex} onChange={(_, newIndex) => setTabIndex(newIndex)} sx={{ mb: 2 }}>
+      <DialogContent dividers>
+        <Tabs
+          value={tabIndex}
+          onChange={(_, newIndex) => setTabIndex(newIndex)}
+          sx={{ mb: 2 }}
+        >
           <Tab label={titleTab} />
           <Tab label={titleTab2} />
         </Tabs>
+
         <Box>
-          {tabIndex === 0 && dataFieldsView}
-          {tabIndex === 1 && enderecoFieldsView}
+          {tabIndex === 0 && renderFields(filteredFields, formData)}
+          {tabIndex === 1 && renderFields(enderecoFields, formData?.endereco)}
         </Box>
       </DialogContent>
     </Dialog>

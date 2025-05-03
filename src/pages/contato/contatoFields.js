@@ -1,6 +1,7 @@
 const gridContatoColumns = [
     { field: 'nome', headerName: 'Nome', flex: 1 },
     { field: 'email_pessoal', headerName: 'E-mail Pessoal', flex: 1 },
+    { field: 'cod_empresa', headerName: 'Empresa (Código)', flex: 1 },
     { field: 'celular', headerName: 'Celular', flex: 1 },
     { field: 'telefone', headerName: 'Telefone', flex: 1 },
     { field: 'cargo', headerName: 'Cargo', flex: 1 },
@@ -36,7 +37,7 @@ const enderecoFields = [
 
 const addContatoFields = [
     { name: 'nome', label: 'Nome', type: 'text' },
-    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'text' },
+    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'select', source: 'empresa', displayField: 'razao' },
     { name: 'cpf', label: 'CPF', type: 'text' },
     { name: 'celular', label: 'Celular', type: 'text' },
     { name: 'telefone', label: 'Telefone', type: 'text' },
@@ -62,7 +63,7 @@ const addContatoEnderecoFields = [
 const editContatoFields = [
     { name: 'cod_contato', label: 'Contato (Código)', type: 'text', readonly: true },
     { name: 'nome', label: 'Nome', type: 'text' },
-    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'text' },
+    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'select', source: 'empresa', displayField: 'razao' },
     { name: 'cpf', label: 'CPF', type: 'text' },
     { name: 'celular', label: 'Celular', type: 'text' },
     { name: 'telefone', label: 'Telefone', type: 'text' },

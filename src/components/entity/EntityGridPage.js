@@ -4,15 +4,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Box, Fab, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../services/api/api';
+import { capitalizeFirstLetter } from '../../utils/capitalize';
+import { getEntityIdKey } from '../../utils/entityUtils';
 import SearchBar from '../search/SearchBar';
 import CreateDialog from '../utils/dialogs/CreateDialog';
 import DetailDialog from '../utils/dialogs/DetailDialog';
 import EditDialog from '../utils/dialogs/EditDialog';
-import { capitalizeFirstLetter } from '../../utils/capitalize';
-import { getEntityIdKey } from '../../utils/entityUtils';
+import { formatValue } from '../../utils/Masks';
 
 const EntityGridPage = ({
     entityName,
@@ -67,7 +68,11 @@ const EntityGridPage = ({
 
     const columnsWithActions = useMemo(() => {
         const hasAcoes = columns.some(col => col.field === 'acoes');
-        const newColumns = [...columns];
+
+        const newColumns = columns.map(col => ({
+            ...col,
+            valueFormatter: col.valueFormatter || ((params) => formatValue(col, params))
+        }));
 
         if (!hasAcoes) {
             newColumns.push({
@@ -123,7 +128,29 @@ const EntityGridPage = ({
 
     const handleCreate = async (values, { setSubmitting, setErrors }) => {
         try {
-            await api.post(`/${entityName}`, values);
+            if (entityName === "contato" || entityName === "usuario") {
+                const formData = new FormData();
+                const { foto, ...dados } = values;
+
+                formData.append(
+                    'dados',
+                    new Blob([JSON.stringify(dados.dados)], { type: 'application/json' })
+                );
+
+                if (foto) {
+                    formData.append('foto', foto);
+                }
+
+                await api.post(`/${entityName}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            }
+            else {
+                await api.post(`/${entityName}`, values);
+            }
+
             fetchData();
             toast.success(`${capitalizeFirstLetter(entityName)} incluído(a) com sucesso!`);
             setOpenAddDialog(false);
@@ -159,7 +186,29 @@ const EntityGridPage = ({
 
     const handleEdit = async (values, { setSubmitting, setErrors }) => {
         try {
-            await api.put(`/${entityName}`, values);
+            if (entityName === "contato" || entityName === "usuario") {
+                const formData = new FormData();
+                const { foto, ...dados } = values;
+
+                formData.append(
+                    'dados',
+                    new Blob([JSON.stringify(dados.dados)], { type: 'application/json' })
+                );
+
+                if (foto) {
+                    formData.append('foto', foto);
+                }
+
+                await api.put(`/${entityName}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+            }
+            else {
+                await api.put(`/${entityName}`, values);
+            }
+
             fetchData();
             toast.success(`${capitalizeFirstLetter(entityName)} atualizado(a) com sucesso!`);
             setOpenEditDialog(false);
@@ -301,6 +350,7 @@ const EntityGridPage = ({
                 titleTab={titleTab}
                 titleTab2={titleTab2}
                 validationSchema={validationSchema}
+                entity={entityName}
             />
 
             <EditDialog
@@ -320,6 +370,7 @@ const EntityGridPage = ({
                 titleTab={titleTab}
                 titleTab2={titleTab2}
                 validationSchema={editValidationSchema ? editValidationSchema : validationSchema}
+                entity={entityName}
             />
 
             <DetailDialog

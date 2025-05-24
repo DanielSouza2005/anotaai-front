@@ -8,7 +8,7 @@ import {
   Tabs,
   TextField
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
 
 const renderMaskedField = (field, value) => {

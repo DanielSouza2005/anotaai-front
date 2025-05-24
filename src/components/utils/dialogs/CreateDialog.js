@@ -10,7 +10,7 @@ import {
   TextField
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import SelectField from '../select/SelectField';
@@ -25,7 +25,8 @@ const CreateDialog = ({
   title,
   titleTab,
   titleTab2,
-  validationSchema
+  validationSchema,
+  entity
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -35,6 +36,7 @@ const CreateDialog = ({
       ...acc,
       [f.name]: formData?.endereco?.[f.name] || '',
     }), {}),
+    foto: null,
   };
 
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
@@ -99,8 +101,18 @@ const CreateDialog = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, formikBag) => {
-          const cleanValues = convertEmptyStringsToNull(values);
-          onCreate(cleanValues, formikBag);
+          if (entity === "contato" || entity === "usuario") {
+            const { foto, ...rest } = convertEmptyStringsToNull(values);
+            const payload = {
+              dados: rest,
+              foto: foto || null,
+            };
+            onCreate(payload, formikBag);
+          }
+          else {
+            let cleanValues = convertEmptyStringsToNull(values);
+            onCreate(cleanValues, formikBag);
+          }
         }}
       >
         {({ values, errors, touched, setFieldValue }) => (

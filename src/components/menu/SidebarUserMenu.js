@@ -28,6 +28,7 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                 >
                     <Avatar
                         alt={user.nome}
+                        src={user.foto || undefined}
                         sx={{
                             width: 40,
                             height: 40,
@@ -35,7 +36,7 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                             bgcolor: theme.palette.primary.main
                         }}
                     >
-                        {user.nome.charAt(0)}
+                        {!user.foto && user.nome?.charAt(0)}
                     </Avatar>
 
                     <Box sx={{ flex: 1, overflow: 'hidden' }}>

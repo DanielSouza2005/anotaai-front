@@ -1,4 +1,6 @@
 import {
+  Avatar,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -7,10 +9,11 @@ import {
   Grid,
   Tab,
   Tabs,
-  TextField
+  TextField,
+  Typography,
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import SelectField from '../select/SelectField';
@@ -26,9 +29,18 @@ const EditDialog = ({
   titleTab,
   titleTab2,
   validationSchema,
-  entity
+  entity,
+  usaFoto = false
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const fileInputRef = useRef();
+  const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
+  const [photo, setPhoto] = useState(null);
+
+  const hasEndereco = enderecoFields.length !== 0;
+  const hasFoto = usaFoto;
+  const enderecoTabIndex = hasEndereco ? 1 : -1;
+  const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -38,6 +50,22 @@ const EditDialog = ({
     }), {}),
     foto: null,
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewFotoUrl && previewFotoUrl !== formData?.foto) {
+        URL.revokeObjectURL(previewFotoUrl);
+      }
+    };
+  }, [previewFotoUrl, formData?.foto]);
+
+  useEffect(() => {
+    if (photo) {
+      const objectUrl = URL.createObjectURL(photo);
+      setPreviewFotoUrl(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [photo]);
 
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
@@ -111,14 +139,16 @@ const EditDialog = ({
         enableReinitialize
         onSubmit={(values, formikBag) => {
           if (entity === "contato" || entity === "usuario") {
-            const { foto, ...rest } = convertEmptyStringsToNull(values);
+            const { foto } = values;
+            const rest = convertEmptyStringsToNull(values);
+            delete rest.foto;
+
             const payload = {
               dados: rest,
               foto: foto || null,
             };
             onSave(payload, formikBag);
-          }
-          else {
+          } else {
             const cleanValues = convertEmptyStringsToNull(values);
             onSave(cleanValues, formikBag);
           }
@@ -135,7 +165,8 @@ const EditDialog = ({
                 sx={{ mb: 2 }}
               >
                 <Tab label={titleTab} />
-                <Tab label={titleTab2} />
+                {hasEndereco && <Tab label={titleTab2} />}
+                {hasFoto && <Tab label="Foto" />}
               </Tabs>
 
               {tabIndex === 0 && (
@@ -146,11 +177,69 @@ const EditDialog = ({
                 </Grid>
               )}
 
-              {tabIndex === 1 && (
+              {tabIndex === enderecoTabIndex && hasEndereco && (
                 <Grid container spacing={2} columns={12}>
                   {enderecoFields.map(field =>
                     renderField(field, values, errors, touched, setFieldValue, 'endereco')
                   )}
+                </Grid>
+              )}
+
+              {tabIndex === fotoTabIndex && hasFoto && (
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        {
+                          entity === "usuario" ?
+                            (
+                              <Avatar
+                                alt="Nova foto"
+                                src={previewFotoUrl}
+                                sx={{ width: 96, height: 96 }}
+                              />
+                            ) : (
+                              <Box mt={2}>
+                                <img
+                                  src={previewFotoUrl}
+                                  alt="Preview da Foto"
+                                  style={{ maxWidth: '100%', maxHeight: 200 }}
+                                />
+                              </Box>
+                            )
+                        }
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Button variant="outlined" component="label">
+                      Escolher nova foto
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={(event) => {
+                          const file = event.currentTarget.files[0];
+                          setFieldValue("foto", file);
+                          setPhoto(file);
+
+                          if (file) {
+                            const previewUrl = URL.createObjectURL(file);
+                            setPreviewFotoUrl(previewUrl);
+                          } else {
+                            setPreviewFotoUrl(null);
+                          }
+                        }}
+                      />
+                    </Button>
+                    {values.foto && (
+                      <Typography variant="body2" mt={1}>
+                        Arquivo selecionado: {values.foto.name}
+                      </Typography>
+                    )}
+                  </Grid>
                 </Grid>
               )}
             </DialogContent>

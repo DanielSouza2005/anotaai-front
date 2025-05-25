@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     const decoded = jwtDecode(token);
-                    setUser({ nome: decoded.nome, email: decoded.sub });
+                    setUser({ nome: decoded.nome, email: decoded.sub, foto: decoded.foto });
                 } catch (error) {
                     localStorage.removeItem('token');
                     setUser(null);
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token);
 
             const decoded = jwtDecode(token);
-            const userData = { nome: decoded.nome, email: decoded.sub };
+            const userData = { nome: decoded.nome, email: decoded.sub, foto: decoded.foto };
             setUser(userData);
         } catch (error) {
             throw new Error('Login inválido ' + error.response.data);

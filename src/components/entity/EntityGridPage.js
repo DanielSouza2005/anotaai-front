@@ -130,22 +130,18 @@ const EntityGridPage = ({
         try {
             if (entityName === "contato" || entityName === "usuario") {
                 const formData = new FormData();
-                const { foto, ...dados } = values;
+                const { foto, dados } = values;
 
                 formData.append(
                     'dados',
-                    new Blob([JSON.stringify(dados.dados)], { type: 'application/json' })
+                    new Blob([JSON.stringify(dados)], { type: 'application/json' })
                 );
 
                 if (foto) {
                     formData.append('foto', foto);
                 }
 
-                await api.post(`/${entityName}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
+                await api.post(`/${entityName}`, formData);
             }
             else {
                 await api.post(`/${entityName}`, values);
@@ -351,6 +347,7 @@ const EntityGridPage = ({
                 titleTab2={titleTab2}
                 validationSchema={validationSchema}
                 entity={entityName}
+                usaFoto={entityName === "contato" || entityName === "usuario"}
             />
 
             <EditDialog
@@ -371,6 +368,7 @@ const EntityGridPage = ({
                 titleTab2={titleTab2}
                 validationSchema={editValidationSchema ? editValidationSchema : validationSchema}
                 entity={entityName}
+                usaFoto={entityName === "contato" || entityName === "usuario"}
             />
 
             <DetailDialog
@@ -382,6 +380,7 @@ const EntityGridPage = ({
                 enderecoFields={detailEnderecoFields}
                 titleTab={titleTab}
                 titleTab2={titleTab2}
+                usaFoto={entityName === "contato" || entityName === "usuario"}
             />
 
         </Box>

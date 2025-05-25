@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -10,7 +11,7 @@ import {
   TextField
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import SelectField from '../select/SelectField';
@@ -26,9 +27,17 @@ const CreateDialog = ({
   titleTab,
   titleTab2,
   validationSchema,
-  entity
+  entity,
+  usaFoto = false
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [photo, setPhoto] = useState(null);
+
+  const hasEndereco = enderecoFields.length !== 0;
+  const hasFoto = usaFoto;
+  const enderecoTabIndex = hasEndereco ? 1 : -1;
+  const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -38,6 +47,22 @@ const CreateDialog = ({
     }), {}),
     foto: null,
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewImage) URL.revokeObjectURL(previewImage);
+    };
+  }, [previewImage]);
+
+  useEffect(() => {
+    if (photo) {
+      const objectUrl = URL.createObjectURL(photo);
+      setPreviewImage(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    } else {
+      setPreviewImage(null);
+    }
+  }, [photo]);
 
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
@@ -102,7 +127,10 @@ const CreateDialog = ({
         validationSchema={validationSchema}
         onSubmit={(values, formikBag) => {
           if (entity === "contato" || entity === "usuario") {
-            const { foto, ...rest } = convertEmptyStringsToNull(values);
+            const { foto } = values;
+            const rest = convertEmptyStringsToNull(values);
+            delete rest.foto;
+
             const payload = {
               dados: rest,
               foto: foto || null,
@@ -115,43 +143,92 @@ const CreateDialog = ({
           }
         }}
       >
-        {({ values, errors, touched, setFieldValue }) => (
-          <Form>
-            <DialogTitle>{title}</DialogTitle>
+        {({ values, errors, touched, setFieldValue }) => {
 
-            <DialogContent dividers>
-              <Tabs
-                value={tabIndex}
-                onChange={(_, newIndex) => setTabIndex(newIndex)}
-                sx={{ mb: 2 }}
-              >
-                <Tab label={titleTab} />
-                <Tab label={titleTab2} />
-              </Tabs>
+          const clearPhoto = () => {
+            setFieldValue('foto', null);
+            setPhoto(null);
+          };
 
-              {tabIndex === 0 && (
-                <Grid container spacing={2} columns={12}>
-                  {fields.map(field =>
-                    renderField(field, values, errors, touched, setFieldValue)
-                  )}
-                </Grid>
-              )}
+          return (
+            <Form>
+              <DialogTitle>{title}</DialogTitle>
 
-              {tabIndex === 1 && (
-                <Grid container spacing={2} columns={12}>
-                  {enderecoFields.map(field =>
-                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                  )}
-                </Grid>
-              )}
-            </DialogContent>
+              <DialogContent dividers>
+                <Tabs value={tabIndex} onChange={(_, newIndex) => setTabIndex(newIndex)}>
+                  <Tab label={titleTab} />
+                  {hasEndereco && <Tab label={titleTab2} />}
+                  {hasFoto && <Tab label="Foto" />}
+                </Tabs>
 
-            <DialogActions>
-              <Button onClick={onClose}>Cancelar</Button>
-              <Button variant="contained" type="submit">Criar</Button>
-            </DialogActions>
-          </Form>
-        )}
+                {tabIndex === 0 && (
+                  <Grid container spacing={2} columns={12}>
+                    {fields.map(field =>
+                      renderField(field, values, errors, touched, setFieldValue)
+                    )}
+                  </Grid>
+                )}
+
+                {tabIndex === enderecoTabIndex && hasEndereco && (
+                  <Grid container spacing={2} columns={12}>
+                    {enderecoFields.map(field =>
+                      renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                    )}
+                  </Grid>
+                )}
+
+                {tabIndex === fotoTabIndex && hasFoto && (
+                  <Grid container spacing={2} columns={12}>
+                    <Grid item xs={12}>
+                      <input
+                        accept="image/*"
+                        id="upload-photo"
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          if (e.currentTarget.files && e.currentTarget.files[0]) {
+                            const file = e.currentTarget.files[0];
+                            setFieldValue('foto', file);
+                            setPhoto(file);
+                          }
+                        }}
+                      />
+                      <label htmlFor="upload-photo">
+                        <Button variant="contained" component="span">
+                          Selecionar Foto
+                        </Button>
+                      </label>
+                      {values.foto && (
+                        <>
+                          <Button
+                            color="secondary"
+                            onClick={clearPhoto}
+                            sx={{ ml: 2 }}
+                          >
+                            Limpar Foto
+                          </Button>
+                          <Box mt={2}>
+                            <img
+                              src={previewImage}
+                              alt="Preview da Foto"
+                              style={{ maxWidth: '100%', maxHeight: 200 }}
+                            />
+                          </Box>
+                        </>
+                      )}
+                    </Grid>
+                  </Grid>
+                )}
+
+              </DialogContent>
+
+              <DialogActions>
+                <Button onClick={onClose}>Cancelar</Button>
+                <Button variant="contained" type="submit">Criar</Button>
+              </DialogActions>
+            </Form>
+          )
+        }}
       </Formik>
     </Dialog>
   );

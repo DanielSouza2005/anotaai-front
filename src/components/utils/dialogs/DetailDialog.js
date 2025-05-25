@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Dialog,
   DialogContent,
@@ -52,8 +53,14 @@ const DetailDialog = ({
   titleTab2,
   fields = [],
   enderecoFields = [],
+  entity,
+  usaFoto = false,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
+  const hasEndereco = enderecoFields.length !== 0;
+  const hasFoto = usaFoto;
+  const enderecoTabIndex = hasEndereco ? 1 : -1;
+  const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
 
   const filteredFields = fields.filter(
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
@@ -67,6 +74,8 @@ const DetailDialog = ({
     </Grid>
   );
 
+  const fotoUrl = formData?.foto || null;
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>{title}</DialogTitle>
@@ -77,12 +86,38 @@ const DetailDialog = ({
           sx={{ mb: 2 }}
         >
           <Tab label={titleTab} />
-          <Tab label={titleTab2} />
+          {hasEndereco && <Tab label={titleTab2} />}
+          {hasFoto && <Tab label="Foto" />}
         </Tabs>
 
         <Box>
           {tabIndex === 0 && renderFields(filteredFields, formData)}
-          {tabIndex === 1 && renderFields(enderecoFields, formData?.endereco)}
+          {tabIndex === enderecoTabIndex && hasEndereco && renderFields(enderecoFields, formData?.endereco)}
+          {tabIndex === fotoTabIndex && hasFoto && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Grid container spacing={2}>
+                  <Grid item>
+                    {entity === 'usuario' ? (
+                      <Avatar
+                        alt="Foto"
+                        src={fotoUrl}
+                        sx={{ width: 96, height: 96 }}
+                      />
+                    ) : (
+                      <Box mt={2}>
+                        <img
+                          src={fotoUrl}
+                          alt="Foto"
+                          style={{ maxWidth: '100%', maxHeight: 200 }}
+                        />
+                      </Box>
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
         </Box>
       </DialogContent>
     </Dialog>

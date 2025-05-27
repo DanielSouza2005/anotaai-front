@@ -155,7 +155,7 @@ const CreateDialog = ({
               <DialogTitle>{title}</DialogTitle>
 
               <DialogContent dividers>
-                <Tabs value={tabIndex} onChange={(_, newIndex) => setTabIndex(newIndex)}>
+                <Tabs value={tabIndex} sx={{ mb: 2 }} onChange={(_, newIndex) => setTabIndex(newIndex)}>
                   <Tab label={titleTab} />
                   {hasEndereco && <Tab label={titleTab2} />}
                   {hasFoto && <Tab label="Foto" />}

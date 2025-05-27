@@ -63,9 +63,14 @@ const EditDialog = ({
     if (photo) {
       const objectUrl = URL.createObjectURL(photo);
       setPreviewFotoUrl(objectUrl);
+
       return () => URL.revokeObjectURL(objectUrl);
+    } else if (formData?.foto && typeof formData.foto === "string") {
+      setPreviewFotoUrl(formData.foto);
+    } else {
+      setPreviewFotoUrl(null);
     }
-  }, [photo]);
+  }, [photo, formData?.foto]);
 
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
@@ -222,13 +227,14 @@ const EditDialog = ({
                         ref={fileInputRef}
                         onChange={(event) => {
                           const file = event.currentTarget.files[0];
-                          setFieldValue("foto", file);
-                          setPhoto(file);
-
                           if (file) {
+                            setFieldValue("foto", file);
+                            setPhoto(file);
                             const previewUrl = URL.createObjectURL(file);
                             setPreviewFotoUrl(previewUrl);
                           } else {
+                            setFieldValue("foto", null);
+                            setPhoto(null);
                             setPreviewFotoUrl(null);
                           }
                         }}

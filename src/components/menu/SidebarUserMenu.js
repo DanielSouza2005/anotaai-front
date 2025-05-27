@@ -64,6 +64,7 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                     <Box sx={{ p: 2, textAlign: 'center' }}>
                         <Avatar
                             alt={user.nome}
+                            src={user.foto || undefined}
                             sx={{
                                 width: 60,
                                 height: 60,
@@ -72,7 +73,7 @@ const UserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user }) => {
                                 bgcolor: theme.palette.primary.main
                             }}
                         >
-                            {user.nome.charAt(0)}
+                            {!user.foto && user.nome?.charAt(0)}
                         </Avatar>
                         <Typography variant="subtitle1" fontWeight="bold">{user.nome}</Typography>
                         <Typography variant="body2" color="text.secondary">{user.email}</Typography>

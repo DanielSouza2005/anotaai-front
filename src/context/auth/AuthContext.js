@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
             const userData = { nome: decoded.nome, email: decoded.sub, foto: decoded.foto };
             setUser(userData);
         } catch (error) {
-            throw new Error('Login inválido ' + error.response.data);
+            throw error.response?.data || 'Erro inesperado ao tentar fazer login.';
         }
     };
 

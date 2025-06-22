@@ -244,7 +244,7 @@ const EntityGridPage = ({
             fetchData();
             toast.success(`${capitalizeFirstLetter(entityName)} excluído(a) com sucesso!`);
         } catch (error) {
-            toast.error(`Erro ao excluir ${entityName}.` + error);
+            toast.error(`Erro ao excluir ${entityName}. ` + error.response.data);
         }
         handleMenuClose();
     };

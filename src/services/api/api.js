@@ -7,9 +7,11 @@ const api = axios.create({
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
 
-  if (!config.url.endsWith('/login') &&
+  const isAuthRequired = !config.url.endsWith('/login') &&
     !config.url.endsWith('/health') &&
-    token) {
+    token;
+
+  if (isAuthRequired) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -18,12 +20,24 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && (error.response.status === 403 || error.response.status === 401)) {
-      if (!window.location.href.endsWith("/") && !window.location.href.endsWith("/login")) {
+    const { response } = error;
+
+    if (response) {
+      const status = response.status;
+      const errorCode = response.headers['x-error-code']?.toUpperCase();
+      const isAuthError = status === 401 || status === 403;
+
+      const isHandled403 = errorCode === 'USUARIO_LOGADO_EXCLUSAO_BLOQUEADA';
+
+      const isNotOnLoginPage = !window.location.pathname.endsWith('/') &&
+        !window.location.pathname.endsWith('/login');
+
+      if (isAuthError && !isHandled403 && isNotOnLoginPage) {
         localStorage.removeItem('token');
         window.location.href = '/login';
       }
     }
+
     return Promise.reject(error);
   }
 );

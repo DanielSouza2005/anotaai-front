@@ -9,11 +9,12 @@ import { toast } from 'react-toastify';
 import api from '../../services/api/api';
 import { capitalizeFirstLetter } from '../../utils/capitalize';
 import { getEntityIdKey } from '../../utils/entityUtils';
+import { formatValue } from '../../utils/Masks';
 import SearchBar from '../search/SearchBar';
+import ConfirmDialog from '../utils/dialogs/ConfirmDialog';
 import CreateDialog from '../utils/dialogs/CreateDialog';
 import DetailDialog from '../utils/dialogs/DetailDialog';
 import EditDialog from '../utils/dialogs/EditDialog';
-import { formatValue } from '../../utils/Masks';
 
 const EntityGridPage = ({
     entityName,
@@ -46,6 +47,7 @@ const EntityGridPage = ({
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openDetail, setOpenDetail] = useState(false);
+    const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [newFormData, setNewFormData] = useState({});
     const [formData, setFormData] = useState({});
 
@@ -312,7 +314,10 @@ const EntityGridPage = ({
                     <EditIcon fontSize="small" sx={{ marginRight: 1 }} />
                     Editar
                 </MenuItem>
-                <MenuItem onClick={handleDelete}>
+                <MenuItem onClick={() => {
+                    setOpenConfirmDelete(true);
+                    setAnchorEl(null);
+                }}>
                     <DeleteIcon fontSize="small" sx={{ marginRight: 1 }} />
                     Excluir
                 </MenuItem>
@@ -383,6 +388,20 @@ const EntityGridPage = ({
                 usaFoto={entityName === "contato" || entityName === "usuario"}
             />
 
+            <ConfirmDialog
+                open={openConfirmDelete}
+                onClose={() => setOpenConfirmDelete(false)}
+                onConfirm={async () => {
+                    await handleDelete();
+                    setOpenConfirmDelete(false);
+                    setSelectedRowId(null);
+                }}
+                title={`Confirmar exclusão`}
+                message={`Tem certeza que deseja excluir este(a) ${capitalizeFirstLetter(entityName)}?`}
+                confirmText="Excluir"
+                cancelText="Cancelar"
+                confirmColor="error"
+            />
         </Box>
     );
 };

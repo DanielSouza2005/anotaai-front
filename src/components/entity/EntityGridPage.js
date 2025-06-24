@@ -1,6 +1,7 @@
 import { Add as AddIcon, EventNote, MoreVert } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Box, Fab, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
@@ -117,6 +118,18 @@ const EntityGridPage = ({
         if (document.activeElement instanceof HTMLElement) {
             document.activeElement.blur();
         }
+    };
+
+    const handleDetails = () => {
+        const idKey = getEntityIdKey(entityName);
+        const rowToView = rows.find(row => row[idKey] === selectedRowId);
+
+        if (rowToView) {
+            setFormData(rowToView);
+            setOpenDetail(true);
+        }
+
+        handleMenuClose();
     };
 
     const handleEditEntity = () => {
@@ -309,17 +322,30 @@ const EntityGridPage = ({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                PaperProps={{
+                    sx: {
+                        borderRadius: 2,
+                        minWidth: 150,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    },
+                }}
             >
-                <MenuItem onClick={handleEditEntity}>
-                    <EditIcon fontSize="small" sx={{ marginRight: 1 }} />
-                    Editar
+                <MenuItem onClick={handleEditEntity} sx={{ gap: 1, py: 1 }}>
+                    <EditIcon fontSize="small" sx={{ color: 'primary.main' }} />
+                    <Typography variant="body2">Editar</Typography>
                 </MenuItem>
+
                 <MenuItem onClick={() => {
                     setOpenConfirmDelete(true);
                     setAnchorEl(null);
-                }}>
-                    <DeleteIcon fontSize="small" sx={{ marginRight: 1 }} />
-                    Excluir
+                }} sx={{ gap: 1, py: 1 }}>
+                    <DeleteIcon fontSize="small" sx={{ color: 'error.main' }} />
+                    <Typography variant="body2">Excluir</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleDetails} sx={{ gap: 1, py: 1 }}>
+                    <InfoOutlinedIcon fontSize="small" sx={{ color: 'info.main' }} />
+                    <Typography variant="body2">Detalhes</Typography>
                 </MenuItem>
             </Menu>
 

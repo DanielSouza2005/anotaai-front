@@ -1,3 +1,4 @@
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Avatar,
   Box,
@@ -5,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
   Tab,
   Tabs,
   TextField
@@ -78,7 +80,17 @@ const DetailDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
+
+      <IconButton
+        aria-label="Fechar"
+        onClick={onClose}
+        sx={{ position: 'absolute', right: 8, top: 8 }}
+      >
+        <CloseIcon />
+      </IconButton>
+
       <DialogTitle>{title}</DialogTitle>
+
       <DialogContent dividers>
         <Tabs
           value={tabIndex}

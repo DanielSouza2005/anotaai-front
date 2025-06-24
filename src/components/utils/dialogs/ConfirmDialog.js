@@ -1,5 +1,6 @@
-import { Box, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 
 const ConfirmDialog = ({
     open,
@@ -25,6 +26,14 @@ const ConfirmDialog = ({
                 },
             }}
         >
+            <IconButton
+                aria-label="Fechar"
+                onClick={onClose}
+                sx={{ position: 'absolute', right: 8, top: 8 }}
+            >
+                <CloseIcon />
+            </IconButton>
+
             <DialogTitle sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
                 <WarningAmberIcon color={confirmColor} sx={{ fontSize: 32 }} />
                 <Typography variant="h6" component="span">

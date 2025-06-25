@@ -412,6 +412,7 @@ const EntityGridPage = ({
                 titleTab={titleTab}
                 titleTab2={titleTab2}
                 usaFoto={entityName === "contato" || entityName === "usuario"}
+                entity={entityName}
             />
 
             <ConfirmDialog

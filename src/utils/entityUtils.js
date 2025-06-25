@@ -1,3 +1,7 @@
+import BusinessIcon from '@mui/icons-material/Business';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import GroupIcon from '@mui/icons-material/Group';
+
 export const getEntityIdKey = (entityName) => {
     switch (entityName) {
         case 'contato':
@@ -8,5 +12,18 @@ export const getEntityIdKey = (entityName) => {
             return 'cod_usuario';
         default:
             throw new Error(`Chave primária desconhecida para a entidade: ${entityName}`);
+    }
+};
+
+export const getEntityIcon = (entity) => {
+    switch (entity) {
+        case 'empresa':
+            return <BusinessIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
+        case 'usuario':
+            return <GroupIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
+        case 'contato':
+            return <EventNoteIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
+        default:
+            return null;
     }
 };

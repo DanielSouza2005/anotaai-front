@@ -1,4 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Avatar,
   Box,
@@ -9,10 +10,12 @@ import {
   IconButton,
   Tab,
   Tabs,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
+import { getEntityIcon } from '../../../utils/entityUtils';
 
 const renderMaskedField = (field, value) => {
   let displayValue = formatValue(field, value ?? '');
@@ -89,7 +92,11 @@ const DetailDialog = ({
         <CloseIcon />
       </IconButton>
 
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+        <InfoOutlinedIcon color="primary" sx={{ fontSize: 32, mr: 1 }} />
+        {getEntityIcon(entity)}
+        <Typography variant="h6" component="span">{title}</Typography>
+      </DialogTitle>
 
       <DialogContent dividers>
         <Tabs

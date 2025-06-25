@@ -1,4 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   Avatar,
   Box,
@@ -12,12 +13,13 @@ import {
   Tab,
   Tabs,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
+import { getEntityIcon } from '../../../utils/entityUtils';
 import SelectField from '../select/SelectField';
 
 const EditDialog = ({
@@ -65,7 +67,6 @@ const EditDialog = ({
     if (photo) {
       const objectUrl = URL.createObjectURL(photo);
       setPreviewFotoUrl(objectUrl);
-
       return () => URL.revokeObjectURL(objectUrl);
     } else if (formData?.foto && typeof formData.foto === "string") {
       setPreviewFotoUrl(formData.foto);
@@ -74,18 +75,45 @@ const EditDialog = ({
     }
   }, [photo, formData?.foto]);
 
+  const isRequired = (fieldName, prefix = '') => {
+    try {
+      const path = prefix ? `${prefix}.${fieldName}` : fieldName;
+      const fieldSchema = validationSchema?.describe()?.fields;
+
+      const keys = path.split('.');
+      let current = fieldSchema;
+
+      for (const key of keys) {
+        if (!current[key]) return false;
+        current = current[key].fields || current[key];
+      }
+
+      return current?.tests?.some(test => test.name === 'required') ?? false;
+    } catch {
+      return false;
+    }
+  };
+
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
     const isReadOnly = field.readonly === true;
+    const label = (
+      <>
+        {field.label}
+        {isRequired(field.name, prefix) && (
+          <Typography component="span" color="error"> *</Typography>
+        )}
+      </>
+    );
 
     if (field.type === 'select' && field.source) {
       return (
         <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
           <SelectField
             name={fullName}
-            label={field.label}
+            label={label}
             source={field.source}
             displayField={field.displayField}
             error={error}
@@ -103,7 +131,7 @@ const EditDialog = ({
         <Field
           name={fullName}
           as={TextField}
-          label={field.label}
+          label={label}
           fullWidth
           value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
@@ -171,7 +199,11 @@ const EditDialog = ({
               <CloseIcon />
             </IconButton>
 
-            <DialogTitle>{title}</DialogTitle>
+            <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+              <EditIcon color="primary" sx={{ fontSize: 32, mr: 1 }} />
+              {getEntityIcon(entity)}
+              <Typography variant="h6" component="span">{title}</Typography>
+            </DialogTitle>
 
             <DialogContent dividers>
               <Tabs

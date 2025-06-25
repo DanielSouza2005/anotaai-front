@@ -1,3 +1,4 @@
+import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -10,13 +11,15 @@ import {
   IconButton,
   Tab,
   Tabs,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import SelectField from '../select/SelectField';
+import { getEntityIcon } from '../../../utils/entityUtils';
 
 const CreateDialog = ({
   open,
@@ -66,17 +69,27 @@ const CreateDialog = ({
     }
   }, [photo]);
 
+
+
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
+    const isRequired = validationSchema?.fields?.[prefix || fullName]?.tests?.some(test => test.OPTIONS?.name === 'required');
+
+    const label = (
+      <span>
+        {field.label}
+        {isRequired && <span style={{ color: 'red' }}> *</span>}
+      </span>
+    );
 
     if (field.type === 'select' && field.source) {
       return (
         <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
           <SelectField
             name={fullName}
-            label={field.label}
+            label={label}
             source={field.source}
             displayField={field.displayField}
             error={error}
@@ -94,7 +107,7 @@ const CreateDialog = ({
         <Field
           name={fullName}
           as={TextField}
-          label={field.label}
+          label={label}
           fullWidth
           value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
           multiline={field.type === 'textarea'}
@@ -162,7 +175,13 @@ const CreateDialog = ({
                 <CloseIcon />
               </IconButton>
 
-              <DialogTitle>{title}</DialogTitle>
+              <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+                <AddIcon color="primary" sx={{ fontSize: 32, mr: 1 }} />
+                {getEntityIcon(entity)}
+                <Typography variant="h6" component="div">
+                  {title}
+                </Typography>
+              </DialogTitle>
 
               <DialogContent dividers>
                 <Tabs value={tabIndex} sx={{ mb: 2 }} onChange={(_, newIndex) => setTabIndex(newIndex)}>

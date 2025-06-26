@@ -16,7 +16,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon } from '../../../utils/entityUtils';
@@ -37,7 +37,6 @@ const EditDialog = ({
   usaFoto = false
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
-  const fileInputRef = useRef();
   const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
   const [photo, setPhoto] = useState(null);
 
@@ -56,12 +55,16 @@ const EditDialog = ({
   };
 
   useEffect(() => {
-    return () => {
-      if (previewFotoUrl && previewFotoUrl !== formData?.foto) {
-        URL.revokeObjectURL(previewFotoUrl);
+    if (open) {
+      setPhoto(null);
+
+      if (formData?.foto && typeof formData.foto === "string") {
+        setPreviewFotoUrl(formData.foto);
+      } else {
+        setPreviewFotoUrl(null);
       }
-    };
-  }, [previewFotoUrl, formData?.foto]);
+    }
+  }, [open, formData]);
 
   useEffect(() => {
     if (photo) {
@@ -233,59 +236,59 @@ const EditDialog = ({
               )}
 
               {tabIndex === fotoTabIndex && hasFoto && (
-                <Grid container spacing={2}>
+                <Grid container spacing={2} columns={12}>
                   <Grid item xs={12}>
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        {
-                          entity === "usuario" ?
-                            (
-                              <Avatar
-                                alt="Nova foto"
-                                src={previewFotoUrl}
-                                sx={{ width: 96, height: 96 }}
-                              />
-                            ) : (
-                              <Box mt={2}>
-                                <img
-                                  src={previewFotoUrl}
-                                  alt="Preview da Foto"
-                                  style={{ maxWidth: '100%', maxHeight: 200 }}
-                                />
-                              </Box>
-                            )
+                    <input
+                      accept="image/*"
+                      id="upload-photo"
+                      type="file"
+                      style={{ display: 'none' }}
+                      onChange={(e) => {
+                        if (e.currentTarget.files && e.currentTarget.files[0]) {
+                          const file = e.currentTarget.files[0];
+                          setFieldValue('foto', file);
+                          setPhoto(file);
+                          const objectUrl = URL.createObjectURL(file);
+                          setPreviewFotoUrl(objectUrl);
                         }
-                      </Grid>
-                    </Grid>
-                  </Grid>
+                      }}
+                    />
+                    <label htmlFor="upload-photo">
+                      <Button variant="contained" component="span">
+                        Selecionar Foto
+                      </Button>
+                    </label>
 
-                  <Grid item xs={12}>
-                    <Button variant="outlined" component="label">
-                      Escolher nova foto
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        ref={fileInputRef}
-                        onChange={(event) => {
-                          const file = event.currentTarget.files[0];
-                          if (file) {
-                            setFieldValue("foto", file);
-                            setPhoto(file);
-                            const previewUrl = URL.createObjectURL(file);
-                            setPreviewFotoUrl(previewUrl);
-                          } else {
-                            setFieldValue("foto", null);
+                    {(photo || previewFotoUrl) && (
+                      <>
+                        <Button
+                          color="secondary"
+                          onClick={() => {
+                            setFieldValue('foto', null);
                             setPhoto(null);
                             setPreviewFotoUrl(null);
-                          }
-                        }}
-                      />
-                    </Button>
-                    {values.foto && (
-                      <Typography variant="body2" mt={1}>
-                        Arquivo selecionado: {values.foto.name}
-                      </Typography>
+                          }}
+                          sx={{ ml: 2 }}
+                        >
+                          Limpar Foto
+                        </Button>
+
+                        <Box mt={2}>
+                          {entity === 'usuario' ? (
+                            <Avatar
+                              alt="Foto"
+                              src={previewFotoUrl}
+                              sx={{ width: 96, height: 96 }}
+                            />
+                          ) : (
+                            <img
+                              src={previewFotoUrl}
+                              alt="Preview da Foto"
+                              style={{ maxWidth: '100%', maxHeight: 200 }}
+                            />
+                          )}
+                        </Box>
+                      </>
                     )}
                   </Grid>
                 </Grid>

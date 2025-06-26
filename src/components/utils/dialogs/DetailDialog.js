@@ -115,25 +115,27 @@ const DetailDialog = ({
           {tabIndex === fotoTabIndex && hasFoto && (
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  <Grid item>
-                    {entity === 'usuario' ? (
-                      <Avatar
-                        alt="Foto"
+                {fotoUrl ? (
+                  entity === 'usuario' ? (
+                    <Avatar
+                      alt="Foto"
+                      src={fotoUrl}
+                      sx={{ width: 96, height: 96 }}
+                    />
+                  ) : (
+                    <Box mt={2}>
+                      <img
                         src={fotoUrl}
-                        sx={{ width: 96, height: 96 }}
+                        alt="Foto"
+                        style={{ maxWidth: '100%', maxHeight: 200 }}
                       />
-                    ) : (
-                      <Box mt={2}>
-                        <img
-                          src={fotoUrl}
-                          alt="Foto"
-                          style={{ maxWidth: '100%', maxHeight: 200 }}
-                        />
-                      </Box>
-                    )}
-                  </Grid>
-                </Grid>
+                    </Box>
+                  )
+                ) : (
+                  <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+                    Nenhuma foto disponível para este {entity === 'usuario' ? 'usuário' : entity}.
+                  </Typography>
+                )}
               </Grid>
             </Grid>
           )}

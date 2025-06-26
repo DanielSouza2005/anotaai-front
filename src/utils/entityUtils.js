@@ -27,3 +27,16 @@ export const getEntityIcon = (entity) => {
             return null;
     }
 };
+
+export const getEntityLabel = (entity) => {
+    switch (entity) {
+        case 'contato':
+            return 'Contato';
+        case 'empresa':
+            return 'Empresa';
+        case 'usuario':
+            return 'Usuário';
+        default:
+            throw new Error(`Chave primária desconhecida para a entidade: ${entity}`);
+    }
+};

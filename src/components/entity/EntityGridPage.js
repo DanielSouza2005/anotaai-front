@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../services/api/api';
 import { capitalizeFirstLetter } from '../../utils/capitalize';
-import { getEntityIdKey } from '../../utils/entityUtils';
+import { getEntityIdKey, getEntityLabel } from '../../utils/entityUtils';
 import { formatValue } from '../../utils/Masks';
 import SearchBar from '../search/SearchBar';
 import ConfirmDialog from '../utils/dialogs/ConfirmDialog';
@@ -163,7 +163,7 @@ const EntityGridPage = ({
             }
 
             fetchData();
-            toast.success(`${capitalizeFirstLetter(entityName)} incluído(a) com sucesso!`);
+            toast.success(`${getEntityLabel(entityName)} incluído(a) com sucesso!`);
             setOpenAddDialog(false);
         } catch (error) {
             if (error.response && error.response.data) {
@@ -185,10 +185,10 @@ const EntityGridPage = ({
 
                     setErrors(formikErrors);
                 } else {
-                    toast.error(apiErrors.message || `Erro inesperado ao criar ${entityName}.`);
+                    toast.error(apiErrors.message || `Erro inesperado ao criar ${getEntityLabel(entityName)}.`);
                 }
             } else {
-                toast.error(`Erro ao criar ${entityName}. Tente novamente.`);
+                toast.error(`Erro ao criar ${getEntityLabel(entityName)}. Tente novamente.`);
             }
         } finally {
             setSubmitting(false);
@@ -221,7 +221,7 @@ const EntityGridPage = ({
             }
 
             fetchData();
-            toast.success(`${capitalizeFirstLetter(entityName)} atualizado(a) com sucesso!`);
+            toast.success(`${getEntityLabel(entityName)} atualizado(a) com sucesso!`);
             setOpenEditDialog(false);
         } catch (error) {
             if (error.response && error.response.data) {
@@ -243,10 +243,10 @@ const EntityGridPage = ({
 
                     setErrors(formikErrors);
                 } else {
-                    toast.error(apiErrors.message || `Erro inesperado ao atualizar ${entityName}.`);
+                    toast.error(apiErrors.message || `Erro inesperado ao atualizar ${getEntityLabel(entityName)}.`);
                 }
             } else {
-                toast.error(`Erro ao atualizar ${entityName}.`);
+                toast.error(`Erro ao atualizar ${getEntityLabel(entityName)}.`);
             }
         } finally {
             setSubmitting(false);
@@ -257,9 +257,9 @@ const EntityGridPage = ({
         try {
             await api.delete(`/${entityName}/${selectedRowId}`);
             fetchData();
-            toast.success(`${capitalizeFirstLetter(entityName)} excluído(a) com sucesso!`);
+            toast.success(`${getEntityLabel(entityName)} excluído(a) com sucesso!`);
         } catch (error) {
-            toast.error(`Erro ao excluir ${entityName}. ` + error.response.data);
+            toast.error(`Erro ao excluir ${getEntityLabel(entityName)}. ` + error.response.data);
         }
         handleMenuClose();
     };

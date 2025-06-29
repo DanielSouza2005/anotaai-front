@@ -64,8 +64,17 @@ const DetailDialog = ({
   const [tabIndex, setTabIndex] = useState(0);
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
+  const hasObs = entity === "contato";
+
   const enderecoTabIndex = hasEndereco ? 1 : -1;
   const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
+  const obsTabIndex = (() => {
+    if (!hasObs) return -1;
+
+    if (hasEndereco && hasFoto) return 3;
+    if (hasEndereco || hasFoto) return 2;
+    return 1;
+  })();
 
   const filteredFields = fields.filter(
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
@@ -73,9 +82,13 @@ const DetailDialog = ({
 
   const renderFields = (fieldList, data = {}) => (
     <Grid container spacing={2} columns={12}>
-      {fieldList.map(field =>
-        renderMaskedField(field, data?.[field.name])
-      )}
+      {
+        fieldList
+          .filter(field => field.name !== 'obs')
+          .map(field =>
+            renderMaskedField(field, data?.[field.name])
+          )
+      }
     </Grid>
   );
 
@@ -107,6 +120,7 @@ const DetailDialog = ({
           <Tab label={titleTab} />
           {hasEndereco && <Tab label={titleTab2} />}
           {hasFoto && <Tab label="Foto" />}
+          {hasObs && <Tab label="Observações" />}
         </Tabs>
 
         <Box>
@@ -139,6 +153,27 @@ const DetailDialog = ({
               </Grid>
             </Grid>
           )}
+
+          {hasObs && tabIndex === obsTabIndex && (
+            <Box p={2}>
+              <TextField
+                label="Observações"
+                value={formData?.obs || ''}
+                fullWidth
+                multiline
+                minRows={4}
+                InputProps={{
+                  readOnly: true,
+                  sx: {
+                    backgroundColor: '#e3f2fd',
+                    borderRadius: 1,
+                  },
+                }}
+                margin="dense"
+              />
+            </Box>
+          )}
+
         </Box>
       </DialogContent>
     </Dialog>

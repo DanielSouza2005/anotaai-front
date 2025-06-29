@@ -42,8 +42,17 @@ const EditDialog = ({
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
+  const hasObs = entity === "contato";
+
   const enderecoTabIndex = hasEndereco ? 1 : -1;
   const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
+  const obsTabIndex = (() => {
+    if (!hasObs) return -1;
+
+    if (hasEndereco && hasFoto) return 3;
+    if (hasEndereco || hasFoto) return 2;
+    return 1;
+  })();
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -52,6 +61,7 @@ const EditDialog = ({
       [f.name]: formData?.endereco?.[f.name] || '',
     }), {}),
     foto: null,
+    obs: formData.obs || ''
   };
 
   useEffect(() => {
@@ -217,21 +227,27 @@ const EditDialog = ({
                 <Tab label={titleTab} />
                 {hasEndereco && <Tab label={titleTab2} />}
                 {hasFoto && <Tab label="Foto" />}
+                {hasObs && <Tab label="Observações" />}
               </Tabs>
 
               {tabIndex === 0 && (
                 <Grid container spacing={2} columns={12}>
-                  {fields.map(field =>
-                    renderField(field, values, errors, touched, setFieldValue)
-                  )}
+                  {fields
+                    .filter(field => field.name !== 'obs')
+                    .map(field =>
+                      renderField(field, values, errors, touched, setFieldValue)
+                    )}
                 </Grid>
               )}
 
               {tabIndex === enderecoTabIndex && hasEndereco && (
                 <Grid container spacing={2} columns={12}>
-                  {enderecoFields.map(field =>
-                    renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                  )}
+                  {enderecoFields
+                    .filter(field => field.name !== 'obs')
+                    .map(field =>
+                      renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                    )
+                  }
                 </Grid>
               )}
 
@@ -293,6 +309,25 @@ const EditDialog = ({
                   </Grid>
                 </Grid>
               )}
+
+              {hasObs && tabIndex === obsTabIndex && (
+                <Box p={2}>
+                  <Field name="obs">
+                    {({ field, meta }) => (
+                      <TextField
+                        {...field}
+                        label="Observações"
+                        fullWidth
+                        multiline
+                        minRows={4}
+                        error={Boolean(meta.touched && meta.error)}
+                        helperText={meta.touched && meta.error}
+                      />
+                    )}
+                  </Field>
+                </Box>
+              )}
+
             </DialogContent>
 
             <DialogActions>

@@ -79,9 +79,7 @@ const EntityGridPage = ({
                 valueFormatter: (params) => formatValue(col, params),
             };
         });
-
-        console.log(newColumns);
-
+        
         if (!hasAcoes) {
             newColumns.push({
                 field: 'acoes',

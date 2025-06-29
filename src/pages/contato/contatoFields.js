@@ -46,7 +46,7 @@ const enderecoFields = [
 
 const addContatoFields = [
     { name: 'nome', label: 'Nome', type: 'text' },
-    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'select', source: 'empresa', displayField: 'razao' },
+    { name: 'cod_empresa', label: 'Empresa', type: 'select', source: 'empresa', displayField: 'razao' },
     { name: 'cpf', label: 'CPF', type: 'text' },
     { name: 'celular', label: 'Celular', type: 'text' },
     { name: 'telefone', label: 'Telefone', type: 'text' },
@@ -72,7 +72,7 @@ const addContatoEnderecoFields = [
 const editContatoFields = [
     { name: 'cod_contato', label: 'Contato (Código)', type: 'text', readonly: true },
     { name: 'nome', label: 'Nome', type: 'text' },
-    { name: 'cod_empresa', label: 'Empresa (Código)', type: 'select', source: 'empresa', displayField: 'razao' },
+    { name: 'cod_empresa', label: 'Empresa', type: 'select', source: 'empresa', displayField: 'razao' },
     { name: 'cpf', label: 'CPF', type: 'text' },
     { name: 'celular', label: 'Celular', type: 'text' },
     { name: 'telefone', label: 'Telefone', type: 'text' },

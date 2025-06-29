@@ -72,10 +72,15 @@ const EntityGridPage = ({
     const columnsWithActions = useMemo(() => {
         const hasAcoes = columns.some(col => col.field === 'acoes');
 
-        const newColumns = columns.map(col => ({
-            ...col,
-            valueFormatter: col.valueFormatter || ((params) => formatValue(col, params))
-        }));
+        const newColumns = columns.map(col => {
+            if (col.valueFormatter || col.valueGetter || col.renderCell) return col;
+            return {
+                ...col,
+                valueFormatter: (params) => formatValue(col, params),
+            };
+        });
+
+        console.log(newColumns);
 
         if (!hasAcoes) {
             newColumns.push({

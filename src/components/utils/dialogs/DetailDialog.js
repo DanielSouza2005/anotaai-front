@@ -13,7 +13,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
 
@@ -76,6 +76,12 @@ const DetailDialog = ({
     return 1;
   })();
 
+  useEffect(() => {
+    if (open) {
+      setTabIndex(0);
+    }
+  }, [open]);
+
   const filteredFields = fields.filter(
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
   );
@@ -111,7 +117,15 @@ const DetailDialog = ({
         <Typography variant="h6" component="span">{title}</Typography>
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent
+        dividers
+        sx={{
+          minHeight: 450,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start'
+        }}
+      >
         <Tabs
           value={tabIndex}
           onChange={(_, newIndex) => setTabIndex(newIndex)}
@@ -155,21 +169,25 @@ const DetailDialog = ({
           )}
 
           {hasObs && tabIndex === obsTabIndex && (
-            <Box p={2}>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <TextField
                 label="Observações"
                 value={formData?.obs || ''}
                 fullWidth
                 multiline
-                minRows={4}
+                minRows={10}
+                maxRows={Infinity}
                 InputProps={{
                   readOnly: true,
                   sx: {
                     backgroundColor: '#e3f2fd',
                     borderRadius: 1,
+                    height: '100%',
+                    alignItems: 'flex-start'
                   },
                 }}
                 margin="dense"
+                sx={{ flex: 1 }}
               />
             </Box>
           )}

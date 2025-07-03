@@ -88,6 +88,12 @@ const EditDialog = ({
     }
   }, [photo, formData?.foto]);
 
+  useEffect(() => {
+    if (open) {
+      setTabIndex(0);
+    }
+  }, [open]);
+
   const isRequired = (fieldName, prefix = '') => {
     try {
       const path = prefix ? `${prefix}.${fieldName}` : fieldName;
@@ -218,7 +224,15 @@ const EditDialog = ({
               <Typography variant="h6" component="span">{title}</Typography>
             </DialogTitle>
 
-            <DialogContent dividers>
+            <DialogContent
+              dividers
+              sx={{
+                minHeight: 450,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start'
+              }}
+            >
               <Tabs
                 value={tabIndex}
                 onChange={(_, newIndex) => setTabIndex(newIndex)}
@@ -311,7 +325,7 @@ const EditDialog = ({
               )}
 
               {hasObs && tabIndex === obsTabIndex && (
-                <Box p={2}>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <Field name="obs">
                     {({ field, meta }) => (
                       <TextField
@@ -319,9 +333,10 @@ const EditDialog = ({
                         label="Observações"
                         fullWidth
                         multiline
-                        minRows={4}
+                        minRows={10}
                         error={Boolean(meta.touched && meta.error)}
                         helperText={meta.touched && meta.error}
+                        sx={{ flex: 1 }}
                       />
                     )}
                   </Field>

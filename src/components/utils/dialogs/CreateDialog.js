@@ -81,6 +81,12 @@ const CreateDialog = ({
     }
   }, [photo]);
 
+  useEffect(() => {
+    if (open) {
+      setTabIndex(0);
+    }
+  }, [open]);
+
   const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
@@ -193,7 +199,15 @@ const CreateDialog = ({
                 </Typography>
               </DialogTitle>
 
-              <DialogContent dividers>
+              <DialogContent
+                dividers
+                sx={{
+                  minHeight: 450,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}
+              >
                 <Tabs value={tabIndex} sx={{ mb: 2 }} onChange={(_, newIndex) => setTabIndex(newIndex)}>
                   <Tab label={titleTab} />
                   {hasEndereco && <Tab label={titleTab2} />}
@@ -269,7 +283,7 @@ const CreateDialog = ({
                 )}
 
                 {entity === "contato" && tabIndex === obsTabIndex && (
-                  <Box p={2}>
+                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <Field
                       name="obs"
                     >
@@ -279,9 +293,10 @@ const CreateDialog = ({
                           label="Observações"
                           fullWidth
                           multiline
-                          minRows={4}
+                          minRows={10}
                           error={Boolean(meta.touched && meta.error)}
                           helperText={meta.touched && meta.error}
+                          sx={{ flex: 1 }}
                         />
                       )}
                     </Field>

@@ -3,12 +3,12 @@ import { Box, Divider, Drawer, IconButton, List, Typography, useMediaQuery, useT
 
 import logoImage from "../../assets/login/logo.png";
 import { menuItems } from '../../config/menu/menuConfig';
-import SidebarExpandableItem from './SidebarExpandableItem';
 import UserMenu from './SidebarUserMenu';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/auth/AuthContext';
+import SidebarItem from './SidebarItem';
 
 const SidebarMenu = ({ open, toggleDrawer }) => {
     const theme = useTheme();
@@ -73,13 +73,12 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
 
             <Box sx={{ flex: 1, overflowY: 'auto' }}>
                 <List component="nav" sx={{ p: 1 }}>
-                    {menuItems.map((menu) => (
-                        <SidebarExpandableItem
-                            key={menu.title}
-                            title={menu.title}
-                            icon={menu.icon}
-                            basePath={menu.basePath}
-                            subItems={menu.subItems}
+                    {menuItems.map((item) => (
+                        <SidebarItem
+                            key={item.title}
+                            title={item.title}
+                            icon={item.icon}
+                            basePath={item.basePath}
                         />
                     ))}
                 </List>

@@ -11,7 +11,7 @@ import api from '../../services/api/api';
 import { capitalizeFirstLetter } from '../../utils/capitalize';
 import { getEntityIdKey, getEntityLabel } from '../../utils/entityUtils';
 import { formatValue } from '../../utils/Masks';
-import SearchBar from '../search/SearchBar';
+import AdvancedSearchBar from '../search/AdvancedSearchBar';
 import ConfirmDialog from '../utils/dialogs/ConfirmDialog';
 import CreateDialog from '../utils/dialogs/CreateDialog';
 import DetailDialog from '../utils/dialogs/DetailDialog';
@@ -36,8 +36,6 @@ const EntityGridPage = ({
     validationSchema,
     editValidationSchema
 }) => {
-    const [search, setSearch] = useState('');
-    const [searchField, setSearchField] = useState(searchFields?.[0]?.name || '');
     const [rows, setRows] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(100);
@@ -51,11 +49,21 @@ const EntityGridPage = ({
     const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
     const [newFormData, setNewFormData] = useState({});
     const [formData, setFormData] = useState({});
+    const [filters, setFilters] = useState([]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const { data } = await api.get(`/${entityName}?page=${page}&size=${pageSize}`);
+            const params = new URLSearchParams();
+
+            filters.forEach(filter => {
+                params.append(filter.field, filter.value);
+            });
+
+            params.append('page', page);
+            params.append('size', pageSize);
+
+            const { data } = await api.get(`/${entityName}?${params.toString()}`);
             setRows(data.content);
             setTotalRows(data.totalElements);
         } catch (err) {
@@ -63,11 +71,11 @@ const EntityGridPage = ({
         } finally {
             setLoading(false);
         }
-    }, [entityName, page, pageSize]);
+    }, [entityName, page, pageSize, filters]);
 
     useEffect(() => {
         fetchData();
-    }, [page, pageSize, entityName, fetchData]);
+    }, [fetchData]);
 
     const columnsWithActions = useMemo(() => {
         const hasAcoes = columns.some(col => col.field === 'acoes');
@@ -79,7 +87,7 @@ const EntityGridPage = ({
                 valueFormatter: (params) => formatValue(col, params),
             };
         });
-        
+
         if (!hasAcoes) {
             newColumns.push({
                 field: 'acoes',
@@ -96,10 +104,6 @@ const EntityGridPage = ({
 
         return newColumns;
     }, [columns, entityName]);
-
-    const filteredRows = rows.filter(row =>
-        String(row?.[searchField] ?? '').toLowerCase().includes(search.toLowerCase())
-    );
 
     const handleRowDoubleClick = (params) => {
         setFormData(params.row);
@@ -278,18 +282,17 @@ const EntityGridPage = ({
                 </Typography>
             </Box>
 
-            <SearchBar
-                value={search}
-                fieldSelected={searchField}
+            <AdvancedSearchBar
                 fieldsAvailable={searchFields}
-                onChange={e => setSearch(e.target.value)}
-                onFieldChange={(e) => { setSearchField(e.target.value) }}
+                onFilterChange={(filters) => {
+                    setFilters(filters);
+                }}
             />
 
             <Paper elevation={1}>
                 <Box sx={{ height: 500 }}>
                     <DataGrid
-                        rows={filteredRows}
+                        rows={rows}
                         columns={columnsWithActions}
                         loading={loading}
                         rowCount={totalRows}

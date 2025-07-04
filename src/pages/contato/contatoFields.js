@@ -100,13 +100,12 @@ const searchContatoFields = [
     { name: 'cpf', label: 'CPF' },
     { name: 'celular', label: 'Celular' },
     { name: 'telefone', label: 'Telefone' },
-    { name: 'telefone2', label: 'Telefone 2' },
-    { name: 'email_pessoal', label: 'E-mail Pessoal' },
-    { name: 'email_corp', label: 'E-mail Corporativo' },
+    { name: 'email', label: 'E-mail' },
     { name: 'cargo', label: 'Cargo' },
     { name: 'departamento', label: 'Departamento' },
-    { name: 'cod_empresa', label: 'Empresa' },
-    { name: 'obs', label: 'Observações' },
+    { name: 'razao', label: 'Empresa (Razão)' },
+    { name: 'fantasia', label: 'Empresa (Fantasia)' },
+    { name: 'cnpj', label: 'Empresa (CNPJ)' }
 ];
 
 export {

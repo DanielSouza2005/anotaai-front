@@ -289,39 +289,45 @@ const EntityGridPage = ({
                 }}
             />
 
-            <Paper elevation={1}>
-                <Box sx={{ height: 500 }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columnsWithActions}
-                        loading={loading}
-                        rowCount={totalRows}
-                        paginationMode="server"
-                        paginationModel={{ page, pageSize }}
-                        onPaginationModelChange={(model) => {
-                            setPage(model.page);
-                            setPageSize(model.pageSize);
-                        }}
-                        disableRowSelectionOnClick
-                        onRowDoubleClick={handleRowDoubleClick}
-                        localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-                        getRowId={(row) => row[getEntityIdKey(entityName)]}
-                        getRowClassName={(params) =>
-                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                        }
-                        sx={{
-                            '& .even': {
-                                backgroundColor: '#f3f3f3',
-                            },
-                            '& .odd': {
-                                backgroundColor: '#ffffff',
-                            },
-                            '& .MuiDataGrid-row:hover': {
-                                backgroundColor: '#e3f2fd',
-                            },
-                        }}
-                    />
-                </Box>
+            <Paper
+                elevation={1}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 400, 
+                    maxHeight: 'calc(100vh - 250px)'
+                }}
+            >
+                <DataGrid
+                    rows={rows}
+                    columns={columnsWithActions}
+                    loading={loading}
+                    rowCount={totalRows}
+                    paginationMode="server"
+                    paginationModel={{ page, pageSize }}
+                    onPaginationModelChange={(model) => {
+                        setPage(model.page);
+                        setPageSize(model.pageSize);
+                    }}
+                    disableRowSelectionOnClick
+                    onRowDoubleClick={handleRowDoubleClick}
+                    localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                    getRowId={(row) => row[getEntityIdKey(entityName)]}
+                    getRowClassName={(params) =>
+                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                    }
+                    sx={{
+                        '& .even': {
+                            backgroundColor: '#f3f3f3',
+                        },
+                        '& .odd': {
+                            backgroundColor: '#ffffff',
+                        },
+                        '& .MuiDataGrid-row:hover': {
+                            backgroundColor: '#e3f2fd',
+                        },
+                    }}
+                />
             </Paper>
 
             <Menu

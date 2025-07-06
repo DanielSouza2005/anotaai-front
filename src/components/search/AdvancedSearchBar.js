@@ -1,5 +1,5 @@
-import { Add as AddIcon } from '@mui/icons-material';
-import { Box, Chip, IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
+import { Add as AddIcon, Close as CloseIcon, FilterList } from '@mui/icons-material';
+import { Box, Chip, IconButton, MenuItem, TextField, Tooltip, Typography } from '@mui/material';
 import { useState } from 'react';
 
 const AdvancedSearchBar = ({ fieldsAvailable, onFilterChange }) => {
@@ -25,6 +25,10 @@ const AdvancedSearchBar = ({ fieldsAvailable, onFilterChange }) => {
     const handleDeleteFilter = (index) => {
         const updatedFilters = filters.filter((_, idx) => idx !== index);
         applyFilters(updatedFilters);
+    };
+
+    const handleClearAllFilters = () => {
+        applyFilters([]);
     };
 
     const handleKeyPress = (e) => {
@@ -73,7 +77,34 @@ const AdvancedSearchBar = ({ fieldsAvailable, onFilterChange }) => {
             </Box>
 
             {hasFilters && (
-                <>
+                <Box
+                    sx={{
+                        border: '1px solid #ccc',
+                        borderRadius: 2,
+                        padding: 1.5,
+                        position: 'relative',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <FilterList color="primary" />
+                        <Typography variant="subtitle1" fontWeight="bold">
+                            Filtros Avançados
+                        </Typography>
+                    </Box>
+
+                    <IconButton
+                        size="small"
+                        onClick={handleClearAllFilters}
+                        sx={{
+                            position: 'absolute',
+                            top: 4,
+                            right: 4,
+                        }}
+                    >
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         {filters.map((filter, index) => (
                             <Chip
@@ -85,7 +116,7 @@ const AdvancedSearchBar = ({ fieldsAvailable, onFilterChange }) => {
                             />
                         ))}
                     </Box>
-                </>
+                </Box>
             )}
         </Box>
     );

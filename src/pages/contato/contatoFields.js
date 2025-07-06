@@ -27,7 +27,6 @@ const contatoFields = [
     { name: 'email_corp', label: 'E-mail Corporativo', type: 'email' },
     { name: 'cargo', label: 'Cargo', type: 'text' },
     { name: 'departamento', label: 'Departamento', type: 'text' },
-    { name: 'cod_empresa', label: 'Empresa', type: 'text' },
     { name: 'dt_inclusao', label: 'Data de Inclusão', type: 'date' },
     { name: 'dt_alteracao', label: 'Data de Alteração', type: 'date' },
     { name: 'obs', label: 'Observações', type: 'textarea' },
@@ -42,6 +41,13 @@ const enderecoFields = [
     { name: 'rua', label: 'Rua', type: 'text' },
     { name: 'numero', label: 'Número', type: 'text' },
     { name: 'complemento', label: 'Complemento', type: 'text' },
+];
+
+const empresaFields = [
+    { name: 'razao', label: 'Razão Social', type: 'text' },
+    { name: 'fantasia', label: 'Nome Fantasia', type: 'text' },
+    { name: 'cnpj', label: 'CNPJ', type: 'text' },
+    { name: 'ie', label: 'Inscrição Estadual', type: 'text' },
 ];
 
 const addContatoFields = [
@@ -109,7 +115,7 @@ const searchContatoFields = [
 ];
 
 export {
-    contatoFields, enderecoFields,
+    contatoFields, enderecoFields, empresaFields,
     addContatoFields, addContatoEnderecoFields,
     editContatoFields, editContatoEnderecoFields,
     searchContatoFields, gridContatoColumns

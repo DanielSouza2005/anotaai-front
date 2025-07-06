@@ -1,5 +1,5 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Button, Container, Typography, useTheme } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from "../../assets/login/fundo.png";
 
@@ -18,7 +18,7 @@ const NotFoundPage = () => {
         <Box
             sx={{
                 backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'cover', 
+                backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 bgcolor: '#ffffff',
                 minHeight: '100vh',

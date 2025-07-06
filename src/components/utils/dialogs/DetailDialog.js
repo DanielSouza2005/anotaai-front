@@ -58,6 +58,7 @@ const DetailDialog = ({
   titleTab2,
   fields = [],
   enderecoFields = [],
+  empresaFields = [],
   entity,
   usaFoto = false,
 }) => {
@@ -66,14 +67,23 @@ const DetailDialog = ({
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
 
-  const enderecoTabIndex = hasEndereco ? 1 : -1;
-  const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
+  const empresaTabIndex = (() => {
+    if (entity !== 'contato') return -1;
+    return 1;
+  })();
+
+  const enderecoTabIndex = hasEndereco ? (empresaTabIndex >= 0 ? 2 : 1) : -1;
+  const fotoTabIndex = hasFoto
+    ? (enderecoTabIndex >= 0 ? enderecoTabIndex + 1 : empresaTabIndex >= 0 ? empresaTabIndex + 1 : 1)
+    : -1;
+
   const obsTabIndex = (() => {
     if (!hasObs) return -1;
-
-    if (hasEndereco && hasFoto) return 3;
-    if (hasEndereco || hasFoto) return 2;
-    return 1;
+    let index = 1;
+    if (empresaTabIndex >= 0) index++;
+    if (enderecoTabIndex >= 0) index++;
+    if (fotoTabIndex >= 0) index++;
+    return index;
   })();
 
   useEffect(() => {
@@ -132,6 +142,7 @@ const DetailDialog = ({
           sx={{ mb: 2 }}
         >
           <Tab label={titleTab} />
+          {empresaTabIndex >= 0 && <Tab label="Empresa" />}
           {hasEndereco && <Tab label={titleTab2} />}
           {hasFoto && <Tab label="Foto" />}
           {hasObs && <Tab label="Observações" />}
@@ -139,6 +150,18 @@ const DetailDialog = ({
 
         <Box>
           {tabIndex === 0 && renderFields(filteredFields, formData)}
+          {tabIndex === empresaTabIndex && empresaTabIndex >= 0 && (
+            <Grid container spacing={2} columns={12}>
+              {empresaFields.map(field =>
+                renderMaskedField(
+                  field,
+                  field.name === 'cod_empresa'
+                    ? formData?.cod_empresa
+                    : formData?.empresa?.[field.name]
+                )
+              )}
+            </Grid>
+          )}
           {tabIndex === enderecoTabIndex && hasEndereco && renderFields(enderecoFields, formData?.endereco)}
           {tabIndex === fotoTabIndex && hasFoto && (
             <Grid container spacing={2}>

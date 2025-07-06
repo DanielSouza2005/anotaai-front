@@ -40,6 +40,7 @@ const addUsuarioFields = [
 const editUsuarioFields = [
     { name: 'cod_usuario', label: 'Usuário (Código)', type: 'text', readonly: true },
     { name: 'nome', label: 'Nome', type: 'text' },
+    { name: 'email', label: 'Email', type: 'text', readonly: true },
 ];
 
 const searchUsuarioFields = [

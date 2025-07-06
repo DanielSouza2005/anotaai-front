@@ -23,6 +23,7 @@ const EntityGridPage = ({
     columns,
     detailFields,
     detailEnderecoFields = [],
+    detailEmpresaFields = [],
     addfields,
     addEnderecoFields = [],
     editFields,
@@ -424,6 +425,7 @@ const EntityGridPage = ({
                 title={detailDialogTitle}
                 fields={detailFields}
                 enderecoFields={detailEnderecoFields}
+                empresaFields={detailEmpresaFields}
                 titleTab={titleTab}
                 titleTab2={titleTab2}
                 usaFoto={entityName === "contato" || entityName === "usuario"}

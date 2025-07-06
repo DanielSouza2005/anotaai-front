@@ -1,6 +1,5 @@
-import React from 'react';
 import EntityGridPage from '../../components/entity/EntityGridPage';
-import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, enderecoFields, gridContatoColumns, searchContatoFields } from './contatoFields';
+import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, empresaFields, enderecoFields, gridContatoColumns, searchContatoFields } from './contatoFields';
 import { contatoValidationSchema } from './contatoValidation';
 
 const ContatosPage = () => {
@@ -12,6 +11,7 @@ const ContatosPage = () => {
             columns={gridContatoColumns}
             detailFields={contatoFields}
             detailEnderecoFields={enderecoFields}
+            detailEmpresaFields={empresaFields}
             addfields={addContatoFields}
             addEnderecoFields={addContatoEnderecoFields}
             editFields={editContatoFields}

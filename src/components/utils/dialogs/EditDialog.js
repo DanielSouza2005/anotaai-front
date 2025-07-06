@@ -19,7 +19,7 @@ import { Field, Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
-import { getEntityIcon } from '../../../utils/entityUtils';
+import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
 import SelectField from '../select/SelectField';
 
 const EditDialog = ({
@@ -54,8 +54,15 @@ const EditDialog = ({
     return 1;
   })();
 
+  const idKey = entity === "contato" ? "empresa": "";
+
   const initialValues = {
-    ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
+    ...fields.reduce((acc, f) => ({
+      ...acc,
+      [f.name]: f.type === 'select' && f.source
+        ? formData[idKey]?.[getEntityIdKey(f.source)] || ''
+        : formData[f.name] || ''
+    }), {}),
     endereco: enderecoFields.reduce((acc, f) => ({
       ...acc,
       [f.name]: formData?.endereco?.[f.name] || '',

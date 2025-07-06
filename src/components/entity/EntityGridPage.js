@@ -326,6 +326,9 @@ const EntityGridPage = ({
                         '& .MuiDataGrid-row:hover': {
                             backgroundColor: '#e3f2fd',
                         },
+                        '& .MuiDataGrid-footerContainer': {                           
+                            paddingX: 5,
+                        },
                     }}
                 />
             </Paper>

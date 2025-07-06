@@ -1,17 +1,18 @@
-import { MenuItem, TextField } from '@mui/material';
+import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { Field } from 'formik';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import api from '../../../services/api/api';
 import { getEntityIdKey } from '../../../utils/entityUtils';
-import { toast } from 'react-toastify';
+import { formatValue } from '../../../utils/Masks';
 
-const SelectField = ({ name, label, source, displayField = 'nome', error, touched }) => {
+const SelectField = ({ name, label, source, error, touched }) => {
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await api.get(`/${source}?size=100000&page=0`);
+                const { data } = await api.get(`/${source}?size=100&page=0`);
                 setOptions(data.content);
             } catch (err) {
                 toast.error(`Erro ao buscar dados de ${source}:` + err);
@@ -33,13 +34,28 @@ const SelectField = ({ name, label, source, displayField = 'nome', error, touche
                     error={Boolean(touched && error)}
                     helperText={touched && error}
                     sx={{ minWidth: 220 }}
+                    SelectProps={{
+                        renderValue: (selectedValue) => {
+                            const selectedOption = options.find(
+                                (opt) => opt[getEntityIdKey(source)] === selectedValue
+                            );
+                            return selectedOption ? selectedOption.razao : '';
+                        },
+                    }}
                 >
                     <MenuItem value="">Selecione</MenuItem>
                     {options.map((option) => {
                         const key = getEntityIdKey(source);
                         return (
                             <MenuItem key={option[key]} value={option[key]}>
-                                {option[displayField] ?? option[key]}
+                                <Box>
+                                    <Typography variant="body1" fontWeight="bold">
+                                        {option.razao}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        {option.fantasia} • {formatValue({ name: 'cnpj' }, option.cnpj)}
+                                    </Typography>
+                                </Box>
                             </MenuItem>
                         );
                     })}

@@ -9,7 +9,7 @@ import {
     useMediaQuery,
     useTheme
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SidebarMenu from '../../components/menu/SidebarMenu';
 
@@ -26,13 +26,11 @@ const DashboardPage = () => {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            {/* Menu lateral */}
             <SidebarMenu
                 open={drawerOpen}
                 toggleDrawer={toggleDrawer}
             />
 
-            {/* Conteúdo principal */}
             <Box
                 component="main"
                 sx={{
@@ -41,7 +39,6 @@ const DashboardPage = () => {
                     width: { sm: `calc(100% - ${drawerWidth}px)` },
                 }}
             >
-                {/* Barra superior fixa apenas para dispositivos móveis */}
                 {isMobile &&
                     (
                         <Box sx={{
@@ -71,7 +68,6 @@ const DashboardPage = () => {
                     )
                 }
 
-                {/* Conteúdo da página */}
                 <Box
                     sx={{ margin: 0, padding: 0 }}
                 >

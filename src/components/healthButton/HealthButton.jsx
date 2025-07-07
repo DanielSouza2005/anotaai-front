@@ -1,6 +1,6 @@
 import SyncIcon from '@mui/icons-material/Sync';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useHealthCheck } from '../../hooks/useHealthCheck';
 
@@ -20,7 +20,7 @@ const HealthButton = () => {
 
     const handleCheck = () => {
         checkHealth();
-        setLastCheck(Date.now()); 
+        setLastCheck(Date.now());
     };
 
     return (

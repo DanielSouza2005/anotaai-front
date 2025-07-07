@@ -1,6 +1,5 @@
 import { Box, Typography } from '@mui/material';
 import Lottie from 'lottie-react';
-import React from 'react';
 import animationData from '../../assets/animations/loading-lock.json';
 
 const AuthLoading = () => {

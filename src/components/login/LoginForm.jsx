@@ -23,8 +23,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
-import { useAuth } from '../../context/auth/AuthContext';
-import HealthButton from '../healthButton/HealthButton.js';
+import { useAuth } from '../../context/auth/AuthContext.js';
+import HealthButton from '../healthButton/HealthButton.jsx';
 
 const LoginForm = () => {
 

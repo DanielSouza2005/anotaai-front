@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { createContext, useContext, useEffect, useState } from 'react';
 import api from '../../services/api/api';
 
 const AuthContext = createContext();
@@ -9,13 +9,14 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const checkAuth = () => {
+        const checkAuth = async () => {
             const token = localStorage.getItem('token');
 
             if (token) {
                 try {
                     const decoded = jwtDecode(token);
-                    setUser({ nome: decoded.nome, email: decoded.sub, foto: decoded.foto });
+                    const { data } = await api.get(`/usuario/${decoded.codigo}`);
+                    setUser({ nome: data.nome, email: data.email, foto: data.foto });
                 } catch (error) {
                     localStorage.removeItem('token');
                     setUser(null);

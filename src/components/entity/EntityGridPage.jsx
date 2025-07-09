@@ -275,7 +275,14 @@ const EntityGridPage = ({
 
     return (
         <Box
-            sx={{ margin: 0, padding: 0 }}
+            sx={{
+                margin: 0,
+                padding: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                height: 'calc(100vh - 150px)',
+                overflow: 'hidden'
+            }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <EventNote sx={{ color: 'blue', marginRight: 1 }} />
@@ -322,9 +329,10 @@ const EntityGridPage = ({
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
+                    flex: 1,
                     minHeight: 400,
                     width: '100%',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                     '&:hover': {
                         boxShadow: '0px 4px 12px rgba(25, 118, 210, 0.2)' // Sombra sutil azulada
                     }
@@ -350,6 +358,7 @@ const EntityGridPage = ({
                     }
                     hideFooterSelectedRowCount={true}
                     disableColumnMenu={false}
+                    autoHeight={false}
                     aria-label="Tabela de dados"
                     sx={{
                         width: '100%',
@@ -403,6 +412,10 @@ const EntityGridPage = ({
                         },
                         '& .MuiDataGrid-main': {
                             borderRadius: '16px',
+                            height: '100% !important',
+                        },
+                        '& .MuiDataGrid-virtualScroller': {
+                            overflowX: 'auto', 
                         },
                     }}
                     components={{

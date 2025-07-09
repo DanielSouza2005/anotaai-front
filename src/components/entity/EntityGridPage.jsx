@@ -1,8 +1,8 @@
-import { Add as AddIcon, EventNote, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
+import { Add as AddIcon, EventNote, ExpandLess, ExpandMore, MoreVert, Refresh } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Button, Collapse, Fab, Fade, IconButton, Menu, MenuItem, Paper, Typography, Zoom } from '@mui/material';
+import { Box, Button, Collapse, Fab, Fade, IconButton, LinearProgress, Menu, MenuItem, Paper, Stack, Typography, Zoom } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -318,14 +318,16 @@ const EntityGridPage = ({
             </Paper>
 
             <Paper
-                elevation={1}
+                elevation={0}
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     minHeight: 400,
-                    maxHeight: 'calc(100vh - 250px)',
                     width: '100%',
-                    overflow: 'auto'
+                    overflow: 'hidden',
+                    '&:hover': {
+                        boxShadow: '0px 4px 12px rgba(25, 118, 210, 0.2)' // Sombra sutil azulada
+                    }
                 }}
             >
                 <DataGrid
@@ -346,9 +348,12 @@ const EntityGridPage = ({
                     getRowClassName={(params) =>
                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                     }
+                    hideFooterSelectedRowCount={true}
+                    disableColumnMenu={false}
+                    aria-label="Tabela de dados"
                     sx={{
                         width: '100%',
-                        minWidth: 600, 
+                        minWidth: 600,
                         '& .even': {
                             backgroundColor: '#f3f3f3',
                         },
@@ -360,7 +365,73 @@ const EntityGridPage = ({
                         },
                         '& .MuiDataGrid-footerContainer': {
                             paddingX: 5,
+                            borderTop: '1px solid #e0e0e0',
+                            backgroundColor: 'transparent',
+                            borderBottomLeftRadius: '16px',
+                            borderBottomRightRadius: '16px',
                         },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                            fontWeight: 600,
+                            color: '#424242',
+                            fontSize: '0.875rem',
+                        },
+                        '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
+                            outline: 'none !important',
+                            '&:last-child': {
+                                borderRight: 'none',
+                            },
+                        },
+                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                            outline: 'none !important',
+                        },
+                        '& .MuiDataGrid-columnHeader': {
+                            '&:last-child': {
+                                borderRight: 'none',
+                            },
+                        },
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f5f5f5',
+                            borderBottom: 'none',
+                            borderTopLeftRadius: '16px',
+                            borderTopRightRadius: '16px',
+                        },
+                        '& .MuiDataGrid-columnSeparator': {
+                            display: 'none',
+                        },
+                        '& .MuiDataGrid-menuIcon button': {
+                            color: '#333',
+                        },
+                        '& .MuiDataGrid-main': {
+                            borderRadius: '16px',
+                        },
+                    }}
+                    components={{
+                        NoRowsOverlay: () => (
+                            <Stack height="100%" alignItems="center" justifyContent="center" spacing={1}>
+                                <Typography color="text.secondary" variant="body1">
+                                    Nenhum registro encontrado
+                                </Typography>
+                                <Button
+                                    variant="text"
+                                    size="small"
+                                    onClick={() => fetchData()}
+                                    startIcon={<Refresh />}
+                                >
+                                    Recarregar
+                                </Button>
+                            </Stack>
+                        ),
+                        LoadingOverlay: () => (
+                            <LinearProgress
+                                color="primary"
+                                sx={{
+                                    height: '2px',
+                                    '& .MuiLinearProgress-bar': {
+                                        borderRadius: '2px'
+                                    }
+                                }}
+                            />
+                        ),
                     }}
                 />
             </Paper>

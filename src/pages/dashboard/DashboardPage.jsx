@@ -18,7 +18,6 @@ const DashboardPage = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const drawerWidth = 280;
     const [collapsed, setCollapsed] = useState(false);
 
     const toggleDrawer = () => {

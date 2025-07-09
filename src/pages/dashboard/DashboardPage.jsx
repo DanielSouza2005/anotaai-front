@@ -19,6 +19,7 @@ const DashboardPage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = useState(false);
     const drawerWidth = 280;
+    const [collapsed, setCollapsed] = useState(false);
 
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
@@ -29,6 +30,8 @@ const DashboardPage = () => {
             <SidebarMenu
                 open={drawerOpen}
                 toggleDrawer={toggleDrawer}
+                collapsed={collapsed}
+                setCollapsed={setCollapsed}
             />
 
             <Box
@@ -36,7 +39,10 @@ const DashboardPage = () => {
                 sx={{
                     flexGrow: 1,
                     p: 3,
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    transition: 'margin-left 0.3s ease',
+                    ml: isMobile ? 0 : (collapsed ? '80px' : '280px'),
+                    maxWidth: `calc(100vw - ${isMobile ? 0 : (collapsed ? 80 : 280)}px)`, 
+                    overflowX: 'auto',
                 }}
             >
                 {isMobile &&

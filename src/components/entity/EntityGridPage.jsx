@@ -323,7 +323,9 @@ const EntityGridPage = ({
                     display: 'flex',
                     flexDirection: 'column',
                     minHeight: 400,
-                    maxHeight: 'calc(100vh - 250px)'
+                    maxHeight: 'calc(100vh - 250px)',
+                    width: '100%',
+                    overflow: 'auto'
                 }}
             >
                 <DataGrid
@@ -345,6 +347,8 @@ const EntityGridPage = ({
                         params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                     }
                     sx={{
+                        width: '100%',
+                        minWidth: 600, 
                         '& .even': {
                             backgroundColor: '#f3f3f3',
                         },

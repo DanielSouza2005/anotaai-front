@@ -22,14 +22,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/auth/AuthContext';
 import SidebarItem from './SidebarItem';
 
-const SidebarMenu = ({ open, toggleDrawer }) => {
+const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { logout, user } = useAuth();
     const navigate = useNavigate();
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
-    const [collapsed, setCollapsed] = useState(false);
 
     const drawerWidth = collapsed ? 80 : 280;
 
@@ -43,10 +42,10 @@ const SidebarMenu = ({ open, toggleDrawer }) => {
             variant={isMobile ? 'temporary' : 'permanent'}
             open={isMobile ? open : true}
             onClose={toggleDrawer}
-            sx={{
-                width: drawerWidth,
+            sx={{                
                 flexShrink: 0,
                 overflowX: 'hidden',
+                zIndex: theme.zIndex.drawer,
                 '& .MuiDrawer-paper': {
                     width: drawerWidth,
                     transition: 'all 0.3s ease',

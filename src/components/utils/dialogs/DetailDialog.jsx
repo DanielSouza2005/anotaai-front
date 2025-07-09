@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import DialogTransition from './transition/DialogTransitions';
 
 const renderMaskedField = (field, value) => {
   let displayValue = formatValue(field, value ?? '');
@@ -111,8 +112,13 @@ const DetailDialog = ({
   const fotoUrl = formData?.foto || null;
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      fullWidth 
+      maxWidth="md"
+      TransitionComponent={DialogTransition}
+    >
       <IconButton
         aria-label="Fechar"
         onClick={onClose}

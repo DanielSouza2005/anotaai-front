@@ -20,6 +20,7 @@ import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import SelectField from '../select/SelectField';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import DialogTransition from './transition/DialogTransitions';
 
 const CreateDialog = ({
   open,
@@ -152,7 +153,13 @@ const CreateDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      TransitionComponent={DialogTransition}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

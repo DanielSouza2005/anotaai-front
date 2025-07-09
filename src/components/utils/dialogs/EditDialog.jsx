@@ -21,6 +21,7 @@ import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
 import SelectField from '../select/SelectField';
+import DialogTransition from './transition/DialogTransitions';
 
 const EditDialog = ({
   open,
@@ -54,7 +55,7 @@ const EditDialog = ({
     return 1;
   })();
 
-  const idKey = entity === "contato" ? "empresa": "";
+  const idKey = entity === "contato" ? "empresa" : "";
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({
@@ -193,7 +194,13 @@ const EditDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog
+      open={open} 
+      onClose={onClose} 
+      maxWidth="md" 
+      fullWidth
+      TransitionComponent={DialogTransition}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

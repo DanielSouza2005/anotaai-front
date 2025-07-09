@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import DialogTransition from './transition/DialogTransitions';
 
 const ConfirmDialog = ({
     open,
@@ -18,6 +19,7 @@ const ConfirmDialog = ({
             onClose={onClose}
             maxWidth="xs"
             fullWidth
+            TransitionComponent={DialogTransition}
             PaperProps={{
                 sx: {
                     borderRadius: 3,

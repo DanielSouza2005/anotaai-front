@@ -1,8 +1,8 @@
-import { Add as AddIcon, EventNote, MoreVert } from '@mui/icons-material';
+import { Add as AddIcon, EventNote, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Box, Fab, IconButton, Menu, MenuItem, Paper, Typography } from '@mui/material';
+import { Box, Button, Collapse, Fab, Fade, IconButton, Menu, MenuItem, Paper, Typography, Zoom } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -51,6 +51,7 @@ const EntityGridPage = ({
     const [newFormData, setNewFormData] = useState({});
     const [formData, setFormData] = useState({});
     const [filters, setFilters] = useState([]);
+    const [showFilters, setShowFilters] = useState(false);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -283,19 +284,45 @@ const EntityGridPage = ({
                 </Typography>
             </Box>
 
-            <AdvancedSearchBar
-                fieldsAvailable={searchFields}
-                onFilterChange={(filters) => {
-                    setFilters(filters);
+            <Paper
+                elevation={0}
+                sx={{
+                    backgroundColor: '#fafafa',
+                    padding: showFilters ? 2 : 1,
+                    borderRadius: 2,
+                    border: '1px solid #e0e0e0',
+                    mb: 2,
                 }}
-            />
+            >
+                <Button
+                    variant="text"
+                    startIcon={showFilters ? <ExpandLess /> : <ExpandMore />}
+                    onClick={() => setShowFilters(!showFilters)}
+                    sx={{
+                        mb: showFilters ? 1 : 0,
+                        minHeight: '32px',
+                        paddingY: '4px',
+                    }}
+                >
+                    {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                </Button>
+
+                <Collapse in={showFilters}>
+                    <AdvancedSearchBar
+                        fieldsAvailable={searchFields}
+                        onFilterChange={(filters) => {
+                            setFilters(filters);
+                        }}
+                    />
+                </Collapse>
+            </Paper>
 
             <Paper
                 elevation={1}
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: 400, 
+                    minHeight: 400,
                     maxHeight: 'calc(100vh - 250px)'
                 }}
             >
@@ -327,7 +354,7 @@ const EntityGridPage = ({
                         '& .MuiDataGrid-row:hover': {
                             backgroundColor: '#e3f2fd',
                         },
-                        '& .MuiDataGrid-footerContainer': {                           
+                        '& .MuiDataGrid-footerContainer': {
                             paddingX: 5,
                         },
                     }}
@@ -338,6 +365,7 @@ const EntityGridPage = ({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
+                TransitionComponent={Fade}
                 PaperProps={{
                     sx: {
                         borderRadius: 2,
@@ -365,16 +393,18 @@ const EntityGridPage = ({
                 </MenuItem>
             </Menu>
 
-            <Fab
-                color="primary"
-                sx={{ position: 'fixed', bottom: 16, right: 16 }}
-                onClick={() => {
-                    setNewFormData({});
-                    setOpenAddDialog(true);
-                }}
-            >
-                <AddIcon />
-            </Fab>
+            <Zoom in timeout={500}>
+                <Fab
+                    color="primary"
+                    sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                    onClick={() => {
+                        setNewFormData({});
+                        setOpenAddDialog(true);
+                    }}
+                >
+                    <AddIcon />
+                </Fab>
+            </Zoom>
 
             <CreateDialog
                 open={openAddDialog}

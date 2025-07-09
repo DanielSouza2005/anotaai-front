@@ -28,7 +28,7 @@ const HealthButton = () => {
             <Button
                 onClick={handleCheck}
                 variant="contained"
-                color="secondary"
+                color="primary"
                 size="small"
                 startIcon={loading ? <CircularProgress size={18} color="inherit" /> : <SyncIcon />}
                 sx={{

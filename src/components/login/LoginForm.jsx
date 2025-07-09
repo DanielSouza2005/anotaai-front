@@ -8,6 +8,7 @@ import {
 import {
     Box,
     Button,
+    CircularProgress,
     Container,
     IconButton,
     InputAdornment,
@@ -35,6 +36,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
@@ -58,11 +60,15 @@ const LoginForm = () => {
         }
 
         try {
+            setLoading(true);
             await login(email, pass);
             navigate('/dashboard/contatos');
         }
         catch (err) {
             toast.error(`Login inválido: ${err}`);
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -154,9 +160,15 @@ const LoginForm = () => {
                             Acesse sua conta
                         </Typography>
 
-                        <Box component="form" sx={{ width: '100%' }}>
+                        <Box
+                            component="form"
+                            sx={{
+                                width: '100%',
+                                animation: 'fadeIn 0.8s ease-in',
+                            }}
+                        >
                             <TextField
-                                margin="normal"
+                                margin="dense"
                                 required
                                 fullWidth
                                 id="email"
@@ -178,7 +190,7 @@ const LoginForm = () => {
                             />
 
                             <TextField
-                                margin="normal"
+                                margin="dense"
                                 required
                                 fullWidth
                                 name="password"
@@ -206,6 +218,7 @@ const LoginForm = () => {
                                     ),
                                 }}
                                 sx={{ mb: isMobile ? 3 : 4 }}
+                                variant="outlined"
                                 size={isMobile ? "small" : "medium"}
                                 onChange={e => setPass(e.target.value)}
                             />
@@ -221,16 +234,31 @@ const LoginForm = () => {
                                     borderRadius: 1.5,
                                     fontWeight: 600,
                                     textTransform: 'none',
-                                    fontSize: isMobile ? '0.9rem' : '1rem'
+                                    fontSize: isMobile ? '0.9rem' : '1rem',
+                                    "&.Mui-disabled": {
+                                        backgroundColor: theme.palette.primary.main,
+                                        color: theme.palette.primary.contrastText,
+                                        opacity: 1,
+                                    },
                                 }}
                                 startIcon={<LoginIcon />}
+                                disabled={loading}
                             >
-                                Entrar
+                                {loading ?
+                                    (
+                                        <CircularProgress size={24} color="inherit" />
+                                    ) :
+                                    (
+                                        'Entrar'
+                                    )}
                             </Button>
 
                             <Box sx={{ mt: isMobile ? 2 : 3, textAlign: 'center' }}>
                                 <Typography variant="body2" color="text.secondary">
                                     © {new Date().getFullYear()} Anota Aí. Todos os Direitos Reservados.
+                                </Typography>
+                                <Typography variant="caption" color="text.disabled">
+                                    Versão 0.1.0
                                 </Typography>
                             </Box>
                         </Box>

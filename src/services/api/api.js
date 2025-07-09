@@ -18,7 +18,15 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(
-  response => response,
+  async response => {
+    const delay = Number(process.env.REACT_APP_ANOTAAI_API_DELAY) || 0;
+    
+    if (delay > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+
+    return response;
+  },
   error => {
     const { response } = error;
 

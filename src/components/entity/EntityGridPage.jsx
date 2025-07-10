@@ -150,8 +150,10 @@ const EntityGridPage = ({
         handleMenuClose();
     };
 
-    const handleCreate = async (values, { setSubmitting, setErrors }) => {
+    const handleCreate = async (values, { setSubmitting, setErrors }, finish) => {
         try {
+            setSubmitting(true);
+
             if (entityName === "contato" || entityName === "usuario") {
                 const formData = new FormData();
                 const { foto, dados } = values;
@@ -201,11 +203,14 @@ const EntityGridPage = ({
             }
         } finally {
             setSubmitting(false);
+            finish();
         }
     };
 
-    const handleEdit = async (values, { setSubmitting, setErrors }) => {
+    const handleEdit = async (values, { setSubmitting, setErrors }, finish) => {
         try {
+            setSubmitting(true);
+
             if (entityName === "contato" || entityName === "usuario") {
                 const formData = new FormData();
                 const { foto, ...dados } = values;
@@ -259,10 +264,11 @@ const EntityGridPage = ({
             }
         } finally {
             setSubmitting(false);
+            finish();
         }
     };
 
-    const handleDelete = async () => {
+    const handleDelete = async (finish) => {
         try {
             await api.delete(`/${entityName}/${selectedRowId}`);
             fetchData();
@@ -271,6 +277,7 @@ const EntityGridPage = ({
             toast.error(`Erro ao excluir ${getEntityLabel(entityName)}. ` + error.response.data);
         }
         handleMenuClose();
+        finish();
     };
 
     return (
@@ -415,7 +422,7 @@ const EntityGridPage = ({
                             height: '100% !important',
                         },
                         '& .MuiDataGrid-virtualScroller': {
-                            overflowX: 'auto', 
+                            overflowX: 'auto',
                         },
                     }}
                     components={{

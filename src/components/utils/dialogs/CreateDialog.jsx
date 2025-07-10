@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
@@ -18,8 +19,8 @@ import { Field, Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
-import SelectField from '../select/SelectField';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import SelectField from '../select/SelectField';
 import DialogTransition from './transition/DialogTransitions';
 
 const CreateDialog = ({
@@ -39,6 +40,7 @@ const CreateDialog = ({
   const [tabIndex, setTabIndex] = useState(0);
   const [previewImage, setPreviewImage] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -155,7 +157,13 @@ const CreateDialog = ({
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={(event, reason) => {
+        if (submitting && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+          return;
+        }
+        onClose();
+      }}
+      disableEscapeKeyDown={submitting}
       maxWidth="md"
       fullWidth
       TransitionComponent={DialogTransition}
@@ -164,6 +172,12 @@ const CreateDialog = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, formikBag) => {
+          setSubmitting(true);
+
+          const finish = () => {
+            setSubmitting(false);
+          };
+
           if (entity === "contato" || entity === "usuario") {
             const { foto } = values;
             const rest = convertEmptyStringsToNull(values);
@@ -173,15 +187,15 @@ const CreateDialog = ({
               dados: rest,
               foto: foto || null,
             };
-            onCreate(payload, formikBag);
+            onCreate(payload, formikBag, finish);
           }
           else {
             let cleanValues = convertEmptyStringsToNull(values);
-            onCreate(cleanValues, formikBag);
+            onCreate(cleanValues, formikBag, finish);
           }
         }}
       >
-        {({ values, errors, touched, setFieldValue }) => {
+        {({ values, errors, touched, setFieldValue, isSubmitting }) => {
 
           const clearPhoto = () => {
             setFieldValue('foto', null);
@@ -192,7 +206,10 @@ const CreateDialog = ({
             <Form>
               <IconButton
                 aria-label="Fechar"
-                onClick={onClose}
+                onClick={() => {
+                  if (!submitting) onClose();
+                }}
+                disabled={submitting}
                 sx={{ position: 'absolute', right: 8, top: 8 }}
               >
                 <CloseIcon />
@@ -313,14 +330,23 @@ const CreateDialog = ({
               </DialogContent>
 
               <DialogActions>
-                <Button onClick={onClose}>Cancelar</Button>
-                <Button variant="contained" type="submit">Criar</Button>
+                <Button onClick={onClose} disabled={submitting}>
+                  Cancelar
+                </Button>
+                <LoadingButton
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  loading={isSubmitting}
+                >
+                  Criar
+                </LoadingButton>
               </DialogActions>
             </Form>
           )
         }}
       </Formik>
-    </Dialog>
+    </Dialog >
   );
 };
 

@@ -1,5 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
+import { LoadingButton } from '@mui/lab';
 import {
   Avatar,
   Box,
@@ -40,6 +41,7 @@ const EditDialog = ({
   const [tabIndex, setTabIndex] = useState(0);
   const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
   const [photo, setPhoto] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -195,9 +197,15 @@ const EditDialog = ({
 
   return (
     <Dialog
-      open={open} 
-      onClose={onClose} 
-      maxWidth="md" 
+      open={open}
+      onClose={(event, reason) => {
+        if (submitting && (reason === 'backdropClick' || reason === 'escapeKeyDown')) {
+          return;
+        }
+        onClose();
+      }}
+      disableEscapeKeyDown={submitting}
+      maxWidth="md"
       fullWidth
       TransitionComponent={DialogTransition}
     >
@@ -206,6 +214,12 @@ const EditDialog = ({
         validationSchema={validationSchema}
         enableReinitialize
         onSubmit={(values, formikBag) => {
+          setSubmitting(true);
+
+          const finish = () => {
+            setSubmitting(false);
+          };
+
           if (entity === "contato" || entity === "usuario") {
             const { foto } = values;
             const rest = convertEmptyStringsToNull(values);
@@ -215,18 +229,21 @@ const EditDialog = ({
               dados: rest,
               foto: foto || null,
             };
-            onSave(payload, formikBag);
+            onSave(payload, formikBag, finish);
           } else {
             const cleanValues = convertEmptyStringsToNull(values);
-            onSave(cleanValues, formikBag);
+            onSave(cleanValues, formikBag, finish);
           }
         }}
       >
-        {({ values, errors, touched, setFieldValue }) => (
+        {({ values, errors, touched, setFieldValue, isSubmitting }) => (
           <Form>
             <IconButton
               aria-label="Fechar"
-              onClick={onClose}
+              onClick={() => {
+                if (!submitting) onClose();
+              }}
+              disabled={submitting}
               sx={{ position: 'absolute', right: 8, top: 8 }}
             >
               <CloseIcon />
@@ -360,8 +377,20 @@ const EditDialog = ({
             </DialogContent>
 
             <DialogActions>
-              <Button onClick={onClose}>Cancelar</Button>
-              <Button variant="contained" type="submit">Salvar</Button>
+              <Button
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
+                Cancelar
+              </Button>
+              <LoadingButton
+                variant="contained"
+                type="submit"
+                color="primary"
+                loading={isSubmitting}
+              >
+                Salvar
+              </LoadingButton>
             </DialogActions>
           </Form>
         )}

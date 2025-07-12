@@ -17,10 +17,12 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useState } from 'react';
-import convertEmptyStringsToNull from '../../../utils/FieldCleaner';
+import { useEffect, useMemo, useState } from 'react';
+import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
+import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
+import MaskedInput from '../../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import DialogTransition from './transition/DialogTransitions';
 
@@ -104,6 +106,16 @@ const EditDialog = ({
     }
   }, [open]);
 
+  const maskedFields = useMemo(() => {
+    const fieldsList = [
+      ...fields.filter(f => maskTypes.includes(f.name) || maskTypes.includes(f.mask))
+        .map(f => f.name),
+      ...enderecoFields.filter(f => maskTypes.includes(f.name) || maskTypes.includes(f.mask))
+        .map(f => `endereco.${f.name}`)
+    ];
+    return fieldsList;
+  }, [fields, enderecoFields]);
+
   const isRequired = (fieldName, prefix = '') => {
     try {
       const path = prefix ? `${prefix}.${fieldName}` : fieldName;
@@ -128,6 +140,7 @@ const EditDialog = ({
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
     const isReadOnly = field.readonly === true;
+
     const label = (
       <>
         {field.label}
@@ -147,6 +160,23 @@ const EditDialog = ({
             displayField={field.displayField}
             error={error}
             touched={isTouched}
+          />
+        </Grid>
+      );
+    }
+
+    const needsMask = maskTypes.includes(field.name) || maskTypes.includes(field.mask);
+
+    if (needsMask) {
+      return (
+        <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
+          <MaskedInput
+            name={fullName}
+            mask={field.mask || field.name}
+            label={label}
+            fullWidth
+            margin="dense"
+            readOnly={isReadOnly}
           />
         </Grid>
       );
@@ -222,7 +252,7 @@ const EditDialog = ({
 
           if (entity === "contato" || entity === "usuario") {
             const { foto } = values;
-            const rest = convertEmptyStringsToNull(values);
+            const rest = cleanValuesForAPI(values, maskedFields);
             delete rest.foto;
 
             const payload = {
@@ -231,7 +261,7 @@ const EditDialog = ({
             };
             onSave(payload, formikBag, finish);
           } else {
-            const cleanValues = convertEmptyStringsToNull(values);
+            const cleanValues = cleanValuesForAPI(values, maskedFields);
             onSave(cleanValues, formikBag, finish);
           }
         }}

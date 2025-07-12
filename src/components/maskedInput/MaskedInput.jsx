@@ -8,11 +8,11 @@ const MaskedInput = React.memo(({ mask, ...props }) => {
     const [inputValue, setInputValue] = useState(field.value || '');
     const { setValue } = helpers;
 
-    useEffect(() => {
-        if (field.value !== inputValue) {
-            setInputValue(field.value || '');
-        }
-    }, [field.value, inputValue]);
+    // useEffect(() => {
+    //     if (field.value !== inputValue) {
+    //         setInputValue(field.value || '');
+    //     }
+    // }, [field.value, inputValue]);
 
     const applyMask = (value) => {
         switch (mask) {
@@ -25,6 +25,19 @@ const MaskedInput = React.memo(({ mask, ...props }) => {
             default: return value;
         }
     };
+
+    useEffect(() => {
+        if (field.value) {
+            const maskedValue = applyMask(field.value);
+            setInputValue(maskedValue);
+
+            if (maskedValue !== field.value) {
+                setValue(maskedValue);
+            }
+        } else {
+            setInputValue('');
+        }
+    }, [field.value, inputValue, mask, setValue]);
 
     const handleChange = (e) => {
         const rawValue = e.target.value;
@@ -53,6 +66,13 @@ const MaskedInput = React.memo(({ mask, ...props }) => {
             onBlur={handleBlur}
             error={meta.touched && Boolean(meta.error)}
             helperText={getErrorText()}
+            InputProps={{
+                readOnly: props.readOnly,
+                sx: {
+                    backgroundColor: props.readOnly ? '#e3f2fd' : '#ffffff',
+                    borderRadius: 1,
+                },
+            }}
         />
     );
 });

@@ -141,6 +141,19 @@ const CreateDialog = ({
             label={label}
             fullWidth
             margin="dense"
+            onBlur={async (e) => {
+              if (field.name === 'cep') {
+                const endereco = await fetchEnderecoByCEP(e.target.value);
+                if (endereco) {
+                  setFieldValue('endereco.pais', 'Brasil');
+                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                }
+              }
+            }}
           />
         </Grid>
       );

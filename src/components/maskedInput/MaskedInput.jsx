@@ -3,18 +3,14 @@ import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { maskCEP, maskCNPJ, maskCPF, maskIE, maskPhone, maskRG } from '../../utils/Masks';
 
-const MaskedInput = React.memo(({ mask, ...props }) => {
+const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
     const [field, meta, helpers] = useField(props);
     const [inputValue, setInputValue] = useState(field.value || '');
     const { setValue } = helpers;
 
-    // useEffect(() => {
-    //     if (field.value !== inputValue) {
-    //         setInputValue(field.value || '');
-    //     }
-    // }, [field.value, inputValue]);
-
     const applyMask = (value) => {
+        if (!value) return '';
+
         switch (mask) {
             case 'cpf': return maskCPF(value);
             case 'cnpj': return maskCNPJ(value);
@@ -49,6 +45,10 @@ const MaskedInput = React.memo(({ mask, ...props }) => {
 
     const handleBlur = (e) => {
         field.onBlur(e);
+
+        if (propOnBlur) {            
+            propOnBlur(e);
+        }
     };
 
     const getErrorText = () => {

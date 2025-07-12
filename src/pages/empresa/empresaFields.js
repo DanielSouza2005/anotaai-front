@@ -29,12 +29,12 @@ const empresaEnderecoFields = [
 const addEmpresaFields = [
     { name: 'razao', label: 'Razão Social', type: 'text' },
     { name: 'fantasia', label: 'Fantasia', type: 'text' },
-    { name: 'cnpj', label: 'CNPJ', type: 'text' },
-    { name: 'ie', label: 'Inscrição Estadual', type: 'text' }
+    { name: 'cnpj', label: 'CNPJ', type: 'text', mask: 'cnpj' },
+    { name: 'ie', label: 'Inscrição Estadual', type: 'text', mask: 'ie' }
 ];
 
 const addEmpresaEnderecoFields = [
-    { name: 'cep', label: 'CEP', type: 'text' },
+    { name: 'cep', label: 'CEP', type: 'text', mask: 'cep' },
     { name: 'pais', label: 'País', type: 'text' },
     { name: 'uf', label: 'Estado', type: 'text' },
     { name: 'cidade', label: 'Cidade', type: 'text' },
@@ -48,12 +48,12 @@ const editEmpresaFields = [
     { name: 'cod_empresa', label: 'Código (Empresa)', type: 'text', readonly: true },
     { name: 'razao', label: 'Razão Social', type: 'text' },
     { name: 'fantasia', label: 'Fantasia', type: 'text' },
-    { name: 'cnpj', label: 'CNPJ', type: 'text' },
-    { name: 'ie', label: 'Inscrição Estadual', type: 'text' }
+    { name: 'cnpj', label: 'CNPJ', type: 'text', mask: 'cnpj' },
+    { name: 'ie', label: 'Inscrição Estadual', type: 'text', mask: 'ie' },
 ];
 
 const editEmpresaEnderecoFields = [
-    { name: 'cep', label: 'CEP', type: 'text' },
+    { name: 'cep', label: 'CEP', type: 'text', mask: 'cep' },
     { name: 'pais', label: 'País', type: 'text' },
     { name: 'uf', label: 'Estado', type: 'text' },
     { name: 'cidade', label: 'Cidade', type: 'text' },

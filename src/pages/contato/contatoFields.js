@@ -53,10 +53,10 @@ const empresaFields = [
 const addContatoFields = [
     { name: 'nome', label: 'Nome', type: 'text' },
     { name: 'cod_empresa', label: 'Empresa', type: 'select', source: 'empresa', displayField: 'razao' },
-    { name: 'cpf', label: 'CPF', type: 'text' },
-    { name: 'celular', label: 'Celular', type: 'text' },
-    { name: 'telefone', label: 'Telefone', type: 'text' },
-    { name: 'telefone2', label: 'Telefone 2', type: 'text' },
+    { name: 'cpf', label: 'CPF', type: 'text', mask: 'cpf' },
+    { name: 'celular', label: 'Celular', type: 'text', mask: 'phone' },
+    { name: 'telefone', label: 'Telefone', type: 'text', mask: 'phone' },
+    { name: 'telefone2', label: 'Telefone 2', type: 'text', mask: 'phone' },
     { name: 'email_pessoal', label: 'E-mail Pessoal', type: 'email' },
     { name: 'email_corp', label: 'E-mail Corporativo', type: 'email' },
     { name: 'cargo', label: 'Cargo', type: 'text' },
@@ -65,7 +65,7 @@ const addContatoFields = [
 ];
 
 const addContatoEnderecoFields = [
-    { name: 'cep', label: 'CEP', type: 'text' },
+    { name: 'cep', label: 'CEP', type: 'text', mask: 'cep' },
     { name: 'pais', label: 'País', type: 'text' },
     { name: 'uf', label: 'Estado', type: 'text' },
     { name: 'cidade', label: 'Cidade', type: 'text' },
@@ -79,10 +79,10 @@ const editContatoFields = [
     { name: 'cod_contato', label: 'Contato (Código)', type: 'text', readonly: true },
     { name: 'nome', label: 'Nome', type: 'text' },
     { name: 'cod_empresa', label: 'Empresa', type: 'select', source: 'empresa', displayField: 'razao' },
-    { name: 'cpf', label: 'CPF', type: 'text' },
-    { name: 'celular', label: 'Celular', type: 'text' },
-    { name: 'telefone', label: 'Telefone', type: 'text' },
-    { name: 'telefone2', label: 'Telefone 2', type: 'text' },
+    { name: 'cpf', label: 'CPF', type: 'text', mask: 'cpf' },
+    { name: 'celular', label: 'Celular', type: 'text', mask: 'phone' },
+    { name: 'telefone', label: 'Telefone', type: 'text', mask: 'phone' },
+    { name: 'telefone2', label: 'Telefone 2', type: 'text', mask: 'phone' },
     { name: 'email_pessoal', label: 'E-mail Pessoal', type: 'email' },
     { name: 'email_corp', label: 'E-mail Corporativo', type: 'email' },
     { name: 'cargo', label: 'Cargo', type: 'text' },
@@ -91,7 +91,7 @@ const editContatoFields = [
 ];
 
 const editContatoEnderecoFields = [
-    { name: 'cep', label: 'CEP', type: 'text' },
+    { name: 'cep', label: 'CEP', type: 'text', mask: 'cep' },
     { name: 'pais', label: 'País', type: 'text' },
     { name: 'uf', label: 'Estado', type: 'text' },
     { name: 'cidade', label: 'Cidade', type: 'text' },

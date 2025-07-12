@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
 
+const maskTypes = ['cpf', 'cnpj', 'rg', 'phone', 'cep', 'ie'];
+
 const formatValue = (field, value) => {
     if (!field || !value) return '';
 
@@ -39,49 +41,64 @@ const removeMask = (value) => {
     return value?.replace(/\D/g, '') || '';
 }
 
-const maskPhone = (number = '') => {
-    if (number === '') return;
-    if (!number) return '';
+export const maskPhone = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
 
-    const cleaned = number.replace(/\D/g, '');
-    if (cleaned.length === 11) {
-        return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    } else if (cleaned.length === 10) {
-        return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-    }
-    return number;
+    if (cleaned.length === 0) return '';
+    if (cleaned.length <= 2) return `(${cleaned}`;
+    if (cleaned.length <= 6) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    if (cleaned.length <= 10) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
 };
 
-const maskCEP = (cep = '') => {
-    if (cep === '') return;
-    if (!cep) return '';
+export const maskCEP = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
 
-    const cleaned = cep.replace(/\D/g, '');
-    return cleaned.replace(/^(\d{5})(\d{3})$/, '$1-$2');
+    if (cleaned.length <= 5) return cleaned;
+    return `${cleaned.slice(0, 5)}-${cleaned.slice(5, 8)}`;
 };
 
-const maskCPF = (cpf = '') => {
-    if (!cpf) return '';
-    const cleaned = cpf.replace(/\D/g, '');
-    return cleaned.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
+export const maskCPF = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
+
+    if (cleaned.length <= 3) return cleaned;
+    if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+    if (cleaned.length <= 9) return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+
+    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9, 11)}`;
 };
 
-const maskRG = (rg = '') => {
-    if (!rg) return '';
-    const cleaned = rg.replace(/\D/g, '');
-    return cleaned.replace(/^(\d{2})(\d{3})(\d{3})(\d{1})$/, '$1.$2.$3-$4');
+export const maskRG = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
+
+    if (cleaned.length <= 2) return cleaned;
+    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)}.${cleaned.slice(2)}`;
+    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5)}`;
+
+    return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}-${cleaned.slice(8, 9)}`;
 };
 
-const maskCNPJ = (cnpj = '') => {
-    if (!cnpj) return '';
-    const cleaned = cnpj.replace(/\D/g, '');
-    return cleaned.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+export const maskCNPJ = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
+
+    if (cleaned.length <= 2) return cleaned;
+    if (cleaned.length <= 5) return `${cleaned.slice(0, 2)}.${cleaned.slice(2)}`;
+    if (cleaned.length <= 8) return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5)}`;
+    if (cleaned.length <= 12) return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}/${cleaned.slice(8)}`;
+
+    return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}/${cleaned.slice(8, 12)}-${cleaned.slice(12, 14)}`;
 };
 
-const maskIE = (value) => {
-    if (!value) return '';
-    const onlyDigits = value.replace(/\D/g, '');
-    return onlyDigits.replace(/(\d{1,3})(?=(\d{3})+(?!\d))/g, '$1.');
-}
+export const maskIE = (value = '') => {
+    const cleaned = value.replace(/\D/g, '');
 
-export { formatValue, removeMask, maskCEP, maskPhone, maskCPF, maskRG, maskCNPJ, maskIE };
+    if (cleaned.length <= 3) return cleaned;
+    if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+    if (cleaned.length <= 9) return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+    if (cleaned.length <= 12) return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}.${cleaned.slice(9)}`;
+
+    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}.${cleaned.slice(9, 12)}`;
+};
+
+export { formatValue, removeMask, maskTypes };

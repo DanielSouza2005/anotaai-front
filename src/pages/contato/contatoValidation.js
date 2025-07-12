@@ -1,4 +1,12 @@
 import * as Yup from 'yup';
+import { removeMask } from '../../utils/Masks';
+
+const cleanValue = (value) => {
+  if (typeof value === 'string') {
+    return removeMask(value);
+  }
+  return value;
+};
 
 const contatoValidationSchema = Yup.object({
   nome: Yup.string()
@@ -8,25 +16,25 @@ const contatoValidationSchema = Yup.object({
     .nullable(),
 
   cpf: Yup.string()
-    .transform(v => (v === '' ? null : v))
+    .transform(v => cleanValue(v) || null)
     .nullable()
     .matches(/^\d{11}$/, 'CPF deve conter exatamente 11 números')
     .notRequired(),
 
   celular: Yup.string()
-    .transform(v => (v === '' ? null : v))
+    .transform(v => cleanValue(v) || null)
     .nullable()
     .matches(/^\d{11}$/, 'Celular deve conter exatamente 11 números')
     .notRequired(),
 
   telefone: Yup.string()
-    .transform(v => (v === '' ? null : v))
+    .transform(v => cleanValue(v) || null)
     .nullable()
     .matches(/^\d{10}$/, 'Telefone deve conter exatamente 10 números')
     .notRequired(),
 
   telefone2: Yup.string()
-    .transform(v => (v === '' ? null : v))
+    .transform(v => cleanValue(v) || null)
     .nullable()
     .matches(/^\d{10}$/, 'Telefone 2 deve conter exatamente 10 números')
     .notRequired(),
@@ -55,7 +63,7 @@ const contatoValidationSchema = Yup.object({
 
   endereco: Yup.object({
     cep: Yup.string()
-      .transform(v => (v === '' ? null : v))
+      .transform(v => cleanValue(v) || null)
       .nullable()
       .matches(/^\d{5}-?\d{3}$/, 'CEP inválido')
       .notRequired(),

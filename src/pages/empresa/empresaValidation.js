@@ -1,4 +1,12 @@
 import * as Yup from 'yup';
+import { removeMask } from '../../utils/Masks';
+
+const cleanValue = (value) => {
+  if (typeof value === 'string') {
+    return removeMask(value);
+  }
+  return value;
+};
 
 const empresaValidationSchema = Yup.object({
   razao: Yup.string()
@@ -8,17 +16,18 @@ const empresaValidationSchema = Yup.object({
     .required('O nome fantasia não pode estar em branco.'),
 
   cnpj: Yup.string()
+    .transform(v => cleanValue(v) || null)
     .required('O CNPJ não pode estar em branco.')
     .matches(/^\d{14}$/, 'O CNPJ deve conter exatamente 14 dígitos numéricos.'),
 
   ie: Yup.string()
-    .transform(v => (v === '' ? null : v))
+    .transform(v => cleanValue(v) || null)
     .nullable()
     .matches(/^\d{8,14}$/, 'A inscrição estadual deve conter entre 8 e 14 dígitos.'),
 
   endereco: Yup.object({
     cep: Yup.string()
-      .transform(v => (v === '' ? null : v))
+      .transform(v => cleanValue(v) || null)
       .nullable()
       .matches(/^\d{5}-?\d{3}$/, 'CEP inválido')
       .notRequired(),

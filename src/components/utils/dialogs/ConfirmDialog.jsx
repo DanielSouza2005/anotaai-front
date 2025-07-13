@@ -19,8 +19,8 @@ const ConfirmDialog = ({
     const handleConfirm = async () => {
         setSubmitting(true);
         try {
-            await onConfirm(() => setSubmitting(false));
-        } catch (err) {
+            await onConfirm();
+        } finally {
             setSubmitting(false);
         }
     };

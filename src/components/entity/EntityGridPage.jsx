@@ -268,7 +268,7 @@ const EntityGridPage = ({
         }
     };
 
-    const handleDelete = async (finish) => {
+    const handleDelete = async () => {
         try {
             await api.delete(`/${entityName}/${selectedRowId}`);
             fetchData();
@@ -277,7 +277,6 @@ const EntityGridPage = ({
             toast.error(`Erro ao excluir ${getEntityLabel(entityName)}. ` + error.response.data);
         }
         handleMenuClose();
-        finish();
     };
 
     return (

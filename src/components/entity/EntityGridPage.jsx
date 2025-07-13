@@ -285,9 +285,8 @@ const EntityGridPage = ({
                 margin: 0,
                 padding: 0,
                 display: 'flex',
-                height: '100%',
                 flexDirection: 'column',
-                minHeight: 'calc(100vh - 150px)',
+                height: '100%',
                 overflow: 'hidden'
             }}
         >
@@ -331,130 +330,148 @@ const EntityGridPage = ({
                 </Collapse>
             </Paper>
 
-            <Paper
-                elevation={0}
+            <Box
                 sx={{
+                    flex: 1,
                     display: 'flex',
                     flexDirection: 'column',
-                    flex: 1,
-                    minHeight: 400,
-                    width: '100%',
-                    overflow: 'auto',
-                    '&:hover': {
-                        boxShadow: '0px 4px 12px rgba(25, 118, 210, 0.2)' // Sombra sutil azulada
-                    }
+                    minHeight: 0,
+                    overflow: 'hidden'
                 }}
             >
-                <DataGrid
-                    rows={rows}
-                    columns={columnsWithActions}
-                    loading={loading}
-                    rowCount={totalRows}
-                    paginationMode="server"
-                    paginationModel={{ page, pageSize }}
-                    onPaginationModelChange={(model) => {
-                        setPage(model.page);
-                        setPageSize(model.pageSize);
-                    }}
-                    disableRowSelectionOnClick
-                    onRowDoubleClick={handleRowDoubleClick}
-                    localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-                    getRowId={(row) => row[getEntityIdKey(entityName)]}
-                    getRowClassName={(params) =>
-                        params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                    }
-                    hideFooterSelectedRowCount={true}
-                    disableColumnMenu={false}
-                    autoHeight={false}
-                    aria-label="Tabela de dados"
+                <Paper
+                    elevation={0}
                     sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        minHeight: 0,
                         width: '100%',
-                        minWidth: 600,
-                        '& .even': {
-                            backgroundColor: '#f3f3f3',
-                        },
-                        '& .odd': {
-                            backgroundColor: '#ffffff',
-                        },
-                        '& .MuiDataGrid-row:hover': {
-                            backgroundColor: '#e3f2fd',
-                        },
-                        '& .MuiDataGrid-footerContainer': {
-                            paddingX: 5,
-                            borderTop: '1px solid #e0e0e0',
-                            backgroundColor: 'transparent',
-                            borderBottomLeftRadius: '16px',
-                            borderBottomRightRadius: '16px',
-                        },
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                            fontWeight: 600,
-                            color: '#424242',
-                            fontSize: '0.875rem',
-                        },
-                        '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
-                            outline: 'none !important',
-                            '&:last-child': {
-                                borderRight: 'none',
-                            },
-                        },
-                        '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-                            outline: 'none !important',
-                        },
-                        '& .MuiDataGrid-columnHeader': {
-                            '&:last-child': {
-                                borderRight: 'none',
-                            },
-                        },
-                        '& .MuiDataGrid-columnHeaders': {
-                            backgroundColor: '#f5f5f5',
-                            borderBottom: 'none',
-                            borderTopLeftRadius: '16px',
-                            borderTopRightRadius: '16px',
-                        },
-                        '& .MuiDataGrid-columnSeparator': {
-                            display: 'none',
-                        },
-                        '& .MuiDataGrid-menuIcon button': {
-                            color: '#333',
-                        },
-                        '& .MuiDataGrid-main': {
-                            borderRadius: '16px',
-                            height: '100% !important',
-                        },
-                        '& .MuiDataGrid-virtualScroller': {
-                            overflowX: 'auto',
-                        },
+                        overflow: 'hidden',
+                        '&:hover': {
+                            boxShadow: '0px 4px 12px rgba(25, 118, 210, 0.2)'
+                        }
                     }}
-                    components={{
-                        NoRowsOverlay: () => (
-                            <Stack height="100%" alignItems="center" justifyContent="center" spacing={1}>
-                                <Typography color="text.secondary" variant="body1">
-                                    Nenhum registro encontrado
-                                </Typography>
-                                <Button
-                                    variant="text"
-                                    size="small"
-                                    onClick={() => fetchData()}
-                                    startIcon={<Refresh />}
-                                >
-                                    Recarregar
-                                </Button>
-                            </Stack>
-                        ),
-                        LoadingOverlay: () => (
-                            <LinearProgress
-                                color="primary"
-                                sx={{
-                                    height: '2px',
-                                    '& .MuiLinearProgress-bar': {
-                                        borderRadius: '2px'
-                                    }
-                                }}
-                            />
-                        ),
-                    }}
-                />
-            </Paper>
+                >
+                    <DataGrid
+                        rows={rows}
+                        columns={columnsWithActions}
+                        loading={loading}
+                        rowCount={totalRows}
+                        paginationMode="server"
+                        paginationModel={{ page, pageSize }}
+                        onPaginationModelChange={(model) => {
+                            setPage(model.page);
+                            setPageSize(model.pageSize);
+                        }}
+                        disableRowSelectionOnClick
+                        onRowDoubleClick={handleRowDoubleClick}
+                        localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+                        getRowId={(row) => row[getEntityIdKey(entityName)]}
+                        getRowClassName={(params) =>
+                            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                        }
+                        hideFooterSelectedRowCount={true}
+                        disableColumnMenu={false}
+                        autoHeight={false}
+                        aria-label="Tabela de dados"
+                        sx={{
+                            flex: 1,
+                            width: '100%',
+                            minWidth: 600,
+                            '& .even': {
+                                backgroundColor: '#f3f3f3',
+                            },
+                            '& .odd': {
+                                backgroundColor: '#ffffff',
+                            },
+                            '& .MuiDataGrid-row:hover': {
+                                backgroundColor: '#e3f2fd',
+                            },
+                            '& .MuiDataGrid-footerContainer': {
+                                position: 'sticky', 
+                                paddingX: 5,
+                                borderTop: '1px solid #e0e0e0',
+                                backgroundColor: 'transparent',
+                                borderBottomLeftRadius: '16px',
+                                borderBottomRightRadius: '16px',
+                                bottom: 0, 
+                            },
+                            '& .MuiDataGrid-columnHeaderTitle': {
+                                fontWeight: 600,
+                                color: '#424242',
+                                fontSize: '0.875rem',
+                            },
+                            '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
+                                outline: 'none !important',
+                                '&:last-child': {
+                                    borderRight: 'none',
+                                },
+                            },
+                            '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+                                outline: 'none !important',
+                            },
+                            '& .MuiDataGrid-columnHeader': {
+                                '&:last-child': {
+                                    borderRight: 'none',
+                                },
+                            },
+                            '& .MuiDataGrid-columnHeaders': {
+                                backgroundColor: '#f5f5f5',
+                                borderBottom: 'none',
+                                borderTopLeftRadius: '16px',
+                                borderTopRightRadius: '16px',
+                                position: 'sticky',
+                                top: 0,
+                                zIndex: 1,
+                            },
+                            '& .MuiDataGrid-columnSeparator': {
+                                display: 'none',
+                            },
+                            '& .MuiDataGrid-menuIcon button': {
+                                color: '#333',
+                            },
+                            '& .MuiDataGrid-main': {
+                                borderRadius: '16px',
+                                height: '100% !important',
+                            },
+                            '& .MuiDataGrid-virtualScroller': {
+                                overflowX: 'auto',
+                                overflowY: 'auto',
+                                minHeight: 200,
+                            },
+                        }}
+                        components={{
+                            NoRowsOverlay: () => (
+                                <Stack height="100%" alignItems="center" justifyContent="center" spacing={1}>
+                                    <Typography color="text.secondary" variant="body1">
+                                        Nenhum registro encontrado
+                                    </Typography>
+                                    <Button
+                                        variant="text"
+                                        size="small"
+                                        onClick={() => fetchData()}
+                                        startIcon={<Refresh />}
+                                    >
+                                        Recarregar
+                                    </Button>
+                                </Stack>
+                            ),
+                            LoadingOverlay: () => (
+                                <LinearProgress
+                                    color="primary"
+                                    sx={{
+                                        height: '2px',
+                                        '& .MuiLinearProgress-bar': {
+                                            borderRadius: '2px'
+                                        }
+                                    }}
+                                />
+                            ),
+                        }}
+                    />
+                </Paper>
+            </Box>
 
             <Menu
                 anchorEl={anchorEl}

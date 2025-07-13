@@ -285,8 +285,9 @@ const EntityGridPage = ({
                 margin: 0,
                 padding: 0,
                 display: 'flex',
+                height: '100%',
                 flexDirection: 'column',
-                height: 'calc(100vh - 150px)',
+                minHeight: 'calc(100vh - 150px)',
                 overflow: 'hidden'
             }}
         >

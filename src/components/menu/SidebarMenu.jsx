@@ -19,13 +19,15 @@ import UserMenu from './SidebarUserMenu';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import animationData from '../../assets/animations/Session-Expired.json';
 import { useAuth } from '../../context/auth/AuthContext';
+import LoadingScreen from '../loadingScreen/LoadingScreen';
 import SidebarItem from './SidebarItem';
 
 const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { logout, user } = useAuth();
+    const { logout, user, isLoggingOut } = useAuth();
     const navigate = useNavigate();
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
@@ -34,15 +36,27 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login');
+        setTimeout(() => {
+            navigate('/login');
+        }, 2000);
     };
+
+    if (isLoggingOut) {
+        return (
+            <LoadingScreen
+                animationData={animationData}
+                message="Encerrando sua sessão..."
+                width={200}
+            />
+        );
+    }
 
     return (
         <Drawer
             variant={isMobile ? 'temporary' : 'permanent'}
             open={isMobile ? open : true}
             onClose={toggleDrawer}
-            sx={{                
+            sx={{
                 flexShrink: 0,
                 overflowX: 'hidden',
                 zIndex: theme.zIndex.drawer,

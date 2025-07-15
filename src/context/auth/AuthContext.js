@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -48,14 +49,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
-        setUser(null);
+        setIsLoggingOut(true); 
+        setTimeout(() => {
+            localStorage.removeItem('token');
+            setUser(null);
+            setIsLoggingOut(false);
+        }, 2000);
     };
 
     const isAuthenticated = () => !!localStorage.getItem('token');
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading, isLoggingOut }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,8 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import Lottie from 'lottie-react';
-import animationData from '../../assets/animations/loading-lock.json';
 
-const AuthLoading = () => {
+const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }) => {
     return (
         <Box
             sx={{
@@ -14,14 +13,19 @@ const AuthLoading = () => {
                 bgcolor: 'background.default',
             }}
         >
-            <Box sx={{ width: 200, mb: 2 }}>
-                <Lottie animationData={animationData} loop autoplay style={{ width: 200, height: 200 }} />
+            <Box sx={{ width, mb: 2 }}>
+                <Lottie
+                    animationData={animationData}
+                    loop
+                    autoplay
+                    style={{ width, height: width }}
+                />
             </Box>
             <Typography variant="h6" color="text.secondary">
-                Validando sua sessão...
+                {message}
             </Typography>
         </Box>
     );
 };
 
-export default AuthLoading;
+export default LoadingScreen;

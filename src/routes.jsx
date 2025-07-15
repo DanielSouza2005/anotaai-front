@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import ContatosPage from './pages/contato/ContatosPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import EmpresasPage from './pages/empresa/EmpresasPage';
 import LoginPage from './pages/login/LoginPage';
 import NotFoundPage from './pages/notFound/NotFoundPage';
 import UsuariosPage from './pages/usuario/UsuariosPage';
+import AppWrapper from './components/appWrapper/AppWrapper';
 
 function AppRoutes() {
   return (
@@ -16,9 +16,9 @@ function AppRoutes() {
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <AppWrapper>
             <DashboardPage />
-          </ProtectedRoute>
+          </AppWrapper>
         }
       >
         <Route index element={<ContatosPage />} />

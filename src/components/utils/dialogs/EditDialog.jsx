@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,7 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
@@ -44,6 +45,7 @@ const EditDialog = ({
   const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
   const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -135,7 +137,7 @@ const EditDialog = ({
     }
   };
 
-  const renderField = (field, values, errors, touched, setFieldValue, prefix = '') => {
+  const renderField = useCallback((field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
@@ -179,14 +181,19 @@ const EditDialog = ({
             readOnly={isReadOnly}
             onBlur={async (e) => {
               if (field.name === 'cep') {
-                const endereco = await fetchEnderecoByCEP(e.target.value);
-                if (endereco) {
-                  setFieldValue('endereco.pais', 'Brasil');
-                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                setCepLoading(true);
+                try {
+                  const endereco = await fetchEnderecoByCEP(e.target.value);
+                  if (endereco) {
+                    setFieldValue('endereco.pais', 'Brasil');
+                    setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                    setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                    setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                    setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                    setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                  }
+                } finally {
+                  setCepLoading(false);
                 }
               }
             }}
@@ -219,24 +226,32 @@ const EditDialog = ({
               backgroundColor: isReadOnly ? '#e3f2fd' : '#ffffff',
               borderRadius: 1,
             },
+            ...(prefix === 'endereco' && cepLoading && {
+              endAdornment: <CircularProgress size={20} sx={{ mr: 1 }} />,
+            })
           }}
           onBlur={async (e) => {
             if (field.name === 'cep') {
-              const endereco = await fetchEnderecoByCEP(e.target.value);
-              if (endereco) {
-                setFieldValue('endereco.pais', 'Brasil');
-                setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+              setCepLoading(true);
+              try {
+                const endereco = await fetchEnderecoByCEP(e.target.value);
+                if (endereco) {
+                  setFieldValue('endereco.pais', 'Brasil');
+                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                }
+              } finally {
+                setCepLoading(false);
               }
             }
           }}
         />
       </Grid>
     );
-  };
+  }, [cepLoading]);
 
   return (
     <Dialog

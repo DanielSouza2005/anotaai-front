@@ -4,6 +4,7 @@ import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -43,6 +44,7 @@ const CreateDialog = ({
   const [previewImage, setPreviewImage] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -143,14 +145,19 @@ const CreateDialog = ({
             margin="dense"
             onBlur={async (e) => {
               if (field.name === 'cep') {
-                const endereco = await fetchEnderecoByCEP(e.target.value);
-                if (endereco) {
-                  setFieldValue('endereco.pais', 'Brasil');
-                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                setCepLoading(true);
+                try {
+                  const endereco = await fetchEnderecoByCEP(e.target.value);
+                  if (endereco) {
+                    setFieldValue('endereco.pais', 'Brasil');
+                    setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                    setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                    setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                    setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                    setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                  }
+                } finally {
+                  setCepLoading(false);
                 }
               }
             }}
@@ -177,23 +184,37 @@ const CreateDialog = ({
           error={Boolean(isTouched && error)}
           helperText={isTouched && error}
           InputLabelProps={field.type === 'date' ? { shrink: true } : undefined}
+          InputProps={
+            prefix === 'endereco' && cepLoading
+              ? {
+                endAdornment: (
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                ),
+              }
+              : undefined
+          }
           onBlur={async (e) => {
             if (field.name === 'cep') {
-              const endereco = await fetchEnderecoByCEP(e.target.value);
-              if (endereco) {
-                setFieldValue('endereco.pais', 'Brasil');
-                setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+              setCepLoading(true);
+              try {
+                const endereco = await fetchEnderecoByCEP(e.target.value);
+                if (endereco) {
+                  setFieldValue('endereco.pais', 'Brasil');
+                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
+                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
+                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
+                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
+                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
+                }
+              } finally {
+                setCepLoading(false);
               }
             }
           }}
         />
       </Grid>
     );
-  }, [validationSchema]);
+  }, [validationSchema, cepLoading]);
 
   return (
     <Dialog

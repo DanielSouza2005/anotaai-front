@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { maskCEP, maskCNPJ, maskCPF, maskIE, maskPhone, maskRG } from '../../utils/Masks';
+import { maskCEP, maskCNPJ, maskCPF, maskIE, maskPhone, maskRG } from '../../../utils/Masks';
 
 const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
     const [field, meta, helpers] = useField(props);
@@ -46,7 +46,7 @@ const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
     const handleBlur = (e) => {
         field.onBlur(e);
 
-        if (propOnBlur) {            
+        if (propOnBlur) {
             propOnBlur(e);
         }
     };

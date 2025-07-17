@@ -23,7 +23,7 @@ import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
-import MaskedInput from '../../maskedInput/MaskedInput';
+import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import DialogTransition from './transition/DialogTransitions';
 

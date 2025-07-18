@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 import { useField } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { maskCEP, maskCNPJ, maskCPF, maskIE, maskPhone, maskRG } from '../../../utils/Masks';
 
 const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
@@ -8,7 +8,7 @@ const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
     const [inputValue, setInputValue] = useState(field.value || '');
     const { setValue } = helpers;
 
-    const applyMask = (value) => {
+    const applyMask = useCallback((value) => {
         if (!value) return '';
 
         switch (mask) {
@@ -20,7 +20,7 @@ const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
             case 'ie': return maskIE(value);
             default: return value;
         }
-    };
+    }, [mask]);
 
     useEffect(() => {
         if (field.value) {
@@ -33,7 +33,7 @@ const MaskedInput = React.memo(({ mask, onBlur: propOnBlur, ...props }) => {
         } else {
             setInputValue('');
         }
-    }, [field.value, inputValue, mask, setValue]);
+    }, [field.value, inputValue, mask, setValue, applyMask]);
 
     const handleChange = (e) => {
         const rawValue = e.target.value;

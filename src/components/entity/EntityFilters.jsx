@@ -1,5 +1,5 @@
 import { Collapse } from "@mui/material";
-import AdvancedSearchBar from "../search/AdvancedSearchBar";
+import AdvancedSearchBar from "../utils/search/AdvancedSearchBar";
 
 const EntityFilters = ({ showFilters, fieldsAvailable, onFilterChange }) => {
     return (

@@ -16,7 +16,7 @@ import {
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import TabPanel from './components/TabPanel';
-import useTabManagement from './hooks/useTabManagement ';
+import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
 
 const renderMaskedField = (field, value) => {

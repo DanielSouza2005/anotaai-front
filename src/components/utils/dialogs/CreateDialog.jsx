@@ -24,9 +24,10 @@ import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
-import useTabManagement from './hooks/useTabManagement ';
-import DialogTransition from './transition/DialogTransitions';
 import TabPanel from './components/TabPanel';
+import useRequiredChecker from './hooks/useRequiredChecker';
+import useTabManagement from './hooks/useTabManager';
+import DialogTransition from './transition/DialogTransitions';
 
 const CreateDialog = ({
   open,
@@ -59,6 +60,8 @@ const CreateDialog = ({
     obsTabIndex,
     fotoTabIndex
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
+
+  const isFieldRequired = useRequiredChecker(validationSchema);
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -99,7 +102,7 @@ const CreateDialog = ({
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
-    const isRequired = validationSchema?.fields?.[prefix || fullName]?.tests?.some(test => test.OPTIONS?.name === 'required');
+    const isRequired = isFieldRequired(field.name, prefix);
 
     const label = (
       <span>
@@ -205,7 +208,7 @@ const CreateDialog = ({
         />
       </Grid>
     );
-  }, [validationSchema, cepLoading]);
+  }, [cepLoading, isFieldRequired]);
 
   return (
     <Dialog

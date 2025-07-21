@@ -25,9 +25,10 @@ import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
-import DialogTransition from './transition/DialogTransitions';
-import useTabManagement from './hooks/useTabManagement ';
 import TabPanel from './components/TabPanel';
+import useRequiredChecker from './hooks/useRequiredChecker';
+import useTabManagement from './hooks/useTabManager';
+import DialogTransition from './transition/DialogTransitions';
 
 const EditDialog = ({
   open,
@@ -60,6 +61,8 @@ const EditDialog = ({
     fotoTabIndex,
     obsTabIndex
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
+
+  const isFieldRequired = useRequiredChecker(validationSchema);
 
   const idKey = entity === "contato" ? "empresa" : "";
 
@@ -112,35 +115,17 @@ const EditDialog = ({
     return fieldsList;
   }, [fields, enderecoFields]);
 
-  const isRequired = useCallback((fieldName, prefix = '') => {
-    try {
-      const path = prefix ? `${prefix}.${fieldName}` : fieldName;
-      const fieldSchema = validationSchema?.describe()?.fields;
-
-      const keys = path.split('.');
-      let current = fieldSchema;
-
-      for (const key of keys) {
-        if (!current[key]) return false;
-        current = current[key].fields || current[key];
-      }
-
-      return current?.tests?.some(test => test.name === 'required') ?? false;
-    } catch {
-      return false;
-    }
-  }, [validationSchema]);
-
   const renderField = useCallback((field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
     const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
     const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
     const isReadOnly = field.readonly === true;
+    const isRequired = isFieldRequired(field.name, prefix);
 
     const label = (
       <>
         {field.label}
-        {isRequired(field.name, prefix) && (
+        {isRequired && (
           <Typography component="span" color="error"> *</Typography>
         )}
       </>
@@ -245,7 +230,7 @@ const EditDialog = ({
         />
       </Grid>
     );
-  }, [cepLoading, isRequired]);
+  }, [cepLoading, isFieldRequired]);
 
   return (
     <Dialog
@@ -431,7 +416,7 @@ const EditDialog = ({
                   </Box>
                 </TabPanel>
               )}
-              
+
             </DialogContent>
 
             <DialogActions>

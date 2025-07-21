@@ -28,6 +28,7 @@ import TabPanel from './components/TabPanel';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
+import ObservacoesField from './components/ObservacoesField';
 
 const CreateDialog = ({
   open,
@@ -367,22 +368,7 @@ const CreateDialog = ({
                 {hasObs && (
                   <TabPanel value={tabIndex} index={obsTabIndex}>
                     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <Field
-                        name="obs"
-                      >
-                        {({ field, meta }) => (
-                          <TextField
-                            {...field}
-                            label="Observações"
-                            fullWidth
-                            multiline
-                            minRows={10}
-                            error={Boolean(meta.touched && meta.error)}
-                            helperText={meta.touched && meta.error}
-                            sx={{ flex: 1 }}
-                          />
-                        )}
-                      </Field>
+                      <ObservacoesField />
                     </Box>
                   </TabPanel>
                 )}

@@ -18,6 +18,7 @@ import { getEntityIcon } from '../../../utils/entityUtils';
 import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
+import ObservacoesField from './components/ObservacoesField';
 
 const renderMaskedField = (field, value) => {
   let displayValue = formatValue(field, value ?? '');
@@ -198,24 +199,16 @@ const DetailDialog = ({
           {hasObs && (
             <TabPanel value={tabIndex} index={obsTabIndex}>
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <TextField
-                  label="Observações"
+                <ObservacoesField
                   value={formData?.obs || ''}
-                  fullWidth
-                  multiline
-                  minRows={10}
-                  maxRows={Infinity}
-                  InputProps={{
-                    readOnly: true,
-                    sx: {
-                      backgroundColor: '#e3f2fd',
-                      borderRadius: 1,
-                      height: '100%',
-                      alignItems: 'flex-start'
-                    },
+                  readOnly={true}
+                  standalone
+                  style={{
+                    backgroundColor: '#e3f2fd',
+                    borderRadius: 1,
+                    height: '100%',
+                    alignItems: 'flex-start'
                   }}
-                  margin="dense"
-                  sx={{ flex: 1 }}
                 />
               </Box>
             </TabPanel>

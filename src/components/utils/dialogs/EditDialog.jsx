@@ -25,6 +25,7 @@ import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
+import ObservacoesField from './components/ObservacoesField';
 import TabPanel from './components/TabPanel';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
@@ -399,20 +400,7 @@ const EditDialog = ({
               {hasObs && (
                 <TabPanel value={tabIndex} index={obsTabIndex}>
                   <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <Field name="obs">
-                      {({ field, meta }) => (
-                        <TextField
-                          {...field}
-                          label="Observações"
-                          fullWidth
-                          multiline
-                          minRows={10}
-                          error={Boolean(meta.touched && meta.error)}
-                          helperText={meta.touched && meta.error}
-                          sx={{ flex: 1 }}
-                        />
-                      )}
-                    </Field>
+                    <ObservacoesField />
                   </Box>
                 </TabPanel>
               )}

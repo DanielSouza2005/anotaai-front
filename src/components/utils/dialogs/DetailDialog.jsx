@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManagement ';
 import DialogTransition from './transition/DialogTransitions';
 
@@ -139,70 +140,85 @@ const DetailDialog = ({
         </Tabs>
 
         <Box>
-          {tabIndex === 0 && renderFields(filteredFields, formData)}
-          {tabIndex === empresaTabIndex && empresaTabIndex >= 0 && (
-            <Grid container spacing={2} columns={12}>
-              {empresaFields.map(field =>
-                renderMaskedField(
-                  field,
-                  field.name === 'cod_empresa'
-                    ? formData?.cod_empresa
-                    : formData?.empresa?.[field.name]
-                )
-              )}
-            </Grid>
-          )}
-          {tabIndex === enderecoTabIndex && hasEndereco && renderFields(enderecoFields, formData?.endereco)}
-          {tabIndex === fotoTabIndex && hasFoto && (
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                {fotoUrl ? (
-                  entity === 'usuario' ? (
-                    <Avatar
-                      alt="Foto"
-                      src={fotoUrl}
-                      sx={{ width: 96, height: 96 }}
-                    />
-                  ) : (
-                    <Box mt={2}>
-                      <img
-                        src={fotoUrl}
-                        alt="Foto"
-                        style={{ maxWidth: '100%', maxHeight: 200 }}
-                      />
-                    </Box>
+          <TabPanel value={tabIndex} index={0}>
+            {renderFields(filteredFields, formData)}
+          </TabPanel>
+
+          {empresaTabIndex >= 0 && (
+            <TabPanel value={tabIndex} index={empresaTabIndex}>
+              <Grid container spacing={2} columns={12}>
+                {empresaFields.map(field =>
+                  renderMaskedField(
+                    field,
+                    field.name === 'cod_empresa'
+                      ? formData?.cod_empresa
+                      : formData?.empresa?.[field.name]
                   )
-                ) : (
-                  <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
-                    Nenhuma foto disponível para este {entity === 'usuario' ? 'usuário' : entity}.
-                  </Typography>
                 )}
               </Grid>
-            </Grid>
+            </TabPanel>
           )}
 
-          {hasObs && tabIndex === obsTabIndex && (
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <TextField
-                label="Observações"
-                value={formData?.obs || ''}
-                fullWidth
-                multiline
-                minRows={10}
-                maxRows={Infinity}
-                InputProps={{
-                  readOnly: true,
-                  sx: {
-                    backgroundColor: '#e3f2fd',
-                    borderRadius: 1,
-                    height: '100%',
-                    alignItems: 'flex-start'
-                  },
-                }}
-                margin="dense"
-                sx={{ flex: 1 }}
-              />
-            </Box>
+          {hasEndereco && (
+            <TabPanel value={tabIndex} index={enderecoTabIndex}>
+              {renderFields(enderecoFields, formData?.endereco)}
+            </TabPanel>
+          )}
+
+          {hasFoto && (
+            <TabPanel value={tabIndex} index={fotoTabIndex}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  {fotoUrl ? (
+                    entity === 'usuario' ? (
+                      <Avatar
+                        alt="Foto"
+                        src={fotoUrl}
+                        sx={{ width: 96, height: 96 }}
+                      />
+                    ) : (
+                      <Box mt={2}>
+                        <img
+                          src={fotoUrl}
+                          alt="Foto"
+                          style={{ maxWidth: '100%', maxHeight: 200 }}
+                        />
+                      </Box>
+                    )
+                  ) : (
+                    <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+                      Nenhuma foto disponível para este {entity === 'usuario' ? 'usuário' : entity}.
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+            </TabPanel>
+          )}
+
+          {hasObs && (
+            <TabPanel value={tabIndex} index={obsTabIndex}>
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <TextField
+                  label="Observações"
+                  value={formData?.obs || ''}
+                  fullWidth
+                  multiline
+                  minRows={10}
+                  maxRows={Infinity}
+                  InputProps={{
+                    readOnly: true,
+                    sx: {
+                      backgroundColor: '#e3f2fd',
+                      borderRadius: 1,
+                      height: '100%',
+                      alignItems: 'flex-start'
+                    },
+                  }}
+                  margin="dense"
+                  sx={{ flex: 1 }}
+                />
+              </Box>
+            </TabPanel>
           )}
 
         </Box>

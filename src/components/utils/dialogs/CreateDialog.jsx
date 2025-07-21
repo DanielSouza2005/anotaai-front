@@ -24,8 +24,9 @@ import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
-import DialogTransition from './transition/DialogTransitions';
 import useTabManagement from './hooks/useTabManagement ';
+import DialogTransition from './transition/DialogTransitions';
+import TabPanel from './components/TabPanel';
 
 const CreateDialog = ({
   open,
@@ -55,9 +56,9 @@ const CreateDialog = ({
     tabIndex,
     setTabIndex,
     enderecoTabIndex,
-    fotoTabIndex,
-    obsTabIndex
-  } = useTabManagement({ open, hasEndereco, hasEmpresa,  hasFoto, hasObs });
+    obsTabIndex,
+    fotoTabIndex
+  } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -291,7 +292,7 @@ const CreateDialog = ({
                   )}
                 </Tabs>
 
-                {tabIndex === 0 && (
+                <TabPanel value={tabIndex} index={0}>
                   <Grid container spacing={2} columns={12}>
                     {fields
                       .filter(field => field.name !== 'obs')
@@ -300,81 +301,87 @@ const CreateDialog = ({
                       )
                     }
                   </Grid>
-                )}
+                </TabPanel>
 
-                {tabIndex === enderecoTabIndex && hasEndereco && (
-                  <Grid container spacing={2} columns={12}>
-                    {enderecoFields
-                      .filter(field => field.name !== 'obs')
-                      .map(field =>
-                        renderField(field, values, errors, touched, setFieldValue, 'endereco')
-                      )
-                    }
-                  </Grid>
-                )}
-
-                {tabIndex === fotoTabIndex && hasFoto && (
-                  <Grid container spacing={2} columns={12}>
-                    <Grid item xs={12}>
-                      <input
-                        accept="image/*"
-                        id="upload-photo"
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          if (e.currentTarget.files && e.currentTarget.files[0]) {
-                            const file = e.currentTarget.files[0];
-                            setFieldValue('foto', file);
-                            setPhoto(file);
-                          }
-                        }}
-                      />
-                      <label htmlFor="upload-photo">
-                        <Button variant="contained" component="span">
-                          Selecionar Foto
-                        </Button>
-                      </label>
-                      {values.foto && (
-                        <>
-                          <Button
-                            color="secondary"
-                            onClick={clearPhoto}
-                            sx={{ ml: 2 }}
-                          >
-                            Limpar Foto
-                          </Button>
-                          <Box mt={2}>
-                            <img
-                              src={previewImage}
-                              alt="Preview da Foto"
-                              style={{ maxWidth: '100%', maxHeight: 200 }}
-                            />
-                          </Box>
-                        </>
-                      )}
+                {hasEndereco && (
+                  <TabPanel value={tabIndex} index={enderecoTabIndex}>
+                    <Grid container spacing={2} columns={12}>
+                      {enderecoFields
+                        .filter(field => field.name !== 'obs')
+                        .map(field =>
+                          renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                        )
+                      }
                     </Grid>
-                  </Grid>
+                  </TabPanel>
                 )}
 
-                {entity === "contato" && tabIndex === obsTabIndex && (
-                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <Field
-                      name="obs"
-                    >
-                      {({ field, meta }) => (
-                        <TextField
-                          {...field}
-                          label="Observações"
-                          fullWidth
-                          multiline
-                          minRows={10}
-                          error={Boolean(meta.touched && meta.error)}
-                          helperText={meta.touched && meta.error}
-                          sx={{ flex: 1 }}
+                {hasFoto && (
+                  <TabPanel value={tabIndex} index={fotoTabIndex}>
+                    <Grid container spacing={2} columns={12}>
+                      <Grid item xs={12}>
+                        <input
+                          accept="image/*"
+                          id="upload-photo"
+                          type="file"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            if (e.currentTarget.files && e.currentTarget.files[0]) {
+                              const file = e.currentTarget.files[0];
+                              setFieldValue('foto', file);
+                              setPhoto(file);
+                            }
+                          }}
                         />
-                      )}
-                    </Field>
-                  </Box>
+                        <label htmlFor="upload-photo">
+                          <Button variant="contained" component="span">
+                            Selecionar Foto
+                          </Button>
+                        </label>
+                        {values.foto && (
+                          <>
+                            <Button
+                              color="secondary"
+                              onClick={clearPhoto}
+                              sx={{ ml: 2 }}
+                            >
+                              Limpar Foto
+                            </Button>
+                            <Box mt={2}>
+                              <img
+                                src={previewImage}
+                                alt="Preview da Foto"
+                                style={{ maxWidth: '100%', maxHeight: 200 }}
+                              />
+                            </Box>
+                          </>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </TabPanel>
+                )}
+
+                {hasObs && (
+                  <TabPanel value={tabIndex} index={obsTabIndex}>
+                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Field
+                        name="obs"
+                      >
+                        {({ field, meta }) => (
+                          <TextField
+                            {...field}
+                            label="Observações"
+                            fullWidth
+                            multiline
+                            minRows={10}
+                            error={Boolean(meta.touched && meta.error)}
+                            helperText={meta.touched && meta.error}
+                            sx={{ flex: 1 }}
+                          />
+                        )}
+                      </Field>
+                    </Box>
+                  </TabPanel>
                 )}
 
               </DialogContent>

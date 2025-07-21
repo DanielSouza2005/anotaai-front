@@ -13,9 +13,9 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import useTabManagement from './hooks/useTabManagement ';
 import DialogTransition from './transition/DialogTransitions';
 
 const renderMaskedField = (field, value) => {
@@ -63,35 +63,19 @@ const DetailDialog = ({
   entity,
   usaFoto = false,
 }) => {
-  const [tabIndex, setTabIndex] = useState(0);
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
+  const hasEmpresa = entity === "contato";
 
-  const empresaTabIndex = (() => {
-    if (entity !== 'contato') return -1;
-    return 1;
-  })();
-
-  const enderecoTabIndex = hasEndereco ? (empresaTabIndex >= 0 ? 2 : 1) : -1;
-  const fotoTabIndex = hasFoto
-    ? (enderecoTabIndex >= 0 ? enderecoTabIndex + 1 : empresaTabIndex >= 0 ? empresaTabIndex + 1 : 1)
-    : -1;
-
-  const obsTabIndex = (() => {
-    if (!hasObs) return -1;
-    let index = 1;
-    if (empresaTabIndex >= 0) index++;
-    if (enderecoTabIndex >= 0) index++;
-    if (fotoTabIndex >= 0) index++;
-    return index;
-  })();
-
-  useEffect(() => {
-    if (open) {
-      setTabIndex(0);
-    }
-  }, [open]);
+  const {
+    tabIndex,
+    setTabIndex,
+    empresaTabIndex,
+    enderecoTabIndex,
+    fotoTabIndex,
+    obsTabIndex
+  } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const filteredFields = fields.filter(
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
@@ -112,10 +96,10 @@ const DetailDialog = ({
   const fotoUrl = formData?.foto || null;
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      fullWidth 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
       maxWidth="md"
       TransitionComponent={DialogTransition}
     >

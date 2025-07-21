@@ -25,6 +25,7 @@ import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import DialogTransition from './transition/DialogTransitions';
+import useTabManagement from './hooks/useTabManagement ';
 
 const CreateDialog = ({
   open,
@@ -40,7 +41,6 @@ const CreateDialog = ({
   entity,
   usaFoto = false
 }) => {
-  const [tabIndex, setTabIndex] = useState(0);
   const [previewImage, setPreviewImage] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -49,19 +49,15 @@ const CreateDialog = ({
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
+  const hasEmpresa = entity === "contato";
 
-  const enderecoTabIndex = hasEndereco ? 1 : -1;
-  const fotoTabIndex = hasEndereco
-    ? (hasFoto ? 2 : -1)
-    : (hasFoto ? 1 : -1);
-
-  const obsTabIndex = (() => {
-    if (!hasObs) return -1;
-
-    if (hasEndereco && hasFoto) return 3;
-    if (hasEndereco || hasFoto) return 2;
-    return 1;
-  })();
+  const {
+    tabIndex,
+    setTabIndex,
+    enderecoTabIndex,
+    fotoTabIndex,
+    obsTabIndex
+  } = useTabManagement({ open, hasEndereco, hasEmpresa,  hasFoto, hasObs });
 
   const initialValues = {
     ...fields.reduce((acc, f) => ({ ...acc, [f.name]: formData[f.name] || '' }), {}),
@@ -87,12 +83,6 @@ const CreateDialog = ({
       setPreviewImage(null);
     }
   }, [photo]);
-
-  useEffect(() => {
-    if (open) {
-      setTabIndex(0);
-    }
-  }, [open]);
 
   const maskedFields = useMemo(() => {
     const fieldsList = [

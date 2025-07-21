@@ -26,6 +26,7 @@ import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import DialogTransition from './transition/DialogTransitions';
+import useTabManagement from './hooks/useTabManagement ';
 
 const EditDialog = ({
   open,
@@ -41,7 +42,6 @@ const EditDialog = ({
   entity,
   usaFoto = false
 }) => {
-  const [tabIndex, setTabIndex] = useState(0);
   const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
   const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -50,16 +50,15 @@ const EditDialog = ({
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
+  const hasEmpresa = entity === "contato";
 
-  const enderecoTabIndex = hasEndereco ? 1 : -1;
-  const fotoTabIndex = hasEndereco ? (hasFoto ? 2 : -1) : (hasFoto ? 1 : -1);
-  const obsTabIndex = (() => {
-    if (!hasObs) return -1;
-
-    if (hasEndereco && hasFoto) return 3;
-    if (hasEndereco || hasFoto) return 2;
-    return 1;
-  })();
+  const {
+    tabIndex,
+    setTabIndex,
+    enderecoTabIndex,
+    fotoTabIndex,
+    obsTabIndex
+  } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const idKey = entity === "contato" ? "empresa" : "";
 
@@ -102,12 +101,6 @@ const EditDialog = ({
     }
   }, [photo, formData?.foto]);
 
-  useEffect(() => {
-    if (open) {
-      setTabIndex(0);
-    }
-  }, [open]);
-
   const maskedFields = useMemo(() => {
     const fieldsList = [
       ...fields.filter(f => maskTypes.includes(f.name) || maskTypes.includes(f.mask))
@@ -118,7 +111,7 @@ const EditDialog = ({
     return fieldsList;
   }, [fields, enderecoFields]);
 
-  const isRequired = (fieldName, prefix = '') => {
+  const isRequired = useCallback((fieldName, prefix = '') => {
     try {
       const path = prefix ? `${prefix}.${fieldName}` : fieldName;
       const fieldSchema = validationSchema?.describe()?.fields;
@@ -135,7 +128,7 @@ const EditDialog = ({
     } catch {
       return false;
     }
-  };
+  }, [validationSchema]);
 
   const renderField = useCallback((field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;
@@ -251,7 +244,7 @@ const EditDialog = ({
         />
       </Grid>
     );
-  }, [cepLoading]);
+  }, [cepLoading, isRequired]);
 
   return (
     <Dialog

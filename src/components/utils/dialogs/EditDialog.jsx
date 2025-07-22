@@ -18,15 +18,16 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
-import { getEntityIcon, getEntityIdKey } from '../../../utils/entityUtils';
+import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import ObservacoesField from './components/ObservacoesField';
 import TabPanel from './components/TabPanel';
+import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
@@ -77,32 +78,7 @@ const EditDialog = ({
 
   const isFieldRequired = useRequiredChecker(validationSchema);
 
-  const idKey = entity === "contato" ? "empresa" : "";
-
-  const initialValues = {
-    ...fields.reduce((acc, f) => ({
-      ...acc,
-      [f.name]: f.type === 'select' && f.source
-        ? formData[idKey]?.[getEntityIdKey(f.source)] || ''
-        : formData[f.name] || ''
-    }), {}),
-    endereco: enderecoFields.reduce((acc, f) => ({
-      ...acc,
-      [f.name]: formData?.endereco?.[f.name] || '',
-    }), {}),
-    foto: null,
-    obs: formData.obs || ''
-  };
-
-  const maskedFields = useMemo(() => {
-    const fieldsList = [
-      ...fields.filter(f => maskTypes.includes(f.name) || maskTypes.includes(f.mask))
-        .map(f => f.name),
-      ...enderecoFields.filter(f => maskTypes.includes(f.name) || maskTypes.includes(f.mask))
-        .map(f => `endereco.${f.name}`)
-    ];
-    return fieldsList;
-  }, [fields, enderecoFields]);
+  const { values: initialValues, maskedFields } = useFormValues({ fields, enderecoFields, formData, entity });
 
   const renderField = useCallback((field, values, errors, touched, setFieldValue, prefix = '') => {
     const fullName = prefix ? `${prefix}.${field.name}` : field.name;

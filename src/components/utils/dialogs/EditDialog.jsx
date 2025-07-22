@@ -2,7 +2,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { LoadingButton } from '@mui/lab';
 import {
-  Avatar,
   Box,
   Button,
   CircularProgress,
@@ -18,7 +17,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
@@ -26,6 +25,7 @@ import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import ObservacoesField from './components/ObservacoesField';
+import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
 import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
@@ -49,9 +49,7 @@ const EditDialog = ({
 }) => {
   const [photo, setPhoto] = useState(null);
   const [fotoRemovida, setFotoRemovida] = useState(false);
-  const [fotoCarregando, setFotoCarregando] = useState(false);
   const previewFotoUrl = useFotoPreview(photo, !fotoRemovida ? formData?.foto : null);
-  const inputFileRef = useRef(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
@@ -60,13 +58,6 @@ const EditDialog = ({
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
   const hasEmpresa = entity === "contato";
-
-  useEffect(() => {
-    if (previewFotoUrl) {
-      setFotoCarregando(true);
-    }
-  }, [previewFotoUrl]);
-
 
   const {
     tabIndex,
@@ -302,80 +293,19 @@ const EditDialog = ({
 
               {hasFoto && (
                 <TabPanel value={tabIndex} index={fotoTabIndex}>
-                  <Grid container spacing={2} columns={12}>
-                    <Grid item xs={12}>
-                      <input
-                        ref={inputFileRef}
-                        accept="image/*"
-                        id="upload-photo"
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          if (e.currentTarget.files && e.currentTarget.files[0]) {
-                            const file = e.currentTarget.files[0];
-                            setFieldValue('foto', file);
-                            setPhoto(file);
-                            setFotoRemovida(false);
-
-                            if (inputFileRef.current) {
-                              inputFileRef.current.value = null;
-                            }
-                          }
-                        }}
-                      />
-                      <label htmlFor="upload-photo">
-                        <Button variant="contained" component="span">
-                          Selecionar Foto
-                        </Button>
-                      </label>
-
-                      {(photo || previewFotoUrl) && (
-                        <>
-                          <Button
-                            color="secondary"
-                            onClick={() => {
-                              setFieldValue('foto', null);
-                              setPhoto(null);
-                              setFotoRemovida(true);
-                              if (inputFileRef.current) {
-                                inputFileRef.current.value = null;
-                              }
-                            }}
-                            sx={{ ml: 2 }}
-                          >
-                            Limpar Foto
-                          </Button>
-
-                          <Box mt={2}>
-                            {fotoCarregando && (
-                              <CircularProgress
-                                size={72}
-                                sx={{ position: 'absolute', zIndex: 1 }}
-                              />
-                            )}
-
-                            {entity === 'usuario' ? (
-                              <Avatar
-                                alt="Foto"
-                                src={previewFotoUrl}
-                                sx={{ width: 96, height: 96 }}
-                                onLoad={() => setFotoCarregando(false)}
-                                onError={() => setFotoCarregando(false)}
-                              />
-                            ) : (
-                              <img
-                                src={previewFotoUrl}
-                                alt="Preview da Foto"
-                                style={{ maxWidth: '100%', maxHeight: 200, display: fotoCarregando ? 'none' : 'block' }}
-                                onLoad={() => setFotoCarregando(false)}
-                                onError={() => setFotoCarregando(false)}
-                              />
-                            )}
-                          </Box>
-                        </>
-                      )}
-                    </Grid>
-                  </Grid>
+                  <PhotoUploader
+                    entity={entity}
+                    previewUrl={previewFotoUrl}
+                    onSelect={(file) => {
+                      setFieldValue('foto', file);
+                      setPhoto(file);
+                    }}
+                    onClear={() => {
+                      setFieldValue('foto', null);
+                      setPhoto(null);
+                      setFotoRemovida?.(true);
+                    }}
+                  />
                 </TabPanel>
               )}
 

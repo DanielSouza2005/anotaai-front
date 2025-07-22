@@ -17,7 +17,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
@@ -25,6 +25,7 @@ import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import ObservacoesField from './components/ObservacoesField';
+import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
 import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
@@ -51,7 +52,6 @@ const CreateDialog = ({
 
   const [photo, setPhoto] = useState(null);
   const previewImage = useFotoPreview(photo);
-  const inputFileRef = useRef(null);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -223,15 +223,6 @@ const CreateDialog = ({
       >
         {({ values, errors, touched, setFieldValue, isSubmitting }) => {
 
-          const clearPhoto = () => {
-            setFieldValue('foto', null);
-            setPhoto(null);
-
-            if (inputFileRef.current) {
-              inputFileRef.current.value = null;
-            }
-          };
-
           return (
             <Form>
               <IconButton
@@ -297,47 +288,18 @@ const CreateDialog = ({
 
                 {hasFoto && (
                   <TabPanel value={tabIndex} index={fotoTabIndex}>
-                    <Grid container spacing={2} columns={12}>
-                      <Grid item xs={12}>
-                        <input
-                          ref={inputFileRef}
-                          accept="image/*"
-                          id="upload-photo"
-                          type="file"
-                          style={{ display: 'none' }}
-                          onChange={(e) => {
-                            if (e.currentTarget.files && e.currentTarget.files[0]) {
-                              const file = e.currentTarget.files[0];
-                              setFieldValue('foto', file);
-                              setPhoto(file);
-                            }
-                          }}
-                        />
-                        <label htmlFor="upload-photo">
-                          <Button variant="contained" component="span">
-                            Selecionar Foto
-                          </Button>
-                        </label>
-                        {values.foto && (
-                          <>
-                            <Button
-                              color="secondary"
-                              onClick={clearPhoto}
-                              sx={{ ml: 2 }}
-                            >
-                              Limpar Foto
-                            </Button>
-                            <Box mt={2}>
-                              <img
-                                src={previewImage}
-                                alt="Preview da Foto"
-                                style={{ maxWidth: '100%', maxHeight: 200 }}
-                              />
-                            </Box>
-                          </>
-                        )}
-                      </Grid>
-                    </Grid>
+                    <PhotoUploader
+                      entity={entity}
+                      previewUrl={previewImage}
+                      onSelect={(file) => {
+                        setFieldValue('foto', file);
+                        setPhoto(file);
+                      }}
+                      onClear={() => {
+                        setFieldValue('foto', null);
+                        setPhoto(null);
+                      }}
+                    />
                   </TabPanel>
                 )}
 

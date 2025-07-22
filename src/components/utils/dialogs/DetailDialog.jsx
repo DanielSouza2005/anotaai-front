@@ -1,9 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
-  Avatar,
   Box,
-  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -16,11 +14,11 @@ import {
 } from '@mui/material';
 import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import ObservacoesField from './components/ObservacoesField';
+import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
-import ObservacoesField from './components/ObservacoesField';
-import { useEffect, useState } from 'react';
 
 const renderMaskedField = (field, value) => {
   let displayValue = formatValue(field, value ?? '');
@@ -85,6 +83,8 @@ const DetailDialog = ({
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
   );
 
+  const fotoUrl = formData?.foto || null;
+
   const renderFields = (fieldList, data = {}) => (
     <Grid container spacing={2} columns={12}>
       {
@@ -96,15 +96,6 @@ const DetailDialog = ({
       }
     </Grid>
   );
-
-  const fotoUrl = formData?.foto || null;
-  const [fotoCarregando, setFotoCarregando] = useState(false);
-
-  useEffect(() => {
-    if (fotoUrl) {
-      setFotoCarregando(true);
-    }
-  }, [fotoUrl]);
 
   return (
     <Dialog
@@ -177,48 +168,14 @@ const DetailDialog = ({
 
           {hasFoto && (
             <TabPanel value={tabIndex} index={fotoTabIndex}>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  {fotoUrl ? (
-                    <Box
-                      mt={2}
-                    >
-                      {fotoCarregando && (
-                        <CircularProgress
-                          size={48}
-                          sx={{ position: 'absolute', zIndex: 1 }}
-                        />
-                      )}
-
-                      {entity === 'usuario' ? (
-                        <Avatar
-                          alt="Foto"
-                          src={fotoUrl}
-                          sx={{ width: 96, height: 96 }}
-                          onLoad={() => setFotoCarregando(false)}
-                          onError={() => setFotoCarregando(false)}
-                        />
-                      ) : (
-                        <img
-                          src={fotoUrl}
-                          alt="Foto"
-                          style={{
-                            maxWidth: '100%',
-                            maxHeight: 200,
-                            display: fotoCarregando ? 'none' : 'block'
-                          }}
-                          onLoad={() => setFotoCarregando(false)}
-                          onError={() => setFotoCarregando(false)}
-                        />
-                      )}
-                    </Box>
-                  ) : (
-                    <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
-                      Nenhuma foto disponível para este {entity === 'usuario' ? 'usuário' : entity}.
-                    </Typography>
-                  )}
-                </Grid>
-              </Grid>
+              <PhotoUploader
+                entity={entity}
+                previewUrl={fotoUrl}
+                onSelect={() => { }}
+                onClear={() => { }}
+                showClear={false}
+                disabled
+              />
             </TabPanel>
           )}
 

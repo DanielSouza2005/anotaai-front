@@ -18,7 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
@@ -27,6 +27,7 @@ import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
 import ObservacoesField from './components/ObservacoesField';
 import TabPanel from './components/TabPanel';
+import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
@@ -45,8 +46,11 @@ const EditDialog = ({
   entity,
   usaFoto = false
 }) => {
-  const [previewFotoUrl, setPreviewFotoUrl] = useState(formData?.foto || null);
   const [photo, setPhoto] = useState(null);
+  const [fotoRemovida, setFotoRemovida] = useState(false);
+  const previewFotoUrl = useFotoPreview(photo, !fotoRemovida ? formData?.foto : null);
+  const inputFileRef = useRef(null);
+
   const [submitting, setSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
 
@@ -81,30 +85,6 @@ const EditDialog = ({
     foto: null,
     obs: formData.obs || ''
   };
-
-  useEffect(() => {
-    if (open) {
-      setPhoto(null);
-
-      if (formData?.foto && typeof formData.foto === "string") {
-        setPreviewFotoUrl(formData.foto);
-      } else {
-        setPreviewFotoUrl(null);
-      }
-    }
-  }, [open, formData]);
-
-  useEffect(() => {
-    if (photo) {
-      const objectUrl = URL.createObjectURL(photo);
-      setPreviewFotoUrl(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    } else if (formData?.foto && typeof formData.foto === "string") {
-      setPreviewFotoUrl(formData.foto);
-    } else {
-      setPreviewFotoUrl(null);
-    }
-  }, [photo, formData?.foto]);
 
   const maskedFields = useMemo(() => {
     const fieldsList = [
@@ -341,6 +321,7 @@ const EditDialog = ({
                   <Grid container spacing={2} columns={12}>
                     <Grid item xs={12}>
                       <input
+                        ref={inputFileRef}
                         accept="image/*"
                         id="upload-photo"
                         type="file"
@@ -350,8 +331,11 @@ const EditDialog = ({
                             const file = e.currentTarget.files[0];
                             setFieldValue('foto', file);
                             setPhoto(file);
-                            const objectUrl = URL.createObjectURL(file);
-                            setPreviewFotoUrl(objectUrl);
+                            setFotoRemovida(false);
+
+                            if (inputFileRef.current) {
+                              inputFileRef.current.value = null;
+                            }
                           }
                         }}
                       />
@@ -368,7 +352,10 @@ const EditDialog = ({
                             onClick={() => {
                               setFieldValue('foto', null);
                               setPhoto(null);
-                              setPreviewFotoUrl(null);
+                              setFotoRemovida(true);
+                              if (inputFileRef.current) {
+                                inputFileRef.current.value = null;
+                              }
                             }}
                             sx={{ ml: 2 }}
                           >

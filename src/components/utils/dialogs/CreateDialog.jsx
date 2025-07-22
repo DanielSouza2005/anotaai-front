@@ -17,18 +17,19 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import MaskedInput from '../maskedInput/MaskedInput';
 import SelectField from '../select/SelectField';
+import ObservacoesField from './components/ObservacoesField';
 import TabPanel from './components/TabPanel';
+import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
-import ObservacoesField from './components/ObservacoesField';
 
 const CreateDialog = ({
   open,
@@ -44,10 +45,12 @@ const CreateDialog = ({
   entity,
   usaFoto = false
 }) => {
-  const [previewImage, setPreviewImage] = useState(null);
-  const [photo, setPhoto] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+
+  const [photo, setPhoto] = useState(null);
+  const previewImage = useFotoPreview(photo);
+  const inputFileRef = useRef(null);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -72,22 +75,6 @@ const CreateDialog = ({
     }), {}),
     foto: null,
   };
-
-  useEffect(() => {
-    return () => {
-      if (previewImage) URL.revokeObjectURL(previewImage);
-    };
-  }, [previewImage]);
-
-  useEffect(() => {
-    if (photo) {
-      const objectUrl = URL.createObjectURL(photo);
-      setPreviewImage(objectUrl);
-      return () => URL.revokeObjectURL(objectUrl);
-    } else {
-      setPreviewImage(null);
-    }
-  }, [photo]);
 
   const maskedFields = useMemo(() => {
     const fieldsList = [
@@ -255,6 +242,10 @@ const CreateDialog = ({
           const clearPhoto = () => {
             setFieldValue('foto', null);
             setPhoto(null);
+
+            if (inputFileRef.current) {
+              inputFileRef.current.value = null;
+            }
           };
 
           return (
@@ -325,6 +316,7 @@ const CreateDialog = ({
                     <Grid container spacing={2} columns={12}>
                       <Grid item xs={12}>
                         <input
+                          ref={inputFileRef}
                           accept="image/*"
                           id="upload-photo"
                           type="file"

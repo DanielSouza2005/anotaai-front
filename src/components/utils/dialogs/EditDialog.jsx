@@ -18,7 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { maskTypes } from '../../../utils/Masks';
 import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
@@ -48,6 +48,7 @@ const EditDialog = ({
 }) => {
   const [photo, setPhoto] = useState(null);
   const [fotoRemovida, setFotoRemovida] = useState(false);
+  const [fotoCarregando, setFotoCarregando] = useState(false);
   const previewFotoUrl = useFotoPreview(photo, !fotoRemovida ? formData?.foto : null);
   const inputFileRef = useRef(null);
 
@@ -58,6 +59,13 @@ const EditDialog = ({
   const hasFoto = usaFoto;
   const hasObs = entity === "contato";
   const hasEmpresa = entity === "contato";
+
+  useEffect(() => {
+    if (previewFotoUrl) {
+      setFotoCarregando(true);
+    }
+  }, [previewFotoUrl]);
+
 
   const {
     tabIndex,
@@ -363,17 +371,28 @@ const EditDialog = ({
                           </Button>
 
                           <Box mt={2}>
+                            {fotoCarregando && (
+                              <CircularProgress
+                                size={72}
+                                sx={{ position: 'absolute', zIndex: 1 }}
+                              />
+                            )}
+
                             {entity === 'usuario' ? (
                               <Avatar
                                 alt="Foto"
                                 src={previewFotoUrl}
                                 sx={{ width: 96, height: 96 }}
+                                onLoad={() => setFotoCarregando(false)}
+                                onError={() => setFotoCarregando(false)}
                               />
                             ) : (
                               <img
                                 src={previewFotoUrl}
                                 alt="Preview da Foto"
-                                style={{ maxWidth: '100%', maxHeight: 200 }}
+                                style={{ maxWidth: '100%', maxHeight: 200, display: fotoCarregando ? 'none' : 'block' }}
+                                onLoad={() => setFotoCarregando(false)}
+                                onError={() => setFotoCarregando(false)}
                               />
                             )}
                           </Box>

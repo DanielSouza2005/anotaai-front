@@ -3,6 +3,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Avatar,
   Box,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -19,6 +20,7 @@ import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
 import ObservacoesField from './components/ObservacoesField';
+import { useEffect, useState } from 'react';
 
 const renderMaskedField = (field, value) => {
   let displayValue = formatValue(field, value ?? '');
@@ -96,6 +98,13 @@ const DetailDialog = ({
   );
 
   const fotoUrl = formData?.foto || null;
+  const [fotoCarregando, setFotoCarregando] = useState(false);
+
+  useEffect(() => {
+    if (fotoUrl) {
+      setFotoCarregando(true);
+    }
+  }, [fotoUrl]);
 
   return (
     <Dialog
@@ -171,21 +180,38 @@ const DetailDialog = ({
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   {fotoUrl ? (
-                    entity === 'usuario' ? (
-                      <Avatar
-                        alt="Foto"
-                        src={fotoUrl}
-                        sx={{ width: 96, height: 96 }}
-                      />
-                    ) : (
-                      <Box mt={2}>
+                    <Box
+                      mt={2}
+                    >
+                      {fotoCarregando && (
+                        <CircularProgress
+                          size={48}
+                          sx={{ position: 'absolute', zIndex: 1 }}
+                        />
+                      )}
+
+                      {entity === 'usuario' ? (
+                        <Avatar
+                          alt="Foto"
+                          src={fotoUrl}
+                          sx={{ width: 96, height: 96 }}
+                          onLoad={() => setFotoCarregando(false)}
+                          onError={() => setFotoCarregando(false)}
+                        />
+                      ) : (
                         <img
                           src={fotoUrl}
                           alt="Foto"
-                          style={{ maxWidth: '100%', maxHeight: 200 }}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: 200,
+                            display: fotoCarregando ? 'none' : 'block'
+                          }}
+                          onLoad={() => setFotoCarregando(false)}
+                          onError={() => setFotoCarregando(false)}
                         />
-                      </Box>
-                    )
+                      )}
+                    </Box>
                   ) : (
                     <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
                       Nenhuma foto disponível para este {entity === 'usuario' ? 'usuário' : entity}.

@@ -4,7 +4,6 @@ import { LoadingButton } from '@mui/lab';
 import {
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,17 +12,13 @@ import {
   IconButton,
   Tab,
   Tabs,
-  TextField,
   Typography
 } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
-import { useCallback, useState } from 'react';
+import { Form, Formik } from 'formik';
+import { useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
-import { maskTypes } from '../../../utils/Masks';
-import { fetchEnderecoByCEP } from '../../../utils/cepUtils';
 import { getEntityIcon } from '../../../utils/entityUtils';
-import MaskedInput from '../maskedInput/MaskedInput';
-import SelectField from '../select/SelectField';
+import DynamicFormField from './components/DynamicFormField';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
@@ -70,123 +65,6 @@ const EditDialog = ({
   const isFieldRequired = useRequiredChecker(validationSchema);
 
   const { values: initialValues, maskedFields } = useFormValues({ fields, enderecoFields, formData, entity });
-
-  const renderField = useCallback((field, values, errors, touched, setFieldValue, prefix = '') => {
-    const fullName = prefix ? `${prefix}.${field.name}` : field.name;
-    const error = prefix ? errors[prefix]?.[field.name] : errors[field.name];
-    const isTouched = prefix ? touched[prefix]?.[field.name] : touched[field.name];
-    const isReadOnly = field.readonly === true;
-    const isRequired = isFieldRequired(field.name, prefix);
-
-    const label = (
-      <>
-        {field.label}
-        {isRequired && (
-          <Typography component="span" color="error"> *</Typography>
-        )}
-      </>
-    );
-
-    if (field.type === 'select' && field.source) {
-      return (
-        <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
-          <SelectField
-            name={fullName}
-            label={label}
-            source={field.source}
-            displayField={field.displayField}
-            error={error}
-            touched={isTouched}
-          />
-        </Grid>
-      );
-    }
-
-    const needsMask = maskTypes.includes(field.name) || maskTypes.includes(field.mask);
-
-    if (needsMask) {
-      return (
-        <Grid key={fullName} sx={{ gridColumn: 'span 6' }}>
-          <MaskedInput
-            name={fullName}
-            mask={field.mask || field.name}
-            label={label}
-            fullWidth
-            margin="dense"
-            readOnly={isReadOnly}
-            onBlur={async (e) => {
-              if (field.name === 'cep') {
-                setCepLoading(true);
-                try {
-                  const endereco = await fetchEnderecoByCEP(e.target.value);
-                  if (endereco) {
-                    setFieldValue('endereco.pais', 'Brasil');
-                    setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                    setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                    setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                    setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                    setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
-                  }
-                } finally {
-                  setCepLoading(false);
-                }
-              }
-            }}
-          />
-        </Grid>
-      );
-    }
-
-    return (
-      <Grid
-        key={fullName}
-        sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
-      >
-        <Field
-          name={fullName}
-          as={TextField}
-          label={label}
-          fullWidth
-          value={values?.[prefix]?.[field.name] ?? values?.[field.name] ?? ''}
-          multiline={field.type === 'textarea'}
-          rows={field.type === 'textarea' ? 3 : 1}
-          type={field.type}
-          margin="dense"
-          error={Boolean(isTouched && error)}
-          helperText={isTouched && error}
-          InputLabelProps={field.type === 'date' ? { shrink: true } : undefined}
-          InputProps={{
-            readOnly: isReadOnly,
-            sx: {
-              backgroundColor: isReadOnly ? '#e3f2fd' : '#ffffff',
-              borderRadius: 1,
-            },
-            ...(prefix === 'endereco' && cepLoading && {
-              endAdornment: <CircularProgress size={20} sx={{ mr: 1 }} />,
-            })
-          }}
-          onBlur={async (e) => {
-            if (field.name === 'cep') {
-              setCepLoading(true);
-              try {
-                const endereco = await fetchEnderecoByCEP(e.target.value);
-                if (endereco) {
-                  setFieldValue('endereco.pais', 'Brasil');
-                  setFieldValue('endereco.rua', endereco.logradouro || values.endereco.rua);
-                  setFieldValue('endereco.bairro', endereco.bairro || values.endereco.bairro);
-                  setFieldValue('endereco.cidade', endereco.cidade || values.endereco.cidade);
-                  setFieldValue('endereco.uf', endereco.uf || values.endereco.uf);
-                  setFieldValue('endereco.complemento', endereco.complemento || values.endereco.complemento);
-                }
-              } finally {
-                setCepLoading(false);
-              }
-            }
-          }}
-        />
-      </Grid>
-    );
-  }, [cepLoading, isFieldRequired]);
 
   return (
     <Dialog
@@ -273,8 +151,20 @@ const EditDialog = ({
                   {fields
                     .filter(field => field.name !== 'obs')
                     .map(field =>
-                      renderField(field, values, errors, touched, setFieldValue)
-                    )}
+                      <DynamicFormField
+                        key={field.name}
+                        field={field}
+                        values={values}
+                        errors={errors}
+                        touched={touched}
+                        setFieldValue={setFieldValue}
+                        isFieldRequired={isFieldRequired}
+                        cepLoading={cepLoading}
+                        setCepLoading={setCepLoading}
+                        readOnly={field.readonly}
+                      />
+                    )
+                  }
                 </Grid>
               </TabPanel>
 
@@ -284,7 +174,19 @@ const EditDialog = ({
                     {enderecoFields
                       .filter(field => field.name !== 'obs')
                       .map(field =>
-                        renderField(field, values, errors, touched, setFieldValue, 'endereco')
+                        <DynamicFormField
+                          key={field.name}
+                          field={field}
+                          values={values}
+                          errors={errors}
+                          touched={touched}
+                          setFieldValue={setFieldValue}
+                          isFieldRequired={isFieldRequired}
+                          cepLoading={cepLoading}
+                          setCepLoading={setCepLoading}
+                          readOnly={field.readonly}
+                          prefix={'endereco'}
+                        />
                       )
                     }
                   </Grid>

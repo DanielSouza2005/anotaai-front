@@ -9,48 +9,16 @@ import {
   IconButton,
   Tab,
   Tabs,
-  TextField,
-  Typography
+  Typography,
+  TextField
 } from '@mui/material';
-import { formatValue } from '../../../utils/Masks';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
-
-const renderMaskedField = (field, value) => {
-  let displayValue = formatValue(field, value ?? '');
-
-  if (field.type === 'select' && Array.isArray(field.options)) {
-    const option = field.options.find(opt => opt.value === value);
-    displayValue = option?.label ?? value;
-  }
-
-  return (
-    <Grid
-      key={field.name}
-      sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
-    >
-      <TextField
-        label={field.label}
-        value={displayValue}
-        fullWidth
-        multiline={field.type === 'textarea'}
-        rows={field.type === 'textarea' ? 3 : 1}
-        InputProps={{
-          readOnly: true,
-          sx: {
-            backgroundColor: '#e3f2fd',
-            borderRadius: 1,
-          },
-        }}
-        margin="dense"
-      />
-    </Grid>
-  );
-};
+import { formatValue } from '../../../utils/Masks';
 
 const DetailDialog = ({
   open,
@@ -85,15 +53,46 @@ const DetailDialog = ({
 
   const fotoUrl = formData?.foto || null;
 
-  const renderFields = (fieldList, data = {}) => (
+  const renderField = (field, value, prefix = '') => {
+    const displayValue = formatValue(field, value ?? '');
+
+    if (field.type === 'select' && Array.isArray(field.options)) {
+      const option = field.options.find(opt => opt.value === value);
+      return option?.label ?? value;
+    }
+
+    return displayValue;
+  };
+
+  const renderFields = (fieldList, data = {}, prefix = '') => (
     <Grid container spacing={2} columns={12}>
-      {
-        fieldList
-          .filter(field => field.name !== 'obs')
-          .map(field =>
-            renderMaskedField(field, data?.[field.name])
-          )
-      }
+      {fieldList
+        .filter(field => field.name !== 'obs')
+        .map(field => {
+          const value = prefix ? data?.[field.name] : formData?.[field.name];
+          return (
+            <Grid
+              key={prefix ? `${prefix}.${field.name}` : field.name}
+              sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
+            >
+              <TextField
+                label={field.label}
+                value={renderField(field, value)}
+                fullWidth
+                multiline={field.type === 'textarea'}
+                rows={field.type === 'textarea' ? 3 : 1}
+                InputProps={{
+                  readOnly: true,
+                  sx: {
+                    backgroundColor: '#e3f2fd',
+                    borderRadius: 1,
+                  },
+                }}
+                margin="dense"
+              />
+            </Grid>
+          );
+        })}
     </Grid>
   );
 
@@ -147,22 +146,13 @@ const DetailDialog = ({
 
           {empresaTabIndex >= 0 && (
             <TabPanel value={tabIndex} index={empresaTabIndex}>
-              <Grid container spacing={2} columns={12}>
-                {empresaFields.map(field =>
-                  renderMaskedField(
-                    field,
-                    field.name === 'cod_empresa'
-                      ? formData?.cod_empresa
-                      : formData?.empresa?.[field.name]
-                  )
-                )}
-              </Grid>
+              {renderFields(empresaFields, formData?.empresa)}
             </TabPanel>
           )}
 
           {hasEndereco && (
             <TabPanel value={tabIndex} index={enderecoTabIndex}>
-              {renderFields(enderecoFields, formData?.endereco)}
+              {renderFields(enderecoFields, formData?.endereco, 'endereco')}
             </TabPanel>
           )}
 
@@ -171,8 +161,8 @@ const DetailDialog = ({
               <PhotoUploader
                 entity={entity}
                 previewUrl={fotoUrl}
-                onSelect={() => { }}
-                onClear={() => { }}
+                onSelect={() => {}}
+                onClear={() => {}}
                 showClear={false}
                 disabled
               />
@@ -196,7 +186,6 @@ const DetailDialog = ({
               </Box>
             </TabPanel>
           )}
-
         </Box>
       </DialogContent>
     </Dialog>

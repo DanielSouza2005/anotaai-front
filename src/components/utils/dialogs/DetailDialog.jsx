@@ -1,24 +1,21 @@
-import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Box,
   Dialog,
   DialogContent,
-  DialogTitle,
   Grid,
-  IconButton,
   Tab,
   Tabs,
-  Typography,
   TextField
 } from '@mui/material';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import { formatValue } from '../../../utils/Masks';
+import DialogHeader from './components/DialogHeader';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabPanel from './components/TabPanel';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
-import { formatValue } from '../../../utils/Masks';
 
 const DetailDialog = ({
   open,
@@ -104,19 +101,13 @@ const DetailDialog = ({
       maxWidth="md"
       TransitionComponent={DialogTransition}
     >
-      <IconButton
-        aria-label="Fechar"
-        onClick={onClose}
-        sx={{ position: 'absolute', right: 8, top: 8 }}
-      >
-        <CloseIcon />
-      </IconButton>
-
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-        <InfoOutlinedIcon color="primary" sx={{ fontSize: 32, mr: 1 }} />
-        {getEntityIcon(entity)}
-        <Typography variant="h6" component="span">{title}</Typography>
-      </DialogTitle>
+      <DialogHeader
+        icon={<InfoOutlinedIcon />}
+        title={title}
+        entityIcon={getEntityIcon(entity)}
+        onClose={onClose}
+        submitting={false}
+      />
 
       <DialogContent
         dividers
@@ -161,8 +152,8 @@ const DetailDialog = ({
               <PhotoUploader
                 entity={entity}
                 previewUrl={fotoUrl}
-                onSelect={() => {}}
-                onClear={() => {}}
+                onSelect={() => { }}
+                onClear={() => { }}
                 showClear={false}
                 disabled
               />

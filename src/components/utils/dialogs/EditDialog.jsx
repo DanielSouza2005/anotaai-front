@@ -1,4 +1,3 @@
-import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -7,17 +6,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
-  IconButton,
   Tab,
-  Tabs,
-  Typography
+  Tabs
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { getEntityIcon } from '../../../utils/entityUtils';
+import DialogHeader from './components/DialogHeader';
 import DynamicFormField from './components/DynamicFormField';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
@@ -109,22 +106,13 @@ const EditDialog = ({
       >
         {({ values, errors, touched, setFieldValue, isSubmitting }) => (
           <Form>
-            <IconButton
-              aria-label="Fechar"
-              onClick={() => {
-                if (!submitting) onClose();
-              }}
-              disabled={submitting}
-              sx={{ position: 'absolute', right: 8, top: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-              <EditIcon color="primary" sx={{ fontSize: 32, mr: 1 }} />
-              {getEntityIcon(entity)}
-              <Typography variant="h6" component="span">{title}</Typography>
-            </DialogTitle>
+            <DialogHeader
+              icon={<EditIcon />}
+              title={title}
+              entityIcon={getEntityIcon(entity)}
+              onClose={onClose}
+              submitting={submitting}
+            />
 
             <DialogContent
               dividers

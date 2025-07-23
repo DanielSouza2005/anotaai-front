@@ -4,8 +4,6 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  Tab,
-  Tabs,
   TextField
 } from '@mui/material';
 import { getEntityIcon } from '../../../utils/entityUtils';
@@ -13,7 +11,7 @@ import { formatValue } from '../../../utils/Masks';
 import DialogHeader from './components/DialogHeader';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
-import TabPanel from './components/TabPanel';
+import TabbedFormLayout from './components/TabbedFormLayout';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
 
@@ -37,11 +35,7 @@ const DetailDialog = ({
 
   const {
     tabIndex,
-    setTabIndex,
-    empresaTabIndex,
-    enderecoTabIndex,
-    fotoTabIndex,
-    obsTabIndex
+    setTabIndex
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const filteredFields = fields.filter(
@@ -118,66 +112,60 @@ const DetailDialog = ({
           justifyContent: 'flex-start'
         }}
       >
-        <Tabs
-          value={tabIndex}
-          onChange={(_, newIndex) => setTabIndex(newIndex)}
+        <TabbedFormLayout
+          tabIndex={tabIndex}
+          setTabIndex={setTabIndex}
           sx={{ mb: 2 }}
-        >
-          <Tab label={titleTab} />
-          {empresaTabIndex >= 0 && <Tab label="Empresa" />}
-          {hasEndereco && <Tab label={titleTab2} />}
-          {hasFoto && <Tab label="Foto" />}
-          {hasObs && <Tab label="Observações" />}
-        </Tabs>
-
-        <Box>
-          <TabPanel value={tabIndex} index={0}>
-            {renderFields(filteredFields, formData)}
-          </TabPanel>
-
-          {empresaTabIndex >= 0 && (
-            <TabPanel value={tabIndex} index={empresaTabIndex}>
-              {renderFields(empresaFields, formData?.empresa)}
-            </TabPanel>
-          )}
-
-          {hasEndereco && (
-            <TabPanel value={tabIndex} index={enderecoTabIndex}>
-              {renderFields(enderecoFields, formData?.endereco, 'endereco')}
-            </TabPanel>
-          )}
-
-          {hasFoto && (
-            <TabPanel value={tabIndex} index={fotoTabIndex}>
-              <PhotoUploader
-                entity={entity}
-                previewUrl={fotoUrl}
-                onSelect={() => { }}
-                onClear={() => { }}
-                showClear={false}
-                disabled
-              />
-            </TabPanel>
-          )}
-
-          {hasObs && (
-            <TabPanel value={tabIndex} index={obsTabIndex}>
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <ObservacoesField
-                  value={formData?.obs || ''}
-                  readOnly={true}
-                  standalone
-                  style={{
-                    backgroundColor: '#e3f2fd',
-                    borderRadius: 1,
-                    height: '100%',
-                    alignItems: 'flex-start'
-                  }}
+          tabs={[
+            {
+              label: titleTab,
+              content: renderFields(filteredFields, formData)
+            },
+            {
+              label: 'Empresa',
+              content: renderFields(empresaFields, formData?.empresa, 'empresa'),
+              condition: hasEmpresa
+            },
+            {
+              label: titleTab2,
+              content: renderFields(enderecoFields, formData?.endereco, 'endereco'),
+              condition: hasEndereco
+            },
+            {
+              label: 'Foto',
+              content: (
+                <PhotoUploader
+                  entity={entity}
+                  previewUrl={fotoUrl}
+                  onSelect={() => { }}
+                  onClear={() => { }}
+                  showClear={false}
+                  disabled
                 />
-              </Box>
-            </TabPanel>
-          )}
-        </Box>
+              ),
+              condition: hasFoto
+            },
+            {
+              label: 'Observações',
+              content: (
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <ObservacoesField
+                    value={formData?.obs || ''}
+                    readOnly={true}
+                    standalone
+                    style={{
+                      backgroundColor: '#e3f2fd',
+                      borderRadius: 1,
+                      height: '100%',
+                      alignItems: 'flex-start'
+                    }}
+                  />
+                </Box>
+              ),
+              condition: hasObs
+            }
+          ]}
+        />
       </DialogContent>
     </Dialog>
   );

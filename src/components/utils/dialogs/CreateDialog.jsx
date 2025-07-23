@@ -6,9 +6,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  Grid,
-  Tab,
-  Tabs
+  Grid
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
@@ -18,7 +16,7 @@ import DialogHeader from './components/DialogHeader';
 import DynamicFormField from './components/DynamicFormField';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
-import TabPanel from './components/TabPanel';
+import TabbedFormLayout from './components/TabbedFormLayout';
 import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
@@ -53,9 +51,6 @@ const CreateDialog = ({
   const {
     tabIndex,
     setTabIndex,
-    enderecoTabIndex,
-    obsTabIndex,
-    fotoTabIndex
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const isFieldRequired = useRequiredChecker(validationSchema);
@@ -122,86 +117,88 @@ const CreateDialog = ({
                   justifyContent: 'flex-start'
                 }}
               >
-                <Tabs value={tabIndex} sx={{ mb: 2 }} onChange={(_, newIndex) => setTabIndex(newIndex)}>
-                  <Tab label={titleTab} />
-                  {hasEndereco && <Tab label={titleTab2} />}
-                  {hasFoto && <Tab label="Foto" />}
-                  {entity === "contato" && (
-                    <Tab label="Observações" />
-                  )}
-                </Tabs>
-
-                <TabPanel value={tabIndex} index={0}>
-                  <Grid container spacing={2} columns={12}>
-                    {fields
-                      .filter(field => field.name !== 'obs')
-                      .map(field =>
-                        <DynamicFormField
-                          key={field.name}
-                          field={field}
-                          values={values}
-                          errors={errors}
-                          touched={touched}
-                          setFieldValue={setFieldValue}
-                          isFieldRequired={isFieldRequired}
-                          cepLoading={cepLoading}
-                          setCepLoading={setCepLoading}
-                          readOnly={field.readonly}
+                <TabbedFormLayout
+                  tabIndex={tabIndex}
+                  setTabIndex={setTabIndex}
+                  sx={{ mb: 2 }}
+                  tabs={[
+                    {
+                      label: titleTab,
+                      content: (
+                        <Grid container spacing={2} columns={12}>
+                          {fields
+                            .filter(field => field.name !== 'obs')
+                            .map(field => (
+                              <DynamicFormField
+                                key={field.name}
+                                field={field}
+                                values={values}
+                                errors={errors}
+                                touched={touched}
+                                setFieldValue={setFieldValue}
+                                isFieldRequired={isFieldRequired}
+                                cepLoading={cepLoading}
+                                setCepLoading={setCepLoading}
+                                readOnly={field.readonly}
+                              />
+                            ))}
+                        </Grid>
+                      )
+                    },
+                    {
+                      label: titleTab2,
+                      condition: hasEndereco,
+                      content: (
+                        <Grid container spacing={2} columns={12}>
+                          {enderecoFields
+                            .filter(field => field.name !== 'obs')
+                            .map(field => (
+                              <DynamicFormField
+                                key={field.name}
+                                field={field}
+                                values={values}
+                                errors={errors}
+                                touched={touched}
+                                setFieldValue={setFieldValue}
+                                isFieldRequired={isFieldRequired}
+                                cepLoading={cepLoading}
+                                setCepLoading={setCepLoading}
+                                readOnly={field.readonly}
+                                prefix="endereco"
+                              />
+                            ))}
+                        </Grid>
+                      )
+                    },
+                    {
+                      label: 'Foto',
+                      condition: hasFoto,
+                      content: (
+                        <PhotoUploader
+                          entity={entity}
+                          previewUrl={previewImage}
+                          onSelect={(file) => {
+                            setFieldValue('foto', file);
+                            setPhoto(file);
+                          }}
+                          onClear={() => {
+                            setFieldValue('foto', null);
+                            setPhoto(null);
+                          }}
                         />
                       )
+                    },
+                    {
+                      label: 'Observações',
+                      condition: hasObs,
+                      content: (
+                        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                          <ObservacoesField />
+                        </Box>
+                      )
                     }
-                  </Grid>
-                </TabPanel>
-
-                {hasEndereco && (
-                  <TabPanel value={tabIndex} index={enderecoTabIndex}>
-                    <Grid container spacing={2} columns={12}>
-                      {enderecoFields
-                        .filter(field => field.name !== 'obs')
-                        .map(field =>
-                          <DynamicFormField
-                            key={field.name}
-                            field={field}
-                            values={values}
-                            errors={errors}
-                            touched={touched}
-                            setFieldValue={setFieldValue}
-                            isFieldRequired={isFieldRequired}
-                            cepLoading={cepLoading}
-                            setCepLoading={setCepLoading}
-                            readOnly={field.readonly}
-                            prefix={'endereco'}
-                          />
-                        )
-                      }
-                    </Grid>
-                  </TabPanel>
-                )}
-
-                {hasFoto && (
-                  <TabPanel value={tabIndex} index={fotoTabIndex}>
-                    <PhotoUploader
-                      entity={entity}
-                      previewUrl={previewImage}
-                      onSelect={(file) => {
-                        setFieldValue('foto', file);
-                        setPhoto(file);
-                      }}
-                      onClear={() => {
-                        setFieldValue('foto', null);
-                        setPhoto(null);
-                      }}
-                    />
-                  </TabPanel>
-                )}
-
-                {hasObs && (
-                  <TabPanel value={tabIndex} index={obsTabIndex}>
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <ObservacoesField />
-                    </Box>
-                  </TabPanel>
-                )}
+                  ]}
+                />
 
               </DialogContent>
 

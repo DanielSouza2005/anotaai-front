@@ -1,22 +1,20 @@
 import AddIcon from '@mui/icons-material/Add';
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   Grid
 } from '@mui/material';
 import { Form, Formik } from 'formik';
-import { useState } from 'react';
-import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
+import { useEffect, useState } from 'react';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import DialogHeader from './components/DialogHeader';
 import DynamicFormField from './components/DynamicFormField';
+import FormDialogActions from './components/FormDialogActions';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabbedFormLayout from './components/TabbedFormLayout';
+import useFormSubmit from './hooks/useFormSubmit';
 import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
@@ -37,9 +35,7 @@ const CreateDialog = ({
   entity,
   usaFoto = false
 }) => {
-  const [submitting, setSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
-
   const [photo, setPhoto] = useState(null);
   const previewImage = useFotoPreview(photo);
 
@@ -54,8 +50,19 @@ const CreateDialog = ({
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const isFieldRequired = useRequiredChecker(validationSchema);
-
   const { values: initialValues, maskedFields } = useFormValues({ fields, enderecoFields, formData, entity });
+
+  const { submitting, handleSubmit } = useFormSubmit({
+    entity,
+    maskedFields,
+    onSubmit: onCreate
+  });
+
+  useEffect(() => {
+    if (open) {
+      setPhoto(null);
+    }
+  }, [open]);
 
   return (
     <Dialog
@@ -74,30 +81,9 @@ const CreateDialog = ({
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, formikBag) => {
-          setSubmitting(true);
-
-          const finish = () => setSubmitting(false);
-
-          if (entity === "contato" || entity === "usuario") {
-            const { foto } = values;
-            const rest = cleanValuesForAPI(values, maskedFields);
-            delete rest.foto;
-
-            const payload = {
-              dados: rest,
-              foto: foto || null,
-            };
-            onCreate(payload, formikBag, finish);
-          }
-          else {
-            let cleanValues = cleanValuesForAPI(values, maskedFields);
-            onCreate(cleanValues, formikBag, finish);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ values, errors, touched, setFieldValue, isSubmitting }) => {
-
           return (
             <Form>
               <DialogHeader
@@ -199,27 +185,18 @@ const CreateDialog = ({
                     }
                   ]}
                 />
-
               </DialogContent>
 
-              <DialogActions>
-                <Button onClick={onClose} disabled={submitting}>
-                  Cancelar
-                </Button>
-                <LoadingButton
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                  loading={isSubmitting}
-                >
-                  Criar
-                </LoadingButton>
-              </DialogActions>
+              <FormDialogActions
+                onClose={onClose}
+                isSubmitting={isSubmitting}
+                submitText="Criar"
+              />
             </Form>
           )
         }}
       </Formik>
-    </Dialog >
+    </Dialog>
   );
 };
 

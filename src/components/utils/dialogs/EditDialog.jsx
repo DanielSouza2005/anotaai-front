@@ -1,22 +1,20 @@
 import EditIcon from '@mui/icons-material/Edit';
-import { LoadingButton } from '@mui/lab';
 import {
   Box,
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   Grid
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
-import { cleanValuesForAPI } from '../../../utils/FieldCleaner';
 import { getEntityIcon } from '../../../utils/entityUtils';
 import DialogHeader from './components/DialogHeader';
 import DynamicFormField from './components/DynamicFormField';
+import FormDialogActions from './components/FormDialogActions';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabbedFormLayout from './components/TabbedFormLayout';
+import useFormSubmit from './hooks/useFormSubmit';
 import { useFormValues } from './hooks/useFormValues';
 import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
@@ -39,10 +37,9 @@ const EditDialog = ({
 }) => {
   const [photo, setPhoto] = useState(null);
   const [fotoRemovida, setFotoRemovida] = useState(false);
-  const previewFotoUrl = useFotoPreview(photo, !fotoRemovida ? formData?.foto : null);
-
-  const [submitting, setSubmitting] = useState(false);
   const [cepLoading, setCepLoading] = useState(false);
+
+  const previewFotoUrl = useFotoPreview(photo, !fotoRemovida ? formData?.foto : null);
 
   const hasEndereco = enderecoFields.length !== 0;
   const hasFoto = usaFoto;
@@ -55,8 +52,13 @@ const EditDialog = ({
   } = useTabManagement({ open, hasEndereco, hasEmpresa, hasFoto, hasObs });
 
   const isFieldRequired = useRequiredChecker(validationSchema);
-
   const { values: initialValues, maskedFields } = useFormValues({ fields, enderecoFields, formData, entity });
+
+  const { submitting, handleSubmit } = useFormSubmit({
+    entity,
+    maskedFields,
+    onSubmit: onSave
+  });
 
   return (
     <Dialog
@@ -76,28 +78,7 @@ const EditDialog = ({
         initialValues={initialValues}
         validationSchema={validationSchema}
         enableReinitialize
-        onSubmit={(values, formikBag) => {
-          setSubmitting(true);
-
-          const finish = () => {
-            setSubmitting(false);
-          };
-
-          if (entity === "contato" || entity === "usuario") {
-            const { foto } = values;
-            const rest = cleanValuesForAPI(values, maskedFields);
-            delete rest.foto;
-
-            const payload = {
-              dados: rest,
-              foto: foto || null,
-            };
-            onSave(payload, formikBag, finish);
-          } else {
-            const cleanValues = cleanValuesForAPI(values, maskedFields);
-            onSave(cleanValues, formikBag, finish);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ values, errors, touched, setFieldValue, isSubmitting }) => (
           <Form>
@@ -203,22 +184,11 @@ const EditDialog = ({
               />
             </DialogContent>
 
-            <DialogActions>
-              <Button
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
-                Cancelar
-              </Button>
-              <LoadingButton
-                variant="contained"
-                type="submit"
-                color="primary"
-                loading={isSubmitting}
-              >
-                Salvar
-              </LoadingButton>
-            </DialogActions>
+            <FormDialogActions
+              onClose={onClose}
+              isSubmitting={isSubmitting}
+              submitText="Salvar"
+            />
           </Form>
         )}
       </Formik>

@@ -1,6 +1,6 @@
 import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { Field } from 'formik';
-import { maskTypes } from '../../../../utils/Masks';
+import { useMaskUtils } from '../../../../hooks/useMaskUtils';
 import MaskedInput from '../../maskedInput/MaskedInput';
 import SelectField from '../../select/SelectField';
 import useCEPAutoComplete from '../hooks/useCEPAutoComplete';
@@ -28,6 +28,8 @@ const DynamicFormField = ({
             {isRequired && <Typography component="span" color="error"> *</Typography>}
         </span>
     );
+
+    const { maskTypes } = useMaskUtils();
 
     const isMasked = maskTypes.includes(field.name) || maskTypes.includes(field.mask);
     const isSelect = field.type === 'select' && field.source;

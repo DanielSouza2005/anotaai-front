@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { removeMask } from '../../utils/Masks';
+import { removeMask } from '../../utils/removeMask';
 
 const cleanValue = (value) => {
   if (typeof value === 'string') {

@@ -7,13 +7,13 @@ import {
   TextField
 } from '@mui/material';
 import { useEntityUtils } from '../../../hooks/useEntityUtils';
-import { formatValue } from '../../../utils/Masks';
 import DialogHeader from './components/DialogHeader';
 import ObservacoesField from './components/ObservacoesField';
 import PhotoUploader from './components/PhotoUploader';
 import TabbedFormLayout from './components/TabbedFormLayout';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
+import { useMaskUtils } from '../../../hooks/useMaskUtils';
 
 const DetailDialog = ({
   open,
@@ -43,6 +43,7 @@ const DetailDialog = ({
   );
 
   const { getEntityIcon } = useEntityUtils();
+  const { formatValue } = useMaskUtils();
 
   const fotoUrl = formData?.foto || null;
 

@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { formatValue } from '../../utils/Masks';
 import { useEntityUtils } from '../../hooks/useEntityUtils';
+import { useMaskUtils } from '../../hooks/useMaskUtils';
 
 const EntityTable = ({
     entityName,
@@ -25,6 +25,7 @@ const EntityTable = ({
     handleMenuOpen
 }) => {
     const { getEntityIdKey } = useEntityUtils();
+    const { formatValue } = useMaskUtils();
 
     const columnsWithActions = [...columns];
 

@@ -10,13 +10,15 @@ import { Field } from 'formik';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../../services/api/api';
-import { formatValue } from '../../../utils/Masks';
 import { useEntityUtils } from '../../../hooks/useEntityUtils';
+import { useMaskUtils } from '../../../hooks/useMaskUtils';
 
 const SelectField = ({ name, label, source, error, touched }) => {
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
+
     const { getEntityIdKey } = useEntityUtils();
+    const { formatValue } = useMaskUtils();
 
     useEffect(() => {
         const fetchData = async () => {

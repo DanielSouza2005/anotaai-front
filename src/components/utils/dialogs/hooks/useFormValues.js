@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
-import { maskTypes } from '../../../../utils/Masks';
 import { useEntityUtils } from '../../../../hooks/useEntityUtils';
+import { useMaskUtils } from '../../../../hooks/useMaskUtils';
 
 export const useFormValues = ({ fields, enderecoFields, formData = {}, entity }) => {
     const idKey = entity === 'contato' ? 'empresa' : '';
     const { getEntityIdKey } = useEntityUtils();
+    const { maskTypes } = useMaskUtils();
 
     const baseValues = fields.reduce((acc, f) => {
         const value =
@@ -29,7 +30,7 @@ export const useFormValues = ({ fields, enderecoFields, formData = {}, entity })
                 .map(f => `endereco.${f.name}`)
         ];
         return fieldsList;
-    }, [fields, enderecoFields]);
+    }, [fields, enderecoFields, maskTypes]);
 
     return {
         values: {

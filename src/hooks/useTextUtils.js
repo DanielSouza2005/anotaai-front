@@ -27,13 +27,8 @@ export const useTextUtils = () => {
         return obj;
     }, []);
 
-    const removeMask = useCallback((value) => {
-        return value?.replace(/\D/g, '') || '';
-    }, []);
-
     return {
         capitalizeFirstLetter,
-        convertEmptyStringsToNull,
-        removeMask
+        convertEmptyStringsToNull
     };
 };

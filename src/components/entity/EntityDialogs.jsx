@@ -1,8 +1,8 @@
-import CreateDialog from '../utils/dialogs/CreateDialog';
-import EditDialog from '../utils/dialogs/EditDialog';
-import DetailDialog from '../utils/dialogs/DetailDialog';
+import { useTextUtils } from '../../hooks/useTextUtils';
 import ConfirmDialog from '../utils/dialogs/ConfirmDialog';
-import { capitalizeFirstLetter } from '../../utils/capitalize';
+import CreateDialog from '../utils/dialogs/CreateDialog';
+import DetailDialog from '../utils/dialogs/DetailDialog';
+import EditDialog from '../utils/dialogs/EditDialog';
 
 const EntityDialogs = ({
     entityName,
@@ -40,6 +40,9 @@ const EntityDialogs = ({
     handleEdit,
     handleDelete,
 }) => {
+
+    const { capitalizeFirstLetter } = useTextUtils();
+
     return (
         <>
             <CreateDialog

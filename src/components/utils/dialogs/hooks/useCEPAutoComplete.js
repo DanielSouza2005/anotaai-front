@@ -1,6 +1,9 @@
-import { fetchEnderecoByCEP } from '../../../../utils/cepUtils';
+import { useApiUtils } from "../../../../hooks/useApiUtils";
 
 const useCEPAutoComplete = (prefix, setFieldValue, values, cepLoading, setCepLoading) => {
+
+    const { fetchEnderecoByCEP } = useApiUtils();
+
     const handleCEP = async (e) => {
         if (!e || !e.target || e.target.name !== (prefix ? `${prefix}.cep` : 'cep')) return;
 

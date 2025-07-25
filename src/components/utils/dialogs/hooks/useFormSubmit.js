@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { cleanValuesForAPI } from '../../../../utils/FieldCleaner';
+import { useApiUtils } from '../../../../hooks/useApiUtils';
 
 const useFormSubmit = ({ entity, maskedFields, onSubmit }) => {
     const [submitting, setSubmitting] = useState(false);
+    const { cleanValuesForAPI } = useApiUtils();
 
     const handleSubmit = (values, formikBag) => {
         setSubmitting(true);

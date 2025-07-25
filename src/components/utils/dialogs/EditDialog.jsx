@@ -7,7 +7,6 @@ import {
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
-import { getEntityIcon } from '../../../utils/entityUtils';
 import DialogHeader from './components/DialogHeader';
 import DynamicFormField from './components/DynamicFormField';
 import FormDialogActions from './components/FormDialogActions';
@@ -20,6 +19,7 @@ import useFotoPreview from './hooks/useFotoPreview';
 import useRequiredChecker from './hooks/useRequiredChecker';
 import useTabManagement from './hooks/useTabManager';
 import DialogTransition from './transition/DialogTransitions';
+import { useEntityUtils } from '../../../hooks/useEntityUtils';
 
 const EditDialog = ({
   open,
@@ -53,6 +53,7 @@ const EditDialog = ({
 
   const isFieldRequired = useRequiredChecker(validationSchema);
   const { values: initialValues, maskedFields } = useFormValues({ fields, enderecoFields, formData, entity });
+  const { getEntityIcon } = useEntityUtils();
 
   const { submitting, handleSubmit } = useFormSubmit({
     entity,

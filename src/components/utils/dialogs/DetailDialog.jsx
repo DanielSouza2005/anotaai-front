@@ -6,7 +6,7 @@ import {
   Grid,
   TextField
 } from '@mui/material';
-import { getEntityIcon } from '../../../utils/entityUtils';
+import { useEntityUtils } from '../../../hooks/useEntityUtils';
 import { formatValue } from '../../../utils/Masks';
 import DialogHeader from './components/DialogHeader';
 import ObservacoesField from './components/ObservacoesField';
@@ -41,6 +41,8 @@ const DetailDialog = ({
   const filteredFields = fields.filter(
     f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)
   );
+
+  const { getEntityIcon } = useEntityUtils();
 
   const fotoUrl = formData?.foto || null;
 

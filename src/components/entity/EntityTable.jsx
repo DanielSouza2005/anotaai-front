@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { getEntityIdKey } from '../../utils/entityUtils';
 import { formatValue } from '../../utils/Masks';
+import { useEntityUtils } from '../../hooks/useEntityUtils';
 
 const EntityTable = ({
     entityName,
@@ -24,6 +24,8 @@ const EntityTable = ({
     handleRowDoubleClick,
     handleMenuOpen
 }) => {
+    const { getEntityIdKey } = useEntityUtils();
+
     const columnsWithActions = [...columns];
 
     const hasAcoes = columns.some((col) => col.field === 'acoes');
@@ -54,7 +56,6 @@ const EntityTable = ({
             valueFormatter: (params) => formatValue(col, params),
         };
     });
-
 
     return (
         <DataGrid

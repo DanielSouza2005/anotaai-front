@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../services/api/api';
-import { getEntityIdKey, getEntityLabel } from '../utils/entityUtils';
+import { useEntityUtils } from './useEntityUtils';
 
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);
@@ -22,6 +22,8 @@ export default function useEntity(entityName) {
     const [formData, setFormData] = useState({});
     const [filters, setFilters] = useState([]);
     const [showFilters, setShowFilters] = useState(false);
+
+    const { getEntityIdKey, getEntityLabel } = useEntityUtils();
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -97,7 +99,7 @@ export default function useEntity(entityName) {
             toast.success(`${getEntityLabel(entityName)} incluído(a) com sucesso!`);
             setOpenAddDialog(false);
         } catch (error) {
-            handleApiError(error, setErrors, entityName, 'criar');
+            handleApiError(error, setErrors, entityName, 'criar', getEntityLabel);
         } finally {
             setSubmitting(false);
             finish();
@@ -119,7 +121,7 @@ export default function useEntity(entityName) {
             toast.success(`${getEntityLabel(entityName)} atualizado(a) com sucesso!`);
             setOpenEditDialog(false);
         } catch (error) {
-            handleApiError(error, setErrors, entityName, 'atualizar');
+            handleApiError(error, setErrors, entityName, 'atualizar', getEntityLabel);
         } finally {
             setSubmitting(false);
             finish();
@@ -183,7 +185,7 @@ export default function useEntity(entityName) {
     };
 }
 
-function handleApiError(error, setErrors, entityName, actionVerb) {
+function handleApiError(error, setErrors, entityName, actionVerb, getEntityLabel) {
     if (error.response && error.response.data) {
         const apiErrors = error.response.data;
 

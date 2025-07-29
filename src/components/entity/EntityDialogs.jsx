@@ -1,8 +1,6 @@
 import { useTextUtils } from '../../hooks/useTextUtils';
+import BaseDialog, { DIALOG_MODES } from '../utils/dialogs/components/BaseDialog';
 import ConfirmDialog from '../utils/dialogs/ConfirmDialog';
-import CreateDialog from '../utils/dialogs/CreateDialog';
-import DetailDialog from '../utils/dialogs/DetailDialog';
-import EditDialog from '../utils/dialogs/EditDialog';
 
 const EntityDialogs = ({
     entityName,
@@ -32,9 +30,7 @@ const EntityDialogs = ({
     setOpenConfirmDelete,
 
     newFormData,
-    setNewFormData,
     formData,
-    setFormData,
 
     handleCreate,
     handleEdit,
@@ -45,17 +41,12 @@ const EntityDialogs = ({
 
     return (
         <>
-            <CreateDialog
+            <BaseDialog
                 open={openAddDialog}
+                mode={DIALOG_MODES.CREATE}
                 onClose={() => setOpenAddDialog(false)}
-                onCreate={handleCreate}
+                onSubmit={handleCreate}
                 formData={newFormData}
-                onChange={(e) =>
-                    setNewFormData(prev => ({
-                        ...prev,
-                        [e.target.name]: e.target.value,
-                    }))
-                }
                 fields={addfields}
                 enderecoFields={addEnderecoFields}
                 title={createDialogTitle}
@@ -66,17 +57,12 @@ const EntityDialogs = ({
                 usaFoto={usaFoto}
             />
 
-            <EditDialog
+            <BaseDialog
                 open={openEditDialog}
+                mode={DIALOG_MODES.EDIT}
                 onClose={() => setOpenEditDialog(false)}
-                onSave={handleEdit}
+                onSubmit={handleEdit}
                 formData={formData}
-                onChange={(e) =>
-                    setFormData(prev => ({
-                        ...prev,
-                        [e.target.name]: e.target.value,
-                    }))
-                }
                 fields={editFields}
                 enderecoFields={editEnderecoFields}
                 title={editDialogTitle}
@@ -87,8 +73,9 @@ const EntityDialogs = ({
                 usaFoto={usaFoto}
             />
 
-            <DetailDialog
+            <BaseDialog
                 open={openDetail}
+                mode={DIALOG_MODES.VIEW}
                 onClose={() => setOpenDetail(false)}
                 formData={formData}
                 title={detailDialogTitle}

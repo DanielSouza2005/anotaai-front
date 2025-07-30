@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../../services/api/api';
 import { useEntityUtils } from '../../../hooks/useEntityUtils';
+import { getEntityBehavior } from '../../../config/entity/entityConfig';
 
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);
@@ -24,6 +25,8 @@ export default function useEntity(entityName) {
     const [showFilters, setShowFilters] = useState(false);
 
     const { getEntityIdKey, getEntityLabel } = useEntityUtils();
+    const behavior = getEntityBehavior(entityName);
+    const usaFoto = behavior.hasPhoto;
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -88,7 +91,7 @@ export default function useEntity(entityName) {
         try {
             setSubmitting(true);
 
-            if (entityName === "contato" || entityName === "usuario") {
+            if (usaFoto) {
                 const formData = buildMultipartPayload(values);
                 await api.post(`/${entityName}`, formData);
             } else {
@@ -110,7 +113,7 @@ export default function useEntity(entityName) {
         try {
             setSubmitting(true);
 
-            if (entityName === "contato" || entityName === "usuario") {
+            if (usaFoto) {
                 const formData = buildMultipartPayload(values);
                 await api.put(`/${entityName}`, formData);
             } else {

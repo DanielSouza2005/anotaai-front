@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useApiUtils } from '../../../../hooks/useApiUtils';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 const useFormSubmit = ({ entity, maskedFields, onSubmit }) => {
     const [submitting, setSubmitting] = useState(false);
     const { cleanValuesForAPI } = useApiUtils();
+
+    const behavior = getEntityBehavior(entity);
+    const usaFoto = behavior.hasPhoto;
 
     const handleSubmit = (values, formikBag) => {
         setSubmitting(true);
 
         const finish = () => setSubmitting(false);
 
-        const entitiesWithPhoto = ["contato", "usuario"];
-
-        if (entitiesWithPhoto.includes(entity)) {
+        if (usaFoto) {
             const { foto, ...rest } = values;
             const cleanedData = cleanValuesForAPI(rest, maskedFields);
 

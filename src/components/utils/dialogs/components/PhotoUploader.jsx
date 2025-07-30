@@ -6,6 +6,7 @@ import {
     Typography
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 const PhotoUploader = ({
     entity,
@@ -20,6 +21,9 @@ const PhotoUploader = ({
     const [internalLoading, setInternalLoading] = useState(false);
     const [error, setError] = useState(false);
     const [imageKey, setImageKey] = useState(0);
+
+    const behavior = getEntityBehavior(entity);
+    const usaAvatar = behavior.hasAvatar;
 
     useEffect(() => {
         if (previewUrl) {
@@ -88,35 +92,38 @@ const PhotoUploader = ({
                 )}
 
                 {showPreview ? (
-                    entity === 'usuario' ? (
-                        <Avatar
-                            key={imageKey}
-                            src={previewUrl}
-                            alt="Foto"
-                            sx={{ width: 96, height: 96 }}
-                            onLoad={() => setInternalLoading(false)}
-                            onError={() => {
-                                setInternalLoading(false);
-                                setError(true);
-                            }}
-                        />
-                    ) : (
-                        <img
-                            key={imageKey}
-                            src={previewUrl}
-                            alt="Foto"
-                            onLoad={() => setInternalLoading(false)}
-                            onError={() => {
-                                setInternalLoading(false);
-                                setError(true);
-                            }}
-                            style={{
-                                maxWidth: '100%',
-                                maxHeight: 200,
-                                display: loading ? 'none' : 'block'
-                            }}
-                        />
-                    )
+                    usaAvatar ?
+                        (
+                            <Avatar
+                                key={imageKey}
+                                src={previewUrl}
+                                alt="Foto"
+                                sx={{ width: 96, height: 96 }}
+                                onLoad={() => setInternalLoading(false)}
+                                onError={() => {
+                                    setInternalLoading(false);
+                                    setError(true);
+                                }}
+                            />
+                        )
+                        :
+                        (
+                            <img
+                                key={imageKey}
+                                src={previewUrl}
+                                alt="Foto"
+                                onLoad={() => setInternalLoading(false)}
+                                onError={() => {
+                                    setInternalLoading(false);
+                                    setError(true);
+                                }}
+                                style={{
+                                    maxWidth: '100%',
+                                    maxHeight: 200,
+                                    display: loading ? 'none' : 'block'
+                                }}
+                            />
+                        )
                 ) : (
                     <Typography variant="body2" color="textSecondary">
                         Nenhuma foto selecionada.

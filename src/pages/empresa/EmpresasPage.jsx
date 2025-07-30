@@ -1,4 +1,4 @@
-import EntityGridPage from "../../components/entity/EntityGridPage";
+import EntityGridPage from "../../components/entity/components/EntityGridPage";
 import { addEmpresaEnderecoFields, addEmpresaFields, editEmpresaEnderecoFields, editEmpresaFields, empresaEnderecoFields, empresaFields, gridEmpresaFields, searchEmpresaFields } from "./empresaFields";
 import { empresaValidationSchema } from "./empresaValidation";
 

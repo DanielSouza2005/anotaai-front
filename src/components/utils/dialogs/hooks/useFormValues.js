@@ -1,9 +1,12 @@
 import { useMemo } from 'react';
 import { useEntityUtils } from '../../../../hooks/useEntityUtils';
 import { useMaskUtils } from '../../../../hooks/useMaskUtils';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 export const useFormValues = ({ fields, enderecoFields, formData = {}, entity }) => {
-    const idKey = entity === 'contato' ? 'empresa' : '';
+    const behavior = getEntityBehavior(entity);
+    const idKey = behavior.relatedIdKey || '';
+
     const { getEntityIdKey } = useEntityUtils();
     const { maskTypes } = useMaskUtils();
 

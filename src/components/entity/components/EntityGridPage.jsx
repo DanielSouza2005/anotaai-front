@@ -152,7 +152,6 @@ const EntityGridPage = ({
                 detailFields={detailFields}
                 detailEnderecoFields={detailEnderecoFields}
                 detailEmpresaFields={detailEmpresaFields}
-                usaFoto={entityName === "contato" || entityName === "usuario"}
 
                 openAddDialog={openAddDialog}
                 setOpenAddDialog={setOpenAddDialog}

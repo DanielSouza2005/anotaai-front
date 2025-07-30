@@ -24,6 +24,7 @@ import FormDialogActions from './FormDialogActions';
 import ObservacoesField from './ObservacoesField';
 import PhotoUploader from './PhotoUploader';
 import TabbedFormLayout from './TabbedFormLayout';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 const DIALOG_MODES = {
     CREATE: 'create',
@@ -45,7 +46,6 @@ const BaseDialog = ({
     titleTab,
     titleTab2,
     entity,
-    usaFoto = false,
     validationSchema,
 
     onSubmit,
@@ -58,10 +58,12 @@ const BaseDialog = ({
     const isCreate = mode === DIALOG_MODES.CREATE;
     const isEdit = mode === DIALOG_MODES.EDIT;
 
+    const behavior = getEntityBehavior(entity);
+    const hasFoto = behavior.hasPhoto;
+    const hasObs = behavior.hasObs;
+    const hasEmpresa = behavior.hasEmpresa(isReadOnly);
+
     const hasEndereco = enderecoFields.length !== 0;
-    const hasFoto = usaFoto;
-    const hasObs = entity === "contato";
-    const hasEmpresa = entity === "contato" && isReadOnly;
 
     const { tabIndex, setTabIndex } = useTabManagement({
         open,
@@ -328,7 +330,7 @@ const BaseDialog = ({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'flex-start',
-                    padding: 0, 
+                    padding: 0,
                     height: '500px'
                 }}
             >

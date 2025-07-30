@@ -5,6 +5,7 @@ export const entityConfig = {
         hasObs: true,
         hasEmpresa: (isReadOnly) => isReadOnly,
         hasAvatar: false,
+        relatedIdKey: 'empresa',
     },
     empresa: {
         label: "Empresa",

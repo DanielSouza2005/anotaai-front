@@ -1,40 +1,31 @@
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
     Box,
     CircularProgress,
+    IconButton,
     InputAdornment,
     MenuItem,
     TextField,
+    Tooltip,
     Typography
 } from '@mui/material';
 import { Field } from 'formik';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import api from '../../../services/api/api';
 import { useEntityUtils } from '../../../hooks/useEntityUtils';
 import { useMaskUtils } from '../../../hooks/useMaskUtils';
+import { useSelectField } from './hooks/useSelectField';
 
-const SelectField = ({ name, label, source, error, touched }) => {
-    const [options, setOptions] = useState([]);
-    const [loading, setLoading] = useState(false);
-
+const SelectField = ({
+    name,
+    label,
+    source,
+    error,
+    touched,
+    showRefreshButton = true,
+    refreshTooltip = "Atualizar lista"
+}) => {
+    const { options, loading, isRefreshing, handleRefresh } = useSelectField(source);
     const { getEntityIdKey } = useEntityUtils();
     const { formatValue } = useMaskUtils();
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const { data } = await api.get(`/${source}?size=100&page=0`);
-                setOptions(data.content);
-            } catch (err) {
-                toast.error(`Erro ao buscar dados de ${source}: ` + err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [source]);
 
     return (
         <Field name={name}>
@@ -57,11 +48,50 @@ const SelectField = ({ name, label, source, error, touched }) => {
                         }
                     }}
                     InputProps={{
-                        endAdornment: loading ? (
-                            <InputAdornment position="end">
-                                <CircularProgress size={20} />
+                        endAdornment: (
+                            <InputAdornment position="end" sx={{ minWidth: 40 }}>
+                                {loading && (
+                                    <CircularProgress
+                                        size={20}
+                                        sx={{
+                                            mr: showRefreshButton ? 0.5 : 1,
+                                            color: isRefreshing ? 'primary.main' : 'inherit'
+                                        }}
+                                    />
+                                )}
+                                {showRefreshButton && (
+                                    <Tooltip title={refreshTooltip} arrow>
+                                        <span>
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleRefresh}
+                                                disabled={loading}
+                                                sx={{
+                                                    padding: '4px',
+                                                    mr: '4px', 
+                                                    '&:hover': {
+                                                        backgroundColor: 'action.hover',
+                                                        transform: 'rotate(180deg)',
+                                                        transition: 'transform 0.3s ease-in-out'
+                                                    },
+                                                    '&:disabled': {
+                                                        opacity: 0.5
+                                                    }
+                                                }}
+                                            >
+                                                <RefreshIcon
+                                                    fontSize="small"
+                                                    sx={{
+                                                        transition: 'transform 0.3s ease-in-out',
+                                                        transform: isRefreshing ? 'rotate(360deg)' : 'rotate(0deg)'
+                                                    }}
+                                                />
+                                            </IconButton>
+                                        </span>
+                                    </Tooltip>
+                                )}
                             </InputAdornment>
-                        ) : null
+                        )
                     }}
                     sx={{ minWidth: 220 }}
                 >

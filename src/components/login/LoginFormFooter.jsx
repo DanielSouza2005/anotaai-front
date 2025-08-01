@@ -1,16 +1,29 @@
 import { Box, Typography } from "@mui/material";
 
-const LoginFormFooter = ({ isMobile }) => {
+const LoginFormFooter = () => {
     return (
-        <Box sx={{ mt: isMobile ? 2 : 3, textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
+        <Box sx={{ textAlign: 'center' }}>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: 'text.secondary',
+                    fontSize: '0.75rem',
+                    mb: 0.5
+                }}
+            >
                 © {new Date().getFullYear()} Anota Aí. Todos os Direitos Reservados.
             </Typography>
-            <Typography variant="caption" color="text.disabled">
+            <Typography
+                variant="caption"
+                sx={{
+                    color: 'text.disabled',
+                    fontSize: '0.7rem'
+                }}
+            >
                 Versão 0.1.0
             </Typography>
         </Box>
     );
-}
+};
 
 export default LoginFormFooter;

@@ -1,32 +1,26 @@
 import {
     Box,
     Container,
-    Paper,
     useMediaQuery,
     useTheme
 } from '@mui/material';
 import { useState } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
 import { useAuth } from '../../context/auth/AuthContext.js';
 import HealthButton from '../healthButton/HealthButton.jsx';
-import LoginLeftPanel from './LoginLeftPanel.jsx';
-import LoginRightPanel from './LoginRightPanel.jsx';
+import LoginModernCard from './LoginModernCard.jsx';
 
 const LoginForm = () => {
-
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
     const { login } = useAuth();
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 
@@ -64,62 +58,74 @@ const LoginForm = () => {
     return (
         <Box
             sx={{
-                display: 'flex',
                 minHeight: '100vh',
-                bgcolor: theme.palette.background.default,
+                maxHeight: '100vh', 
+                background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 25%, #e1f5fe 50%, #f3e5f5 75%, #fff3e0 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 3, 
+                position: 'relative',
                 overflow: 'hidden',
-                margin: 0,
-                padding: 0,
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
+                backgroundRepeat: 'no-repeat',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: '10%',
+                    left: '10%',
+                    width: '80px',
+                    height: '80px',
+                    background: 'radial-gradient(circle, rgba(33, 150, 243, 0.2) 0%, transparent 70%)',
+                    borderRadius: '50%',
+                    animation: 'float 6s ease-in-out infinite',
+                },
+                '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: '20%',
+                    right: '15%',
+                    width: '120px',
+                    height: '120px',
+                    background: 'radial-gradient(circle, rgba(156, 39, 176, 0.15) 0%, transparent 70%)',
+                    borderRadius: '50%',
+                    animation: 'float 8s ease-in-out infinite reverse',
+                },
+                '@keyframes float': {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-20px)' }
+                }
             }}
         >
             <Container
-                maxWidth="lg"
+                maxWidth="sm"
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: isMobile ? 2 : 3
+                    px: isMobile ? 2 : 3,
                 }}
             >
-                <Paper
-                    elevation={6}
-                    sx={{
-                        width: '100%',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        flexDirection: isTablet ? 'column' : 'row',
-                        borderRadius: 2,
-                    }}
-                >
-                    <LoginLeftPanel
-                        isTablet={isTablet}
-                        isMobile={isMobile}
-                        logoImage={logoImage}
-                    />
-
-                    <LoginRightPanel
-                        isMobile={isMobile}
-                        isTablet={isTablet}
-                        email={email}
-                        pass={pass}
-                        loading={loading}
-                        showPassword={showPassword}
-                        setEmail={setEmail}
-                        setPass={setPass}
-                        handleLogin={handleLogin}
-                        handleTogglePasswordVisibility={handleTogglePasswordVisibility}
-                        theme={theme}
-                    />
-                </Paper>
+                <LoginModernCard
+                    email={email}
+                    pass={pass}
+                    loading={loading}
+                    showPassword={showPassword}
+                    setEmail={setEmail}
+                    setPass={setPass}
+                    handleLogin={handleLogin}
+                    handleTogglePasswordVisibility={handleTogglePasswordVisibility}
+                    isMobile={isMobile}
+                    theme={theme}
+                    logoImage={logoImage}
+                />
             </Container>
 
             <HealthButton />
         </Box>
-    )
-}
+    );
+};
 
 export default LoginForm;

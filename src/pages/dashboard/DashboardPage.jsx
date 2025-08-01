@@ -41,7 +41,7 @@ const DashboardPage = () => {
                     transition: 'margin-left 0.3s ease',
                     ml: isMobile ? 0 : (collapsed ? '80px' : '280px'),
                     maxWidth: `calc(100vw - ${isMobile ? 0 : (collapsed ? 80 : 280)}px)`,
-                    height: '100vh',
+                    height: '100dvh',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',

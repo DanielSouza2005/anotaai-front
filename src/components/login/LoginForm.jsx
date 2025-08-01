@@ -58,8 +58,8 @@ const LoginForm = () => {
     return (
         <Box
             sx={{
-                minHeight: '100vh',
-                maxHeight: '100vh', 
+                minHeight: '100dvh',
+                maxHeight: '100dvh', 
                 background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 25%, #e1f5fe 50%, #f3e5f5 75%, #fff3e0 100%)',
                 display: 'flex',
                 alignItems: 'center',

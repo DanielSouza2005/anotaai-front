@@ -5,7 +5,7 @@ const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }
     return (
         <Box
             sx={{
-                height: '100vh',
+                height: '100dvh',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',

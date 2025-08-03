@@ -64,7 +64,6 @@ export const SelectDataProvider = ({ children }) => {
         }
     }, []);
 
-    // NOVA FUNÇÃO: Refresh com força
     const refreshCache = useCallback(async (source) => {
         try {
             const data = await fetchSelectData(source, true);

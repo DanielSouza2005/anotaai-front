@@ -1,28 +1,22 @@
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import {
     Box,
-    Divider,
     Drawer,
-    IconButton,
     List,
-    Stack,
-    Tooltip,
-    Typography,
     useMediaQuery,
     useTheme
 } from '@mui/material';
 
-import logoImage from '../../assets/login/logo.png';
-import { menuItems } from '../../config/menu/menuConfig';
-import UserMenu from './SidebarUserMenu';
-
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import animationData from '../../assets/animations/Session-Expired.json';
+import { menuItems } from '../../config/menu/menuConfig';
 import { useAuth } from '../../context/auth/AuthContext';
 import LoadingScreen from '../loadingScreen/LoadingScreen';
-import SidebarItem from './SidebarItem';
+import SidebarFooter from './components/SidebarFooter';
+import SidebarHeader from './components/SidebarHeader';
+import SidebarItem from './components/SidebarItem';
+import UserMenu from './components/SidebarUserMenu';
+import { getSidebarStyles } from './styles/sidebarStyles';
 
 const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
     const theme = useTheme();
@@ -33,13 +27,30 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
     const userMenuOpen = Boolean(userMenuAnchor);
 
     const drawerWidth = collapsed ? 80 : 280;
+    const drawerStyles = getSidebarStyles(theme, collapsed, drawerWidth);
 
-    const handleLogout = () => {
+    const handleToggleCollapsed = useCallback(() => {
+        setCollapsed(!collapsed);
+    }, [collapsed, setCollapsed]);
+
+    const handleExpandSidebar = useCallback(() => {
+        setCollapsed(false);
+    }, [setCollapsed]);
+
+    const handleLogout = useCallback(() => {
         logout();
         setTimeout(() => {
             navigate('/login');
         }, 2000);
-    };
+    }, [logout, navigate]);
+
+    const handleUserMenuOpen = useCallback((event) => {
+        setUserMenuAnchor(event.currentTarget);
+    }, []);
+
+    const handleUserMenuClose = useCallback(() => {
+        setUserMenuAnchor(null);
+    }, []);
 
     if (isLoggingOut) {
         return (
@@ -56,61 +67,18 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
             variant={isMobile ? 'temporary' : 'permanent'}
             open={isMobile ? open : true}
             onClose={toggleDrawer}
-            sx={{
-                flexShrink: 0,
-                overflowX: 'hidden',
-                zIndex: theme.zIndex.drawer,
-                '& .MuiDrawer-paper': {
-                    width: drawerWidth,
-                    transition: 'all 0.3s ease',
-                    boxSizing: 'border-box',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    bgcolor: theme.palette.background.paper,
-                    borderRight: `1px solid ${theme.palette.divider}`,
-                    background: collapsed
-                        ? theme.palette.background.default
-                        : 'linear-gradient(to bottom, #ffffff 0%, #f9f9f9 100%)',
-                    boxShadow: collapsed
-                        ? '4px 0 10px rgba(0,0,0,0.2)'
-                        : '2px 0 5px rgba(0,0,0,0.1)',
-                    borderRadius: collapsed ? '0 16px 16px 0' : 0,
-                    overflowX: 'hidden',
-                },
-            }}
+            sx={drawerStyles.drawer}
         >
-            <Box sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    {
-                        !collapsed && (
-                            <Box
-                                sx={{
-                                    height: collapsed ? 50 : 100,
-                                    width: '100%',
-                                    backgroundImage: `url(${logoImage})`,
-                                    backgroundSize: 'contain',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                }}
-                            />
-                        )
-                    }
+            <SidebarHeader
+                collapsed={collapsed}
+                isMobile={isMobile}
+                onToggleCollapsed={handleToggleCollapsed}
+                onExpandSidebar={handleExpandSidebar}
+                onToggleDrawer={toggleDrawer}
+                theme={theme}
+            />
 
-                    {isMobile ? (
-                        <IconButton onClick={toggleDrawer}>
-                            <ChevronLeftIcon />
-                        </IconButton>
-                    ) : (
-                        <IconButton onClick={() => setCollapsed(!collapsed)}>
-                            {collapsed ? <MenuOpenIcon /> : <ChevronLeftIcon />}
-                        </IconButton>
-                    )}
-                </Box>
-                <Divider sx={{ mt: 2 }} />
-            </Box>
-
-            <Box sx={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
+            <Box sx={drawerStyles.menuList}>
                 <List component="nav" sx={{ p: 1 }}>
                     {menuItems.map((item) => (
                         <SidebarItem
@@ -127,36 +95,14 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
             <UserMenu
                 anchorEl={userMenuAnchor}
                 open={userMenuOpen}
-                onOpen={(event) => setUserMenuAnchor(event.currentTarget)}
-                onClose={() => setUserMenuAnchor(null)}
+                onOpen={handleUserMenuOpen}
+                onClose={handleUserMenuClose}
                 onLogout={handleLogout}
                 user={user}
+                collapsed={collapsed}
             />
 
-            <Box>
-                <Box sx={{ p: 2, textAlign: 'center' }}>
-                    {!collapsed ?
-                        (
-                            <Stack direction="row" justifyContent="center" spacing={1} alignItems="center">
-                                <Typography variant="caption" color="text.secondary" noWrap>
-                                    © {new Date().getFullYear()} Anota Aí
-                                </Typography>
-                                <Typography variant="caption" color="text.disabled" noWrap>
-                                    • Versão 0.1.0
-                                </Typography>
-                            </Stack>
-                        )
-                        :
-                        (
-                            <Tooltip title="Anota Aí • Versão 0.1.0" arrow placement="top">
-                                <Typography variant="caption" color="text.secondary" noWrap>
-                                    © {new Date().getFullYear()}
-                                </Typography>
-                            </Tooltip>
-                        )
-                    }
-                </Box>
-            </Box>
+            <SidebarFooter collapsed={collapsed} />
         </Drawer>
     );
 };

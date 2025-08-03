@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import Lottie from 'lottie-react';
+import backgroundImage from "../../assets/login/fundo.png";
 
 const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }) => {
     return (
@@ -11,6 +12,10 @@ const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }
                 justifyContent: 'center',
                 alignItems: 'center',
                 bgcolor: 'background.default',
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
             }}
         >
             <Box sx={{ width, mb: 2 }}>

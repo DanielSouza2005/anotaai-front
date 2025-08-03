@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '../services/api/api';
+import api from '../../../../../services/api/api';
 
 export const useHealthCheck = () => {
     const [status, setStatus] = useState(null);

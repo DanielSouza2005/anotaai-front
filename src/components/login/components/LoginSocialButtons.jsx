@@ -1,7 +1,7 @@
 import { Box, IconButton, Tooltip } from '@mui/material';
-import googleIcon from "../../assets/icons/social/google.png";
-import facebookIcon from "../../assets/icons/social/facebook.png";
-import appleIcon from "../../assets/icons/social/apple.png";
+import googleIcon from "../../../assets/icons/social/google.png";
+import facebookIcon from "../../../assets/icons/social/facebook.png";
+import appleIcon from "../../../assets/icons/social/apple.png";
 
 const LoginSocialButtons = () => {
     const socialButtons = [

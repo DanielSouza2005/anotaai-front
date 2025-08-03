@@ -1,4 +1,4 @@
-import EntityGridPage from '../../components/entity/components/EntityGridPage';
+import EntityGridPage from '../../components/entity/EntityGridPage';
 import { addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields, empresaFields, enderecoFields, gridContatoColumns, searchContatoFields } from './contatoFields';
 import { contatoValidationSchema } from './contatoValidation';
 

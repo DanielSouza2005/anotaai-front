@@ -1,12 +1,12 @@
 import { Box, Paper } from '@mui/material';
-import EntityDialogs from './EntityDialogs';
-import EntityFabButton from './EntityFabButton';
-import EntityFilters from './EntityFilters';
-import EntityHeader from './EntityHeader';
-import EntityRowMenu from './EntityRowMenu';
-import EntityTable from './EntityTable';
-import EntityToolbar from './EntityToolbar';
-import useEntity from '../hooks/useEntity';
+import useEntity from './hooks/useEntity';
+import EntityHeader from './components/EntityHeader';
+import EntityToolbar from './components/EntityToolbar';
+import EntityFilters from './components/EntityFilters';
+import EntityTable from './components/EntityTable';
+import EntityRowMenu from './components/EntityRowMenu';
+import EntityFabButton from './components/EntityFabButton';
+import EntityDialogs from './components/EntityDialogs';
 
 const EntityGridPage = ({
     entityName,

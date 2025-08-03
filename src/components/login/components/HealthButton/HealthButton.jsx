@@ -2,7 +2,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { Button, CircularProgress, Tooltip } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useHealthCheck } from '../../hooks/useHealthCheck';
+import { useHealthCheck } from './hooks/useHealthCheck';
 
 const HealthButton = () => {
     const { status, loading, error, checkHealth } = useHealthCheck();

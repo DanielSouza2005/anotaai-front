@@ -6,7 +6,7 @@ import logoutAnimation from '../../assets/animations/Session-Expired.json';
 import { useAuth } from '../../context/auth/AuthContext';
 import LoadingScreen from '../loadingScreen/LoadingScreen';
 
-const AppWrapper = ({ children }) => {
+const AppSecurity = ({ children }) => {
     const { isAuthenticated, isLoggingOut, loading } = useAuth();
     const location = useLocation();
     const [delayed, setDelayed] = useState(true);
@@ -45,4 +45,4 @@ const AppWrapper = ({ children }) => {
     return children;
 };
 
-export default AppWrapper;
+export default AppSecurity;

@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
-import FilterInputRow from './FilterInputRow';
-import FilterPanel from './FilterPanel';
+import FilterInputRow from './components/FilterInputRow';
+import FilterPanel from './components/FilterPanel';
 
 const AdvancedSearchBar = ({ fieldsAvailable, onFilterChange }) => {
     const [filters, setFilters] = useState([]);

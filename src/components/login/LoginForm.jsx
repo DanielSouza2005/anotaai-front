@@ -10,8 +10,8 @@ import { toast } from 'react-toastify';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
 import { useAuth } from '../../context/auth/AuthContext.js';
-import HealthButton from '../healthButton/HealthButton.jsx';
-import LoginModernCard from './LoginModernCard.jsx';
+import LoginModernCard from './components/LoginModernCard.jsx';
+import HealthButton from './components/HealthButton/HealthButton.jsx';
 
 const LoginForm = () => {
     const theme = useTheme();

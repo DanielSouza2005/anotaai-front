@@ -5,7 +5,7 @@ import EmpresasPage from './pages/empresa/EmpresasPage';
 import LoginPage from './pages/login/LoginPage';
 import NotFoundPage from './pages/notFound/NotFoundPage';
 import UsuariosPage from './pages/usuario/UsuariosPage';
-import AppWrapper from './components/appWrapper/AppWrapper';
+import AppSecurity from './components/security/AppSecurity';
 
 function AppRoutes() {
   return (
@@ -16,9 +16,9 @@ function AppRoutes() {
       <Route
         path="/dashboard"
         element={
-          <AppWrapper>
+          <AppSecurity>
             <DashboardPage />
-          </AppWrapper>
+          </AppSecurity>
         }
       >
         <Route index element={<ContatosPage />} />

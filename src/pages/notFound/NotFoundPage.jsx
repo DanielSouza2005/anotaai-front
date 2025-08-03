@@ -12,8 +12,6 @@ const NotFoundPage = () => {
         navigate(-1);
     };
 
-    console.log(backgroundImage);
-
     return (
         <Box
             sx={{

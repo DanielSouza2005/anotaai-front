@@ -28,7 +28,7 @@ const LoginSocialButtons = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 gap: 2,
-                mb: 3
+                mb: 2
             }}
         >
             {socialButtons.map((social) => (

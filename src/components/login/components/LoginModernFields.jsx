@@ -52,7 +52,7 @@ const LoginModernFields = ({
                     ),
                 }}
                 sx={{
-                    mb: 2,
+                    mb: 1,
                     '& .MuiOutlinedInput-root': {
                         borderRadius: '12px',
                         backgroundColor: 'rgba(245, 245, 245, 0.8)',
@@ -123,7 +123,7 @@ const LoginModernFields = ({
                 size={isMobile ? "small" : "medium"}
             />
 
-            <Box sx={{ textAlign: 'right', mb: 3 }}>
+            <Box sx={{ textAlign: 'right', mb: 2 }}>
                 <Link
                     href="#"
                     variant="body2"
@@ -172,11 +172,13 @@ const LoginModernFields = ({
                     }
                 }}
             >
-                {loading ? (
-                    <CircularProgress size={24} color="inherit" />
-                ) : (
-                    'Entrar'
-                )}
+                {loading ?
+                    (
+                        <CircularProgress size={24} color="inherit" />
+                    ) :
+                    (
+                        'Entrar'
+                    )}
             </Button>
         </Box>
     );

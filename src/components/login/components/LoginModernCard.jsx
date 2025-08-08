@@ -29,26 +29,33 @@ const LoginModernCard = ({
                 backdropFilter: 'blur(20px)',
                 borderRadius: '24px',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
-                p: isMobile ? 3 : 4,
+                padding: isMobile ? '20px' : '24px', 
                 position: 'relative',
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
                 animation: 'slideUp 0.6s ease-out',
                 width: '100%',
-                maxWidth: '500px',
-                minHeight: 'auto',
+                boxSizing: 'border-box',
+                height: 'auto',
+                maxHeight: isMobile ? '95dvh' : '90dvh', 
+                overflow: 'hidden', 
+                display: 'flex',
+                flexDirection: 'column',
                 '@keyframes slideUp': {
                     from: { opacity: 0, transform: 'translateY(30px)' },
                     to: { opacity: 1, transform: 'translateY(0)' }
                 }
             }}
         >
-            <Box sx={{ textAlign: 'center', mb: 3 }}>
+            <Box sx={{
+                textAlign: 'center',
+                marginBottom: isMobile ? '8px' : '10px',
+                flexShrink: 0
+            }}>
                 <Box
                     sx={{
-                        width: 64,
-                        height: 64,
-                        mx: 'auto',
-                        mb: 1.5,
+                        width: isMobile ? '40px' : '48px', 
+                        height: isMobile ? '40px' : '48px',
+                        margin: '0 auto',
                         borderRadius: '50%',
                         backgroundImage: `url(${logoImage})`,
                         backgroundSize: 'contain',
@@ -59,15 +66,15 @@ const LoginModernCard = ({
                 />
 
                 <Typography
-                    variant={isMobile ? "h5" : "h4"}
+                    variant={isMobile ? "h6" : "h5"}
                     sx={{
                         fontWeight: 700,
                         color: 'text.primary',
-                        mb: 0.5,
                         background: 'linear-gradient(135deg, #1976d2 0%, #2196f3 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
-                        backgroundClip: 'text'
+                        backgroundClip: 'text',
+                        fontSize: isMobile ? '1rem' : '1.2rem',
                     }}
                 >
                     Acesse sua conta
@@ -77,37 +84,60 @@ const LoginModernCard = ({
                     variant="body2"
                     sx={{
                         color: 'text.secondary',
-                        fontSize: '0.8rem'
+                        fontSize: isMobile ? '0.7rem' : '0.75rem'
                     }}
                 >
                     Entre para continuar no Anota Aí
                 </Typography>
             </Box>
 
-            <LoginModernFields
-                email={email}
-                pass={pass}
-                loading={loading}
-                showPassword={showPassword}
-                setEmail={setEmail}
-                setPass={setPass}
-                handleLogin={handleLogin}
-                handleTogglePasswordVisibility={handleTogglePasswordVisibility}
-                isMobile={isMobile}
-                theme={theme}
-            />
+            <Box sx={{
+                marginBottom: isMobile ? '12px' : '16px',
+                flexShrink: 0
+            }}>
+                <LoginModernFields
+                    email={email}
+                    pass={pass}
+                    loading={loading}
+                    showPassword={showPassword}
+                    setEmail={setEmail}
+                    setPass={setPass}
+                    handleLogin={handleLogin}
+                    handleTogglePasswordVisibility={handleTogglePasswordVisibility}
+                    isMobile={isMobile}
+                    theme={theme}
+                />
+            </Box>
 
-            <Box sx={{ my: 2 }}>
+            <Box sx={{
+                marginTop: isMobile ? '8px' : '12px',
+                marginBottom: isMobile ? '8px' : '12px',
+                flexShrink: 0
+            }}>
                 <Divider>
-                    <Typography variant="caption" sx={{ color: 'text.secondary', px: 2, fontSize: '0.75rem' }}>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            color: 'text.secondary',
+                            paddingX: '12px',
+                            fontSize: isMobile ? '0.65rem' : '0.7rem'
+                        }}
+                    >
                         Ou entre com
                     </Typography>
                 </Divider>
             </Box>
 
-            <LoginSocialButtons isMobile={isMobile} />
+            <Box sx={{
+                flexShrink: 0
+            }}>
+                <LoginSocialButtons isMobile={isMobile} />
+            </Box>
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{
+                flexShrink: 0,
+                marginTop: 'auto'
+            }}>
                 <LoginFormFooter />
             </Box>
         </Paper>

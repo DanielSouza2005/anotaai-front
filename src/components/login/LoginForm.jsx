@@ -10,8 +10,8 @@ import { toast } from 'react-toastify';
 import backgroundImage from "../../assets/login/fundo.png";
 import logoImage from "../../assets/login/logo.png";
 import { useAuth } from '../../context/auth/AuthContext.js';
-import LoginModernCard from './components/LoginModernCard.jsx';
 import HealthButton from './components/HealthButton/HealthButton.jsx';
+import LoginModernCard from './components/LoginModernCard.jsx';
 
 const LoginForm = () => {
     const theme = useTheme();
@@ -59,18 +59,18 @@ const LoginForm = () => {
         <Box
             sx={{
                 minHeight: '100dvh',
-                maxHeight: '100dvh', 
                 background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 25%, #e1f5fe 50%, #f3e5f5 75%, #fff3e0 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                p: 3, 
                 position: 'relative',
                 overflow: 'hidden',
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
+                padding: isMobile ? '16px' : '24px',
+                boxSizing: 'border-box',
                 '&::before': {
                     content: '""',
                     position: 'absolute',
@@ -105,22 +105,34 @@ const LoginForm = () => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    px: isMobile ? 2 : 3,
+                    padding: '0 !important',
+                    width: '100%',
+                    maxHeight: '100dvh',
                 }}
             >
-                <LoginModernCard
-                    email={email}
-                    pass={pass}
-                    loading={loading}
-                    showPassword={showPassword}
-                    setEmail={setEmail}
-                    setPass={setPass}
-                    handleLogin={handleLogin}
-                    handleTogglePasswordVisibility={handleTogglePasswordVisibility}
-                    isMobile={isMobile}
-                    theme={theme}
-                    logoImage={logoImage}
-                />
+                <Box
+                    sx={{
+                        width: '100%',
+                        maxWidth: '450px',
+                        maxHeight: '100dvh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <LoginModernCard
+                        email={email}
+                        pass={pass}
+                        loading={loading}
+                        showPassword={showPassword}
+                        setEmail={setEmail}
+                        setPass={setPass}
+                        handleLogin={handleLogin}
+                        handleTogglePasswordVisibility={handleTogglePasswordVisibility}
+                        isMobile={isMobile}
+                        theme={theme}
+                        logoImage={logoImage}
+                    />
+                </Box>
             </Container>
 
             <HealthButton />

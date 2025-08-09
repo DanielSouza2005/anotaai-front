@@ -1,24 +1,15 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import Lottie from 'lottie-react';
 import backgroundImage from "../../assets/login/fundo.png";
+import { getLoadingScreenStyles } from './styles/LoadingScreenStyles';
 
 const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }) => {
+    const theme = useTheme();
+    const styles = getLoadingScreenStyles(theme, backgroundImage, width);
+
     return (
-        <Box
-            sx={{
-                height: '100dvh',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                bgcolor: 'background.default',
-                backgroundImage: `url(${backgroundImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-            }}
-        >
-            <Box sx={{ width, mb: 2 }}>
+        <Box sx={styles.container}>
+            <Box sx={styles.animationWrapper}>
                 <Lottie
                     animationData={animationData}
                     loop
@@ -26,7 +17,7 @@ const LoadingScreen = ({ animationData, message = 'Carregando...', width = 200 }
                     style={{ width, height: width }}
                 />
             </Box>
-            <Typography variant="h6" color="text.secondary">
+            <Typography variant="h6" sx={styles.message}>
                 {message}
             </Typography>
         </Box>

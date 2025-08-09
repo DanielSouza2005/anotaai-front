@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken, isPublicRoute } from '../../utils/login/auth';
-import { applyApiDelay } from './delayHandler';
-import { handleApiError } from './erorHandler';
+import { applyApiDelay } from './delay';
+import { handleApiError } from './error';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_ANOTAAI_API_URL,

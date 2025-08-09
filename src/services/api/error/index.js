@@ -1,4 +1,4 @@
-import { clearToken, isPublicRoute, redirectToLogin } from "../../utils/login/auth";
+import { clearToken, isPublicRoute, redirectToLogin } from "../../../utils/login/auth";
 
 const ERROR_CODE_MESSAGES = {
     USUARIO_LOGADO_EXCLUSAO_BLOQUEADA:

@@ -15,7 +15,7 @@ import LoadingScreen from '../loadingScreen/LoadingScreen';
 import SidebarFooter from './components/SidebarFooter';
 import SidebarHeader from './components/SidebarHeader';
 import SidebarItem from './components/SidebarItem';
-import UserMenu from './components/SidebarUserMenu';
+import SidebarUserMenu from './components/SidebarUserMenu';
 import { getSidebarStyles } from './styles/sidebarStyles';
 
 const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
@@ -92,7 +92,7 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
                 </List>
             </Box>
 
-            <UserMenu
+            <SidebarUserMenu
                 anchorEl={userMenuAnchor}
                 open={userMenuOpen}
                 onOpen={handleUserMenuOpen}

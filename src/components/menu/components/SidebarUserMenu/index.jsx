@@ -2,13 +2,13 @@ import { AccountCircle, Logout, Settings } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Divider, ListItemIcon, ListItemText, Menu, MenuItem, useTheme } from '@mui/material';
 import { useCallback } from 'react';
-import { getUserMenuStyles } from '../styles/sidebarStyles';
-import UserAvatar from './UserAvatar';
-import UserInfo from './UserInfo';
+import SidebarUserAvatar from './components/SidebarUserAvatar';
+import SidebarUserInfo from './components/SidebarUserInfo';
+import { getSidebarUserMenuStyles } from './styles/SidebarUserMenuStyles';
 
 const SidebarUserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user, collapsed }) => {
     const theme = useTheme();
-    const menuStyles = getUserMenuStyles(theme, collapsed);
+    const menuStyles = getSidebarUserMenuStyles(theme);
 
     const handleProfileClick = useCallback(() => {
         onClose();
@@ -23,7 +23,7 @@ const SidebarUserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user, coll
             <Box>
                 <Divider />
                 <Box sx={menuStyles.collapsedContainer} onClick={onOpen}>
-                    <UserAvatar user={user} size="small" theme={theme} />
+                    <SidebarUserAvatar user={user} size="small" theme={theme} />
                 </Box>
                 <Menu
                     anchorEl={anchorEl}
@@ -32,8 +32,8 @@ const SidebarUserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user, coll
                     PaperProps={{ sx: menuStyles.menuPaper }}
                 >
                     <Box sx={menuStyles.menuHeader}>
-                        <UserAvatar user={user} size="large" theme={theme} />
-                        <UserInfo user={user} variant="detailed" />
+                        <SidebarUserAvatar user={user} size="large" theme={theme} />
+                        <SidebarUserInfo user={user} variant="detailed" />
                     </Box>
                     <Divider />
                     <MenuItem onClick={handleProfileClick}>
@@ -66,8 +66,8 @@ const SidebarUserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user, coll
             <Divider />
             <Box sx={menuStyles.expandedContainer}>
                 <Box onClick={onOpen} sx={menuStyles.userButton}>
-                    <UserAvatar user={user} size="medium" theme={theme} />
-                    <UserInfo user={user} variant="compact" />
+                    <SidebarUserAvatar user={user} size="medium" theme={theme} />
+                    <SidebarUserInfo user={user} variant="compact" />
                     <ExpandMoreIcon fontSize="small" color="action" />
                 </Box>
 
@@ -78,8 +78,8 @@ const SidebarUserMenu = ({ anchorEl, open, onOpen, onClose, onLogout, user, coll
                     PaperProps={{ sx: menuStyles.menuPaper }}
                 >
                     <Box sx={menuStyles.menuHeader}>
-                        <UserAvatar user={user} size="large" theme={theme} />
-                        <UserInfo user={user} variant="detailed" />
+                        <SidebarUserAvatar user={user} size="large" theme={theme} />
+                        <SidebarUserInfo user={user} variant="detailed" />
                     </Box>
                     <Divider />
                     <MenuItem onClick={handleProfileClick}>

@@ -1,8 +1,8 @@
 import { Avatar } from '@mui/material';
-import { getUserAvatarStyles } from '../styles/sidebarStyles';
+import { getSidebarUserAvatarStyles } from './styles/SidebarUserAvatarStyles';
 
-const UserAvatar = ({ user, size = 'medium', theme }) => {
-    const avatarStyles = getUserAvatarStyles(theme, size);
+const SidebarUserAvatar = ({ user, size = 'medium', theme }) => {
+    const avatarStyles = getSidebarUserAvatarStyles(theme, size);
 
     return (
         <Avatar
@@ -15,4 +15,4 @@ const UserAvatar = ({ user, size = 'medium', theme }) => {
     );
 };
 
-export default UserAvatar;
+export default SidebarUserAvatar;

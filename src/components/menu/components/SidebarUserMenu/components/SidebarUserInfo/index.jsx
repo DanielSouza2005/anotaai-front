@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
-import { getUserInfoStyles } from '../styles/sidebarStyles';
+import { getSidebarUserInfoStyles } from './styles/SidebarUserInfoStyles';
 
-const UserInfo = ({ user, variant = 'compact' }) => {
-    const infoStyles = getUserInfoStyles(variant);
+const SidebarUserInfo = ({ user, variant = 'compact' }) => {
+    const infoStyles = getSidebarUserInfoStyles(variant);
 
     if (variant === 'detailed') {
         return (
@@ -29,4 +29,4 @@ const UserInfo = ({ user, variant = 'compact' }) => {
     );
 };
 
-export default UserInfo;
+export default SidebarUserInfo;

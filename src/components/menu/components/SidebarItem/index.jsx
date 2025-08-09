@@ -1,7 +1,7 @@
 import { ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip, useTheme } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
-import { getSidebarItemStyles } from '../styles/sidebarStyles';
+import { getSidebarItemStyles } from './styles/SidebarItemStyles';
 
 const SidebarItem = ({ title, icon: IconComponent, basePath, collapsed }) => {
     const location = useLocation();

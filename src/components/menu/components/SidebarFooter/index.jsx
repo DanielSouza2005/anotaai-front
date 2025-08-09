@@ -1,5 +1,5 @@
 import { Box, Stack, Tooltip, Typography } from '@mui/material';
-import { getSidebarFooterStyles } from '../styles/sidebarStyles';
+import { getSidebarFooterStyles } from './styles/SidebarFooterStyles';
 
 const SidebarFooter = ({ collapsed }) => {
     const footerStyles = getSidebarFooterStyles();

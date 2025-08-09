@@ -1,10 +1,10 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { Box, Divider, IconButton } from '@mui/material';
-import { getSidebarHeaderStyles } from '../styles/sidebarStyles';
-import SidebarLogo from './SidebarLogo';
+import SidebarLogo from './components/SidebarLogo';
+import { getSidebarHeaderStyles } from './styles/SidebarHeaderStyles';
 
-const SidebarHeader = ({
+const SidebarHeader = ({    
     collapsed,
     isMobile,
     onToggleCollapsed,

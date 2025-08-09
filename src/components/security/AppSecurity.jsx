@@ -5,6 +5,7 @@ import loginAnimation from '../../assets/animations/Login-Sign-up.json';
 import logoutAnimation from '../../assets/animations/Session-Expired.json';
 import { useAuth } from '../../context/auth/AuthContext';
 import LoadingScreen from '../loadingScreen/LoadingScreen';
+import { isPublicRoute } from '../../utils/login/auth';
 
 const AppSecurity = ({ children }) => {
     const { isAuthenticated, isLoggingOut, loading } = useAuth();
@@ -36,9 +37,7 @@ const AppSecurity = ({ children }) => {
         );
     }
 
-    const isPublicRoute = location.pathname === '/' || location.pathname === '/login';
-
-    if (!isAuthenticated() && !isPublicRoute) {
+    if (!isAuthenticated() && !isPublicRoute(location.pathname)) {
         return <Navigate to="/login" />;
     }
 

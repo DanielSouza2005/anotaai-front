@@ -1,51 +1,29 @@
 import axios from 'axios';
+import { getToken, isPublicRoute } from '../../utils/login/auth';
+import { applyApiDelay } from './delayHandler';
+import { handleApiError } from './erorHandler';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_ANOTAAI_API_URL,
 });
 
 api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
+  const token = getToken();
 
-  const isAuthRequired = !config.url.endsWith('/login') &&
-    !config.url.endsWith('/health') &&
-    token;
-
-  if (isAuthRequired) {
+  if (token && !isPublicRoute(config.url)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
 api.interceptors.response.use(
   async response => {
-    const delay = Number(process.env.REACT_APP_ANOTAAI_API_DELAY) || 0;
-    
-    if (delay > 0) {
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-
+    await applyApiDelay();
     return response;
   },
   error => {
-    const { response } = error;
-
-    if (response) {
-      const status = response.status;
-      const errorCode = response.headers['x-error-code']?.toUpperCase();
-      const isAuthError = status === 401 || status === 403;
-
-      const isHandled403 = errorCode === 'USUARIO_LOGADO_EXCLUSAO_BLOQUEADA';
-
-      const isNotOnLoginPage = !window.location.pathname.endsWith('/') &&
-        !window.location.pathname.endsWith('/login');
-
-      if (isAuthError && !isHandled403 && isNotOnLoginPage) {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
-    }
-
+    handleApiError(error);
     return Promise.reject(error);
   }
 );

@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { createContext, useContext, useEffect, useState } from 'react';
 import api from '../../services/api/api';
+import { clearToken, getToken } from '../../utils/login/auth';
 
 const AuthContext = createContext();
 
@@ -11,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const token = localStorage.getItem('token');
+            const token = getToken();
 
             if (token) {
                 try {
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
                     const { data } = await api.get(`/usuario/${decoded.codigo}`);
                     setUser({ nome: data.nome, email: data.email, foto: data.foto });
                 } catch (error) {
-                    localStorage.removeItem('token');
+                    clearToken();
                     setUser(null);
                 } finally {
                     setLoading(false);
@@ -51,13 +52,13 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setIsLoggingOut(true); 
         setTimeout(() => {
-            localStorage.removeItem('token');
+            clearToken();
             setUser(null);
             setIsLoggingOut(false);
         }, 2000);
     };
 
-    const isAuthenticated = () => !!localStorage.getItem('token');
+    const isAuthenticated = () => !!getToken();
 
     return (
         <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading, isLoggingOut }}>

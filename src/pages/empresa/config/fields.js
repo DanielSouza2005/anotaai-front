@@ -1,10 +1,3 @@
-const gridEmpresaFields = [
-    { field: 'razao', headerName: 'Razão Social', flex: 1 },
-    { field: 'fantasia', headerName: 'Fantasia', flex: 1 },
-    { field: 'cnpj', headerName: 'CNPJ', flex: 1 },
-    { field: 'ie', headerName: 'Inscrição Estadual', flex: 1 }
-];
-
 const empresaFields = [
     { name: 'cod_empresa', label: 'Código (Empresa)', type: 'text' },
     { name: 'razao', label: 'Razão Social', type: 'text' },
@@ -74,5 +67,5 @@ export {
     empresaFields, empresaEnderecoFields,
     addEmpresaFields, addEmpresaEnderecoFields,
     editEmpresaFields, editEmpresaEnderecoFields,
-    searchEmpresaFields, gridEmpresaFields
+    searchEmpresaFields
 };

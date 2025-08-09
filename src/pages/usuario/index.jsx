@@ -1,6 +1,7 @@
 import EntityGridPage from "../../components/entity/EntityGridPage";
-import { addUsuarioFields, editUsuarioFields, gridUsuarioFields, searchUsuarioFields, usuarioFields } from "./usuarioFields";
-import { usuarioEditValidationSchema, usuarioValidationSchema } from "./usuarioValidation";
+import { gridUsuarioFields } from "./config/columns";
+import { addUsuarioFields, editUsuarioFields, searchUsuarioFields, usuarioFields } from "./config/fields";
+import { usuarioEditValidationSchema, usuarioValidationSchema } from "./config/validation";
 
 const UsuariosPage = () => {
 

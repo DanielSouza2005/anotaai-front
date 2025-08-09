@@ -1,28 +1,3 @@
-import dayjs from "dayjs";
-
-const gridUsuarioFields = [
-    { field: 'nome', headerName: 'Nome', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
-    {
-        field: 'dt_inclusao',
-        headerName: 'Dt. Inclusão',
-        valueFormatter: (params) => {
-            const value = params;
-            return value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '';
-        },
-        flex: 1
-    },
-    {
-        field: 'dt_alteracao',
-        headerName: 'Dt. Últ. Alteração',
-        valueFormatter: (params) => {
-            const value = params;
-            return value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '';
-        },
-        flex: 1
-    }
-];
-
 const usuarioFields = [
     { name: 'cod_usuario', label: 'Usuário (Código)', type: 'text' },
     { name: 'nome', label: 'Nome', type: 'text' },
@@ -49,7 +24,6 @@ const searchUsuarioFields = [
 ];
 
 export {
-    usuarioFields,
-    addUsuarioFields, editUsuarioFields,
-    searchUsuarioFields, gridUsuarioFields
+    addUsuarioFields, editUsuarioFields, searchUsuarioFields, usuarioFields
 };
+

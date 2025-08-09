@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
-import ContatosPage from './pages/contato/ContatosPage';
-import DashboardPage from './pages/dashboard/DashboardPage';
-import EmpresasPage from './pages/empresa/EmpresasPage';
-import LoginPage from './pages/login/LoginPage';
-import NotFoundPage from './pages/notFound/NotFoundPage';
-import UsuariosPage from './pages/usuario/UsuariosPage';
+import ContatosPage from './pages/contato';
+import DashboardPage from './pages/dashboard';
+import EmpresasPage from './pages/empresa';
+import LoginPage from './pages/login';
+import NotFoundPage from './pages/notFound';
+import UsuariosPage from './pages/usuario';
 import AppSecurity from './components/security/AppSecurity';
 
 function AppRoutes() {

@@ -1,9 +1,11 @@
+import { ENTITY_CONSTANTS } from "../../../styles/EntityGridPageStyles";
+
 export const getEntityTableStyles = () => ({
     table: {
         container: {
             flex: 1,
             width: '100%',
-            minWidth: 600,
+            minWidth: ENTITY_CONSTANTS.table.minWidth,
             '& .even': { backgroundColor: '#f3f3f3' },
             '& .odd': { backgroundColor: '#ffffff' },
             '& .MuiDataGrid-row:hover': { backgroundColor: '#e3f2fd' },
@@ -53,7 +55,7 @@ export const getEntityTableStyles = () => ({
             '& .MuiDataGrid-virtualScroller': {
                 overflowX: 'auto',
                 overflowY: 'auto',
-                minHeight: 200,
+                minHeight: ENTITY_CONSTANTS.table.minHeight,
             },
         }
     },

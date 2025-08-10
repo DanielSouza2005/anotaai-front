@@ -7,8 +7,12 @@ import {
     MenuItem,
     Typography,
 } from '@mui/material';
+import { getEntityRowMenuStyles } from './styles/EntityRowMenuStyles';
 
 const EntityRowMenu = ({ anchorEl, open, onClose, onEdit, onDelete, onDetails }) => {
+
+    const styles = getEntityRowMenuStyles();
+
     return (
         <Menu
             anchorEl={anchorEl}
@@ -16,25 +20,21 @@ const EntityRowMenu = ({ anchorEl, open, onClose, onEdit, onDelete, onDetails })
             onClose={onClose}
             TransitionComponent={Fade}
             PaperProps={{
-                sx: {
-                    borderRadius: 2,
-                    minWidth: 150,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                },
+                sx: styles.menu.paper,
             }}
         >
-            <MenuItem onClick={onEdit} sx={{ gap: 1, py: 1 }}>
-                <EditIcon fontSize="small" sx={{ color: 'primary.main' }} />
+            <MenuItem onClick={onEdit} sx={styles.menu.item}>
+                <EditIcon fontSize="small" sx={styles.menu.items.edit} />
                 <Typography variant="body2">Editar</Typography>
             </MenuItem>
 
-            <MenuItem onClick={onDelete} sx={{ gap: 1, py: 1 }}>
-                <DeleteIcon fontSize="small" sx={{ color: 'error.main' }} />
+            <MenuItem onClick={onDelete} sx={styles.menu.item}>
+                <DeleteIcon fontSize="small" sx={styles.menu.items.delete} />
                 <Typography variant="body2">Excluir</Typography>
             </MenuItem>
 
-            <MenuItem onClick={onDetails} sx={{ gap: 1, py: 1 }}>
-                <InfoOutlinedIcon fontSize="small" sx={{ color: 'info.main' }} />
+            <MenuItem onClick={onDetails} sx={styles.menu.item}>
+                <InfoOutlinedIcon fontSize="small" sx={styles.menu.items.details} />
                 <Typography variant="body2">Detalhes</Typography>
             </MenuItem>
         </Menu>

@@ -1,15 +1,23 @@
-import { Box, Button, CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
-
 import {
-    Email,
+    Email as EmailIcon,
     Lock as LockIcon,
     Login as LoginIcon,
     Visibility as VisibilityIcon,
     VisibilityOff as VisibilityOffIcon
 } from '@mui/icons-material';
-import LoginFormFooter from "./LoginFormFooter";
+import {
+    Box,
+    Button,
+    CircularProgress,
+    IconButton,
+    InputAdornment,
+    Link,
+    TextField,
+    useTheme
+} from '@mui/material';
+import { LOGIN_MODERN_FIELDS_CONFIG, getLoginModernFieldsStyles } from './styles/LoginModernFieldsStyles';
 
-const LoginFormFields = ({
+const LoginModernFields = ({
     email,
     pass,
     loading,
@@ -18,51 +26,47 @@ const LoginFormFields = ({
     setPass,
     handleLogin,
     handleTogglePasswordVisibility,
-    isMobile,
-    theme
+    isMobile
 }) => {
+    const theme = useTheme();
+    const styles = getLoginModernFieldsStyles(theme, isMobile);
+
     return (
-        <Box
-            component="form"
-            onSubmit={handleLogin}
-            sx={{
-                width: '100%',
-                animation: 'fadeIn 0.8s ease-in',
-            }}
-        >
+        <Box component="form" onSubmit={handleLogin} sx={styles.form}>
             <TextField
-                margin="dense"
+                margin="normal"
                 required
                 fullWidth
                 id="email"
-                value={email}
-                label="E-mail"
+                label={LOGIN_MODERN_FIELDS_CONFIG.emailLabel}
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
-                            <Email color="primary" />
+                            <EmailIcon color="primary" />
                         </InputAdornment>
                     ),
                 }}
-                sx={{ mb: isMobile ? 2 : 3 }}
+                sx={styles.textField}
                 variant="outlined"
                 size={isMobile ? "small" : "medium"}
-                onChange={e => setEmail(e.target.value)}
             />
 
             <TextField
-                margin="dense"
+                margin="normal"
                 required
                 fullWidth
                 name="password"
-                label="Senha"
+                label={LOGIN_MODERN_FIELDS_CONFIG.passwordLabel}
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                value={pass}
                 autoComplete="current-password"
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
@@ -72,7 +76,7 @@ const LoginFormFields = ({
                     endAdornment: (
                         <InputAdornment position="end">
                             <IconButton
-                                aria-label="toggle password visibility"
+                                aria-label={LOGIN_MODERN_FIELDS_CONFIG.togglePasswordAria}
                                 onClick={handleTogglePasswordVisibility}
                                 edge="end"
                                 size={isMobile ? "small" : "medium"}
@@ -82,40 +86,34 @@ const LoginFormFields = ({
                         </InputAdornment>
                     ),
                 }}
-                sx={{ mb: isMobile ? 3 : 4 }}
+                sx={styles.textField}
                 variant="outlined"
                 size={isMobile ? "small" : "medium"}
-                onChange={e => setPass(e.target.value)}
             />
+
+            <Box sx={styles.forgotWrapper}>
+                <Link href="#" variant="body2" sx={styles.forgotLink}>
+                    {LOGIN_MODERN_FIELDS_CONFIG.forgotPasswordText}
+                </Link>
+            </Box>
 
             <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                size={isMobile ? "medium" : "large"}
-                sx={{
-                    py: isMobile ? 1 : 1.5,
-                    borderRadius: 1.5,
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    fontSize: isMobile ? '0.9rem' : '1rem',
-                    "&.Mui-disabled": {
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                        opacity: 1,
-                    },
-                }}
-                startIcon={<LoginIcon />}
+                size="large"
                 disabled={loading}
+                startIcon={loading ? null : <LoginIcon />}
+                sx={styles.loginButton}
             >
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'Entrar'}
+                {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                ) : (
+                    LOGIN_MODERN_FIELDS_CONFIG.loginButtonText
+                )}
             </Button>
-
-            <LoginFormFooter
-                isMobile={isMobile}
-            />
         </Box>
     );
-}
+};
 
-export default LoginFormFields;
+export default LoginModernFields;

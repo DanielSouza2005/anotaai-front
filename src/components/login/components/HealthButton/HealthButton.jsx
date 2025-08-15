@@ -1,10 +1,14 @@
 import SyncIcon from '@mui/icons-material/Sync';
-import { Button, CircularProgress, Tooltip } from '@mui/material';
+import { Button, CircularProgress, Tooltip, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useHealthCheck } from './hooks/useHealthCheck';
+import { getHealthButtonStyles, HEALTH_BUTTON_CONFIG } from './styles/HealthButtonStyles';
 
 const HealthButton = () => {
+    const theme = useTheme();
+    const styles = getHealthButtonStyles(theme);
+
     const { status, loading, error, checkHealth } = useHealthCheck();
     const [lastCheck, setLastCheck] = useState(0);
 
@@ -12,9 +16,9 @@ const HealthButton = () => {
         if (lastCheck === 0) return;
 
         if (status === 'ok') {
-            toast.success('API operante!');
+            toast.success(HEALTH_BUTTON_CONFIG.successMessage);
         } else if (error) {
-            toast.error(`Erro ao verificar API: ${error}`);
+            toast.error(`${HEALTH_BUTTON_CONFIG.errorPrefix} ${error}`);
         }
     }, [lastCheck, status, error]);
 
@@ -24,26 +28,16 @@ const HealthButton = () => {
     };
 
     return (
-        <Tooltip title="Clique para verificar conexão com a API">
+        <Tooltip title={HEALTH_BUTTON_CONFIG.tooltip}>
             <Button
                 onClick={handleCheck}
                 variant="contained"
                 color="primary"
                 size="small"
                 startIcon={loading ? <CircularProgress size={18} color="inherit" /> : <SyncIcon />}
-                sx={{
-                    position: 'absolute',
-                    bottom: 16,
-                    right: 16,
-                    zIndex: 10,
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    fontWeight: 500,
-                    fontSize: '0.875rem',
-                    boxShadow: 3
-                }}
+                sx={styles.button}
             >
-                Verificar conexão
+                {HEALTH_BUTTON_CONFIG.label}
             </Button>
         </Tooltip>
     );

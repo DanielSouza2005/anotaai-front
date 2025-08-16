@@ -10,9 +10,10 @@ import {
     Typography
 } from '@mui/material';
 import { Field } from 'formik';
-import { useEntityUtils } from '../../../hooks/useEntityUtils';
-import { useMaskUtils } from '../../../hooks/useMaskUtils';
+import { useEntityUtils } from '../../../../../hooks/useEntityUtils';
+import { useMaskUtils } from '../../../../../hooks/useMaskUtils';
 import { useSelectField } from './hooks/useSelectField';
+import { getSelectFieldStyles, SELECT_FIELD_TEXTS } from './styles/SelectFieldStyles';
 
 const SelectField = ({
     name,
@@ -21,11 +22,13 @@ const SelectField = ({
     error,
     touched,
     showRefreshButton = true,
-    refreshTooltip = "Atualizar lista"
+    refreshTooltip = SELECT_FIELD_TEXTS.refreshTooltip
 }) => {
     const { options, loading, isRefreshing, handleRefresh } = useSelectField(source);
     const { getEntityIdKey } = useEntityUtils();
     const { formatValue } = useMaskUtils();
+
+    const styles = getSelectFieldStyles({ loading, isRefreshing, showRefreshButton });
 
     return (
         <Field name={name}>
@@ -49,15 +52,9 @@ const SelectField = ({
                     }}
                     InputProps={{
                         endAdornment: (
-                            <InputAdornment position="end" sx={{ minWidth: 40 }}>
+                            <InputAdornment position="end" sx={styles.inputAdornment}>
                                 {loading && (
-                                    <CircularProgress
-                                        size={20}
-                                        sx={{
-                                            mr: showRefreshButton ? 0.5 : 1,
-                                            color: isRefreshing ? 'primary.main' : 'inherit'
-                                        }}
-                                    />
+                                    <CircularProgress size={20} sx={styles.circularProgress} />
                                 )}
                                 {showRefreshButton && (
                                     <Tooltip title={refreshTooltip} arrow>
@@ -66,25 +63,11 @@ const SelectField = ({
                                                 size="small"
                                                 onClick={handleRefresh}
                                                 disabled={loading}
-                                                sx={{
-                                                    padding: '4px',
-                                                    mr: '4px', 
-                                                    '&:hover': {
-                                                        backgroundColor: 'action.hover',
-                                                        transform: 'rotate(180deg)',
-                                                        transition: 'transform 0.3s ease-in-out'
-                                                    },
-                                                    '&:disabled': {
-                                                        opacity: 0.5
-                                                    }
-                                                }}
+                                                sx={styles.refreshButton}
                                             >
                                                 <RefreshIcon
                                                     fontSize="small"
-                                                    sx={{
-                                                        transition: 'transform 0.3s ease-in-out',
-                                                        transform: isRefreshing ? 'rotate(360deg)' : 'rotate(0deg)'
-                                                    }}
+                                                    sx={styles.refreshIcon}
                                                 />
                                             </IconButton>
                                         </span>
@@ -93,9 +76,9 @@ const SelectField = ({
                             </InputAdornment>
                         )
                     }}
-                    sx={{ minWidth: 220 }}
+                    sx={styles.textField}
                 >
-                    <MenuItem value="">Selecione</MenuItem>
+                    <MenuItem value="">{SELECT_FIELD_TEXTS.emptyOption}</MenuItem>
                     {options.map((option) => {
                         const key = getEntityIdKey(source);
                         return (

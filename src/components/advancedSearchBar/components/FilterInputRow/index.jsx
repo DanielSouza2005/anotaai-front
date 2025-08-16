@@ -1,5 +1,6 @@
 import { Add as AddIcon } from '@mui/icons-material';
 import { Box, IconButton, MenuItem, TextField, Tooltip } from "@mui/material";
+import { FILTER_INPUT_ROW_TEXTS, getFilterInputRowStyles } from "./styles/FilterInputRowStyles";
 
 const FilterInputRow = ({
     fieldsAvailable,
@@ -10,15 +11,17 @@ const FilterInputRow = ({
     onAddFilter,
     onKeyPress,
 }) => {
+    const styles = getFilterInputRowStyles();
+
     return (
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={styles.container}>
             <TextField
                 select
-                label="Campo"
+                label={FILTER_INPUT_ROW_TEXTS.fieldLabel}
                 value={newField}
                 onChange={(e) => onFieldChange(e.target.value)}
                 size="small"
-                sx={{ minWidth: 150 }}
+                sx={styles.fieldSelect}
             >
                 {fieldsAvailable.map((field) => (
                     <MenuItem key={field.name} value={field.name}>
@@ -28,15 +31,15 @@ const FilterInputRow = ({
             </TextField>
 
             <TextField
-                label="Valor"
+                label={FILTER_INPUT_ROW_TEXTS.valueLabel}
                 value={newValue}
                 onChange={(e) => onValueChange(e.target.value)}
                 onKeyPress={onKeyPress}
                 size="small"
-                sx={{ flexGrow: 1 }}
+                sx={styles.valueInput}
             />
 
-            <Tooltip title="Adicionar filtro">
+            <Tooltip title={FILTER_INPUT_ROW_TEXTS.addFilterTooltip}>
                 <span>
                     <IconButton
                         color="primary"
@@ -49,6 +52,6 @@ const FilterInputRow = ({
             </Tooltip>
         </Box>
     );
-}
+};
 
 export default FilterInputRow;

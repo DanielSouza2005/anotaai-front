@@ -3,10 +3,12 @@ import {
     Box,
     Button,
     CircularProgress,
-    Typography
+    Typography,
+    useTheme
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import { getEntityBehavior } from '../../../../config/entity/entityConfig';
+import { getEntityBehavior } from '../../../../../config/entity/entityConfig';
+import { getPhotoUploaderStyles, PHOTO_UPLOADER_CONFIG } from './styles/PhotoUploaderStyles';
 
 const PhotoUploader = ({
     entity,
@@ -17,6 +19,8 @@ const PhotoUploader = ({
     showClear = true,
     disabled = false
 }) => {
+    const theme = useTheme();
+    const styles = getPhotoUploaderStyles(theme);
     const inputRef = useRef();
     const [internalLoading, setInternalLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -52,14 +56,14 @@ const PhotoUploader = ({
     return (
         <Box>
             {!disabled && (
-                <Box mb={2} display="flex" gap={2}>
+                <Box sx={styles.buttonsContainer}>
                     <Button
                         variant="contained"
                         component="span"
                         onClick={() => inputRef.current?.click()}
                         disabled={disabled}
                     >
-                        Selecionar Foto
+                        {PHOTO_UPLOADER_CONFIG.texts.selectButton}
                     </Button>
 
                     {showClear && showPreview && (
@@ -68,65 +72,61 @@ const PhotoUploader = ({
                             onClick={handleClear}
                             disabled={disabled}
                         >
-                            Limpar Foto
+                            {PHOTO_UPLOADER_CONFIG.texts.clearButton}
                         </Button>
                     )}
                 </Box>
             )}
 
             <input
-                accept="image/*"
+                accept={PHOTO_UPLOADER_CONFIG.input.acceptTypes}
                 ref={inputRef}
                 type="file"
-                style={{ display: 'none' }}
+                style={styles.hiddenInput}
                 onChange={handleSelectFile}
                 disabled={disabled}
             />
 
-            <Box position="relative" display="inline-block">
+            <Box sx={styles.previewContainer}>
                 {loading && (
                     <CircularProgress
-                        size={72}
-                        sx={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+                        size={PHOTO_UPLOADER_CONFIG.dimensions.loadingSize}
+                        sx={styles.loadingIndicator}
                     />
                 )}
 
                 {showPreview ? (
-                    usaAvatar ?
-                        (
-                            <Avatar
-                                key={imageKey}
-                                src={previewUrl}
-                                alt="Foto"
-                                sx={{ width: 96, height: 96 }}
-                                onLoad={() => setInternalLoading(false)}
-                                onError={() => {
-                                    setInternalLoading(false);
-                                    setError(true);
-                                }}
-                            />
-                        )
-                        :
-                        (
-                            <img
-                                key={imageKey}
-                                src={previewUrl}
-                                alt="Foto"
-                                onLoad={() => setInternalLoading(false)}
-                                onError={() => {
-                                    setInternalLoading(false);
-                                    setError(true);
-                                }}
-                                style={{
-                                    maxWidth: '100%',
-                                    maxHeight: 200,
-                                    display: loading ? 'none' : 'block'
-                                }}
-                            />
-                        )
+                    usaAvatar ? (
+                        <Avatar
+                            key={imageKey}
+                            src={previewUrl}
+                            alt={PHOTO_UPLOADER_CONFIG.texts.imageAlt}
+                            sx={styles.avatar}
+                            onLoad={() => setInternalLoading(false)}
+                            onError={() => {
+                                setInternalLoading(false);
+                                setError(true);
+                            }}
+                        />
+                    ) : (
+                        <img
+                            key={imageKey}
+                            src={previewUrl}
+                            alt={PHOTO_UPLOADER_CONFIG.texts.imageAlt}
+                            onLoad={() => setInternalLoading(false)}
+                            onError={() => {
+                                setInternalLoading(false);
+                                setError(true);
+                            }}
+                            style={{
+                                ...styles.image,
+                                display: loading ? 'none' : 'block'
+                            }}
+                        />
+                    )
                 ) : (
                     <Typography variant="body2" color="textSecondary">
-                        Nenhuma foto selecionada.
+                        {PHOTO_UPLOADER_CONFIG.texts.noPhotoMessage}
                     </Typography>
                 )}
             </Box>

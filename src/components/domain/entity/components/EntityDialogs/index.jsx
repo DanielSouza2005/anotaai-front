@@ -1,6 +1,6 @@
 import { useTextUtils } from '../../../../../hooks/useTextUtils';
 import BaseDialog, { DIALOG_MODES } from '../../../dialogs/components/BaseDialog';
-import ConfirmDialog from '../../../dialogs/ConfirmDialog';
+import ConfirmDialog from '../../../dialogs/components/ConfirmDialog/ConfirmDialog';
 
 const EntityDialogs = ({
     entityName,

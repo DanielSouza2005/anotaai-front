@@ -1,19 +1,22 @@
 import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
-import DialogTransition from './components/transition/DialogTransitions';
+import DialogTransition from '../transition/DialogTransitions';
+import { CONFIRM_DIALOG_CONFIG, getConfirmDialogStyles } from './styles/ConfirmDialogStyles';
 
 const ConfirmDialog = ({
     open,
     onClose,
     onConfirm,
-    title = 'Confirmar ação',
-    message = 'Tem certeza que deseja continuar?',
-    confirmText = 'Confirmar',
-    cancelText = 'Cancelar',
-    confirmColor = 'error',
+    title = CONFIRM_DIALOG_CONFIG.texts.defaultTitle,
+    message = CONFIRM_DIALOG_CONFIG.texts.defaultMessage,
+    confirmText = CONFIRM_DIALOG_CONFIG.texts.confirmButton,
+    cancelText = CONFIRM_DIALOG_CONFIG.texts.cancelButton,
+    confirmColor = CONFIRM_DIALOG_CONFIG.colors.defaultConfirmColor,
 }) => {
+    const theme = useTheme();
+    const styles = getConfirmDialogStyles(theme);
     const [submitting, setSubmitting] = useState(false);
 
     const handleConfirm = async () => {
@@ -33,24 +36,23 @@ const ConfirmDialog = ({
             fullWidth
             TransitionComponent={DialogTransition}
             PaperProps={{
-                sx: {
-                    borderRadius: 3,
-                    p: 2,
-                    textAlign: 'center',
-                },
+                sx: styles.paper,
             }}
         >
             <IconButton
-                aria-label="Fechar"
+                aria-label={CONFIRM_DIALOG_CONFIG.texts.closeAriaLabel}
                 onClick={onClose}
                 disabled={submitting}
-                sx={{ position: 'absolute', right: 8, top: 8 }}
+                sx={styles.closeButton}
             >
                 <CloseIcon />
             </IconButton>
 
-            <DialogTitle sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
-                <WarningAmberIcon color={confirmColor} sx={{ fontSize: 32 }} />
+            <DialogTitle sx={styles.title}>
+                <WarningAmberIcon
+                    color={confirmColor}
+                    sx={styles.warningIcon}
+                />
                 <Typography variant="h6" component="span">
                     {title}
                 </Typography>
@@ -62,7 +64,7 @@ const ConfirmDialog = ({
                 </Typography>
             </DialogContent>
 
-            <DialogActions sx={{ justifyContent: 'center', mt: 1 }}>
+            <DialogActions sx={styles.actions}>
                 <Button
                     onClick={onClose}
                     variant="outlined"
@@ -77,7 +79,7 @@ const ConfirmDialog = ({
                     color={confirmColor}
                     disabled={submitting}
                 >
-                    {submitting ? 'Aguarde...' : confirmText}
+                    {submitting ? CONFIRM_DIALOG_CONFIG.texts.submittingText : confirmText}
                 </Button>
             </DialogActions>
         </Dialog>

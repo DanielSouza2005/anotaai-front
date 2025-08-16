@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 import { useEntityUtils } from '../../../../hooks/useEntityUtils';
 import { useMaskUtils } from '../../../../hooks/useMaskUtils';
 import useFormSubmit from '../hooks/useFormSubmit';
@@ -17,14 +18,13 @@ import { useFormValues } from '../hooks/useFormValues';
 import useFotoPreview from '../hooks/useFotoPreview';
 import useRequiredChecker from '../hooks/useRequiredChecker';
 import useTabManagement from '../hooks/useTabManager';
-import DialogTransition from '../transition/DialogTransitions';
-import DialogHeader from './DialogHeader';
-import DynamicFormField from './DynamicFormField';
-import FormDialogActions from './FormDialogActions';
-import ObservacoesField from './ObservacoesField';
-import PhotoUploader from './PhotoUploader';
-import TabbedFormLayout from './TabbedFormLayout';
-import { getEntityBehavior } from '../../../../config/entity/entityConfig';
+import DialogHeader from './DialogHeader/DialogHeader';
+import DynamicFormField from './DynamicFormField/DynamicFormField';
+import FormDialogActions from './FormDialogActions/FormDialogActions';
+import ObservacoesField from './ObservacoesField/ObservacoesField';
+import PhotoUploader from './PhotoUploader/PhotoUploader';
+import TabbedFormLayout from './TabbedFormLayout/TabbedFormLayout';
+import DialogTransition from './transition/DialogTransitions';
 
 const DIALOG_MODES = {
     CREATE: 'create',

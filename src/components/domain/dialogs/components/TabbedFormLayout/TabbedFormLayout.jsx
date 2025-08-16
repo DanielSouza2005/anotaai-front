@@ -1,6 +1,6 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
-import TabPanel from './TabPanel';
+import TabPanel from '../TabPanel/TabPanel';
 
 const TabbedFormLayout = ({ tabs, tabIndex, setTabIndex, sx }) => {
     const visibleTabs = tabs.filter(tab => tab.condition !== false);

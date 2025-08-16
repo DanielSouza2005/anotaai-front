@@ -12,10 +12,11 @@ import {
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SidebarMenu from '../../components/domain/menu';
+import { DASHBOARD_PAGE_CONFIG, getDashboardPageStyles } from './styles/dashboardStyles';
 
 const DashboardPage = () => {
-
     const theme = useTheme();
+    const styles = getDashboardPageStyles(theme);
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [collapsed, setCollapsed] = useState(false);
@@ -24,8 +25,22 @@ const DashboardPage = () => {
         setDrawerOpen(!drawerOpen);
     };
 
+    const getMainMarginLeft = () => {
+        if (isMobile) return 0;
+        return collapsed
+            ? DASHBOARD_PAGE_CONFIG.sidebar.collapsedWidth
+            : DASHBOARD_PAGE_CONFIG.sidebar.expandedWidth;
+    };
+
+    const getMainMaxWidth = () => {
+        const sidebarWidth = isMobile ? 0 : (collapsed
+            ? DASHBOARD_PAGE_CONFIG.sidebar.collapsedWidth
+            : DASHBOARD_PAGE_CONFIG.sidebar.expandedWidth);
+        return `calc(100vw - ${sidebarWidth}px)`;
+    };
+
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={styles.container}>
             <SidebarMenu
                 open={drawerOpen}
                 toggleDrawer={toggleDrawer}
@@ -36,61 +51,34 @@ const DashboardPage = () => {
             <Box
                 component="main"
                 sx={{
-                    flexGrow: 1,
-                    p: 3,
-                    transition: 'margin-left 0.3s ease',
-                    ml: isMobile ? 0 : (collapsed ? '80px' : '280px'),
-                    maxWidth: `calc(100vw - ${isMobile ? 0 : (collapsed ? 80 : 280)}px)`,
-                    height: '100dvh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'hidden',
+                    ...styles.mainContent,
+                    ml: `${getMainMarginLeft()}px`,
+                    maxWidth: getMainMaxWidth(),
                 }}
             >
-                {isMobile &&
-                    (
-                        <Box sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            mb: 3,
-                            position: 'sticky',
-                            top: 0,
-                            zIndex: 1,
-                            bgcolor: theme.palette.background.paper,
-                            borderBottom: `1px solid ${theme.palette.divider}`,
-                            py: 1
-                        }}>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                edge="start"
-                                onClick={toggleDrawer}
-                                sx={{ mr: 2 }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Typography variant="h6" noWrap component="div">
-                                Anota Aí
-                            </Typography>
-                        </Box>
-                    )
-                }
+                {isMobile && (
+                    <Box sx={styles.mobileHeader}>
+                        <IconButton
+                            color="inherit"
+                            aria-label={DASHBOARD_PAGE_CONFIG.texts.openDrawerAriaLabel}
+                            edge="start"
+                            onClick={toggleDrawer}
+                            sx={styles.menuButton}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div">
+                            {DASHBOARD_PAGE_CONFIG.texts.appTitle}
+                        </Typography>
+                    </Box>
+                )}
 
-                <Box
-                    sx={{
-                        margin: 0,
-                        padding: 0,
-                        flex: 1, 
-                        display: 'flex',
-                        flexDirection: 'column',
-                        minHeight: 0, 
-                    }}
-                >
+                <Box sx={styles.outletContainer}>
                     <Outlet />
                 </Box>
             </Box>
         </Box>
-    )
-}
+    );
+};
 
 export default DashboardPage;

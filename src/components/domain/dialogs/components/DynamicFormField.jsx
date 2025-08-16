@@ -2,8 +2,8 @@ import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { Field } from 'formik';
 import { useMaskUtils } from '../../../../hooks/useMaskUtils';
 import MaskedInput from './maskedInput';
-import SelectField from '../../select/SelectField';
 import useCEPAutoComplete from '../hooks/useCEPAutoComplete';
+import SelectField from './select/SelectField';
 
 const DynamicFormField = ({
     field,

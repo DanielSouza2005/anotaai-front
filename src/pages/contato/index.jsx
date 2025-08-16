@@ -1,10 +1,10 @@
-import EntityGridPage from '../../components/entity/EntityGridPage';
 import {
     addContatoEnderecoFields, addContatoFields, contatoFields, editContatoEnderecoFields, editContatoFields,
     empresaFields, enderecoFields, searchContatoFields
 } from './config/fields';
 import { contatoValidationSchema } from './config/validation';
 import { gridContatoColumns } from './config/columns';
+import EntityGridPage from '../../components/domain/entity/EntityGridPage';
 
 const ContatosPage = () => {
 

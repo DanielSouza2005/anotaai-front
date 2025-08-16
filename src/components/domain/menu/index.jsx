@@ -8,10 +8,10 @@ import {
 
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import animationData from '../../assets/animations/Session-Expired.json';
-import { menuItems } from '../../config/menu/menuConfig';
-import { useAuth } from '../../context/auth/AuthContext';
-import LoadingScreen from '../loadingScreen/LoadingScreen';
+import animationData from '../../../assets/animations/Session-Expired.json';
+import { menuItems } from '../../../config/menu/menuConfig';
+import { useAuth } from '../../../context/auth/AuthContext';
+import LoadingScreen from '../../loadingScreen/LoadingScreen';
 import SidebarFooter from './components/SidebarFooter';
 import SidebarHeader from './components/SidebarHeader';
 import SidebarItem from './components/SidebarItem';

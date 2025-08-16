@@ -2,7 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 import { useState } from 'react';
-import DialogTransition from './transition/DialogTransitions';
+import DialogTransition from './components/transition/DialogTransitions';
 
 const ConfirmDialog = ({
     open,

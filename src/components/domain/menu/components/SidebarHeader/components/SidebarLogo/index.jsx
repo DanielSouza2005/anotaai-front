@@ -1,6 +1,6 @@
 import { Box, Tooltip, Typography } from '@mui/material';
 import { useCallback } from 'react';
-import logoImage from '../../../../../../assets/login/logo.png';
+import logoImage from '../../../../../../../assets/login/logo.png';
 import { getSidebarLogoStyles } from './styles/SidebarLogoStyles';
 
 const SidebarLogo = ({ collapsed, onExpandSidebar, theme }) => {

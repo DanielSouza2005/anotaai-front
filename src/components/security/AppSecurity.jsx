@@ -4,8 +4,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import loginAnimation from '../../assets/animations/Login-Sign-up.json';
 import logoutAnimation from '../../assets/animations/Session-Expired.json';
 import { useAuth } from '../../context/auth/AuthContext';
-import LoadingScreen from '../loadingScreen/LoadingScreen';
 import { isPublicRoute } from '../../utils/login/auth';
+import LoadingScreen from '../loadingScreen/LoadingScreen';
 
 const AppSecurity = ({ children }) => {
     const { isAuthenticated, isLoggingOut, loading } = useAuth();

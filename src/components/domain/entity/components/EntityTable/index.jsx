@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
-import { useEntityUtils } from '../../../../hooks/useEntityUtils';
-import { useMaskUtils } from '../../../../hooks/useMaskUtils';
+import { useEntityUtils } from '../../../../../hooks/useEntityUtils';
+import { useMaskUtils } from '../../../../../hooks/useMaskUtils';
 import { getEntityTableStyles } from './styles/EntityTableStyles';
 
 const EntityTable = ({

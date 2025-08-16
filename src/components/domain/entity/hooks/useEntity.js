@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import api from '../../../services/api/api';
-import { useEntityUtils } from '../../../hooks/useEntityUtils';
-import { getEntityBehavior } from '../../../config/entity/entityConfig';
+import api from '../../../../services/api/api';
+import { useEntityUtils } from '../../../../hooks/useEntityUtils';
+import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);

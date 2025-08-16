@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import SidebarMenu from '../../components/menu';
+import SidebarMenu from '../../components/domain/menu';
 
 const DashboardPage = () => {
 

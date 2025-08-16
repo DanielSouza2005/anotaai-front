@@ -1,4 +1,4 @@
-import EntityGridPage from "../../components/entity/EntityGridPage";
+import EntityGridPage from "../../components/domain/entity/EntityGridPage";
 import { gridUsuarioFields } from "./config/columns";
 import { addUsuarioFields, editUsuarioFields, searchUsuarioFields, usuarioFields } from "./config/fields";
 import { usuarioEditValidationSchema, usuarioValidationSchema } from "./config/validation";

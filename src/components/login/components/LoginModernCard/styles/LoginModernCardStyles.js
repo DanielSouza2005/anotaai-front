@@ -16,8 +16,8 @@ export const LOGIN_MODERN_CARD_CONFIG = {
         desktop: '48px'
     },
     titleFontSize: {
-        mobile: '1rem',
-        desktop: '1.2rem'
+        mobile: '1.2rem',
+        desktop: '1.4rem'
     },
     subtitleFontSize: {
         mobile: '0.7rem',

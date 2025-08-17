@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './context/auth/AuthContext';
 import { SelectDataProvider } from './context/selectData/SelectDataContext';
 import './index.css';
-import AppRoutes from './routes';
+import AppRoutes from './routes/routes';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

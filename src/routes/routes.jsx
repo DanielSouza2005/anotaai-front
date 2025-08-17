@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
-import ContatosPage from './pages/contato';
-import DashboardPage from './pages/dashboard';
-import EmpresasPage from './pages/empresa';
-import LoginPage from './pages/login';
-import NotFoundPage from './pages/notFound';
-import UsuariosPage from './pages/usuario';
-import AppSecurity from './components/security/AppSecurity';
+import LoginPage from '../pages/login';
+import AppSecurity from '../components/security/AppSecurity';
+import DashboardPage from '../pages/dashboard';
+import ContatosPage from '../pages/contato';
+import EmpresasPage from '../pages/empresa';
+import UsuariosPage from '../pages/usuario';
+import NotFoundPage from '../pages/notFound';
 
 function AppRoutes() {
   return (

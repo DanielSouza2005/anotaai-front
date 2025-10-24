@@ -6,13 +6,15 @@ import {
     Dialog,
     DialogContent,
     Grid,
-    TextField
+    TextField,
+    Typography
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { useEffect, useState } from 'react';
-import { getEntityBehavior } from '../../../../config/entity/entityConfig';
+import { ENTITY_NAMES, getEntityBehavior } from '../../../../config/entity/entityConfig';
 import { useEntityUtils } from '../../../../hooks/useEntityUtils';
 import { useMaskUtils } from '../../../../hooks/useMaskUtils';
+import { useTextUtils } from '../../../../hooks/useTextUtils';
 import useFormSubmit from '../hooks/useFormSubmit';
 import { useFormValues } from '../hooks/useFormValues';
 import useFotoPreview from '../hooks/useFotoPreview';
@@ -58,10 +60,13 @@ const BaseDialog = ({
     const isCreate = mode === DIALOG_MODES.CREATE;
     const isEdit = mode === DIALOG_MODES.EDIT;
 
+    const { capitalizeFirstLetter } = useTextUtils();
+
     const behavior = getEntityBehavior(entity);
     const hasFoto = behavior.hasPhoto;
     const hasObs = behavior.hasObs;
     const hasEmpresa = behavior.hasEmpresa(isReadOnly);
+    const hasContato = behavior.label === capitalizeFirstLetter(ENTITY_NAMES.CONTATO);
 
     const hasEndereco = enderecoFields.length !== 0;
 
@@ -174,6 +179,43 @@ const BaseDialog = ({
         </Grid>
     );
 
+    const renderViewListField = (label, items = '') => {
+        const itemsArray = Array.isArray(items)
+            ? items
+            : items.split(',').map(item => item.trim());
+
+        return (
+            <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 0.5, color: 'text.secondary' }}>
+                    {label}
+                </Typography>
+                <Box
+                    sx={{
+                        backgroundColor: '#e3f2fd',
+                        borderRadius: 1,
+                        p: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 0.5,
+                        minHeight: 30
+                    }}
+                >
+                    {itemsArray.length > 0 ? (
+                        itemsArray.map((item, index) => (
+                            <Typography key={index} variant="body2">
+                                {item}
+                            </Typography>
+                        ))
+                    ) : (
+                        <Typography variant="body2" color="text.disabled">
+                            Nenhum
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    };
+
     const renderEditFields = (fieldList, values, errors, touched, setFieldValue, prefix = '') => (
         <Grid container spacing={2} columns={12}>
             {fieldList
@@ -217,6 +259,16 @@ const BaseDialog = ({
                 content: isReadOnly
                     ? renderViewFields(enderecoFields, formData?.endereco, 'endereco')
                     : renderEditFields(enderecoFields, values, errors, touched, setFieldValue, 'endereco')
+            },
+            {
+                label: 'E-mails',
+                condition: hasContato,
+                content: renderViewListField('E-mails', formData?.emails || [])
+            },
+            {
+                label: 'Telefones',
+                condition: hasContato,
+                content: renderViewListField('Telefones', formData?.telefones || [])
             },
             {
                 label: 'Foto',

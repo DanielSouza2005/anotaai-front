@@ -7,7 +7,7 @@ import { ENTITY_NAMES, getEntityBehavior } from '../../../../config/entity/entit
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);
     const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(100);
+    const [pageSize, setPageSize] = useState(25);
     const [totalRows, setTotalRows] = useState(0);
     const [loading, setLoading] = useState(true);
 

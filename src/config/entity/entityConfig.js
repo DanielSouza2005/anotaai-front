@@ -23,6 +23,12 @@ export const entityConfig = {
     }
 }
 
+export const ENTITY_NAMES = {
+  CONTATO: 'contato',
+  EMPRESA: 'empresa',
+  USUARIO: 'usuario',
+};
+
 export const getEntityBehavior = (entityName) => {
     return entityConfig[entityName] || {};
 }

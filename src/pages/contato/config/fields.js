@@ -85,7 +85,6 @@ const editContatoEnderecoFields = [
 const searchContatoFields = [
     { name: 'nome', label: 'Nome' },
     { name: 'cpf', label: 'CPF' },
-    { name: 'celular', label: 'Celular' },
     { name: 'telefone', label: 'Telefone' },
     { name: 'email', label: 'E-mail' },
     { name: 'cargo', label: 'Cargo' },

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../../../../services/api/api';
 import { useEntityUtils } from '../../../../hooks/useEntityUtils';
-import { getEntityBehavior } from '../../../../config/entity/entityConfig';
+import { ENTITY_NAMES, getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);
@@ -41,7 +41,29 @@ export default function useEntity(entityName) {
             params.append('size', pageSize);
 
             const { data } = await api.get(`/${entityName}?${params.toString()}`);
-            setRows(data.content);
+
+            let content = data.content;
+
+            if (entityName === ENTITY_NAMES.CONTATO) {
+                content = data.content.map(contato => {
+                    const emails = contato.emails
+                        ?.map(e => e.email)
+                        .join(', ') || '';
+
+                    const telefones = contato.telefones
+                        ?.map(t => t.telefone)
+                        .join(', ') || '';
+                        
+                    return {
+                        ...contato,
+                        emails,
+                        telefones,                        
+                    }
+                    
+                });
+            }
+
+            setRows(content);
             setTotalRows(data.totalElements);
         } catch (err) {
             toast.error('Erro ao buscar dados. ' + err);

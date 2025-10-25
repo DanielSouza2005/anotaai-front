@@ -21,33 +21,23 @@ const contatoValidationSchema = Yup.object({
     .matches(/^\d{11}$/, 'CPF deve conter exatamente 11 números')
     .notRequired(),
 
-  celular: Yup.string()
-    .transform(v => cleanValue(v) || null)
-    .nullable()
-    .matches(/^\d{11}$/, 'Celular deve conter exatamente 11 números')
-    .notRequired(),
+  telefones: Yup.array()
+    .of(
+      Yup.string()
+        .transform(v => v?.replace(/\D/g, '') || null)
+        .nullable()
+        .matches(/^\d{10,11}$/, 'Telefone deve conter entre 10 e 11 números')
+    )
+    .nullable(),
 
-  telefone: Yup.string()
-    .transform(v => cleanValue(v) || null)
-    .nullable()
-    .matches(/^\d{10}$/, 'Telefone deve conter exatamente 10 números')
-    .notRequired(),
-
-  telefone2: Yup.string()
-    .transform(v => cleanValue(v) || null)
-    .nullable()
-    .matches(/^\d{10}$/, 'Telefone 2 deve conter exatamente 10 números')
-    .notRequired(),
-
-  email_pessoal: Yup.string()
-    .transform(v => (v === '' ? null : v))
-    .nullable()
-    .email('Email pessoal inválido'),
-
-  email_corp: Yup.string()
-    .transform(v => (v === '' ? null : v))
-    .nullable()
-    .email('Email corporativo inválido'),
+  emails: Yup.array()
+    .of(
+      Yup.string()
+        .transform(v => (v === '' ? null : v))
+        .nullable()
+        .email('E-mail inválido')
+    )
+    .nullable(),
 
   cargo: Yup.string()
     .transform(v => (v === '' ? null : v))

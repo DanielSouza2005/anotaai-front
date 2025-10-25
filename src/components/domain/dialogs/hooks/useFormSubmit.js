@@ -4,7 +4,7 @@ import { getEntityBehavior } from '../../../../config/entity/entityConfig';
 
 const useFormSubmit = ({ entity, maskedFields, onSubmit }) => {
     const [submitting, setSubmitting] = useState(false);
-    const { cleanValuesForAPI } = useApiUtils();
+    const { cleanValuesForAPI, prepareContatoForAPI } = useApiUtils();
 
     const behavior = getEntityBehavior(entity);
     const usaFoto = behavior.hasPhoto;
@@ -16,7 +16,8 @@ const useFormSubmit = ({ entity, maskedFields, onSubmit }) => {
 
         if (usaFoto) {
             const { foto, ...rest } = values;
-            const cleanedData = cleanValuesForAPI(rest, maskedFields);
+            let cleanedData = cleanValuesForAPI(rest, maskedFields);
+            cleanedData = prepareContatoForAPI(cleanedData);
 
             const payload = {
                 dados: cleanedData,
@@ -25,7 +26,8 @@ const useFormSubmit = ({ entity, maskedFields, onSubmit }) => {
 
             onSubmit(payload, formikBag, finish);
         } else {
-            const cleanValues = cleanValuesForAPI(values, maskedFields);
+            let cleanValues = cleanValuesForAPI(values, maskedFields);
+            cleanValues = prepareContatoForAPI(cleanValues);
             onSubmit(cleanValues, formikBag, finish);
         }
     };

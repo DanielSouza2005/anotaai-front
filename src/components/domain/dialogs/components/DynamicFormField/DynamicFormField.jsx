@@ -2,7 +2,7 @@ import { CircularProgress, Grid, TextField, Typography, useTheme } from '@mui/ma
 import { Field } from 'formik';
 import { useMaskUtils } from '../../../../../hooks/useMaskUtils';
 import useCEPAutoComplete from '../../hooks/useCEPAutoComplete';
-import MaskedInput from '../maskedInput';
+import MaskedInput from '../MaskedInput';
 import SelectField from '../select/SelectField';
 import { DYNAMIC_FORM_FIELD_CONFIG, getDynamicFormFieldStyles } from './styles/DynamicFormFieldStyles';
 

@@ -31,8 +31,39 @@ export const useApiUtils = () => {
         return convertEmptyStringsToNull(withoutMasks);
     }, [removeMasksFromValues, convertEmptyStringsToNull]);
 
+    const prepareContatoForAPI = useCallback((values) => {
+        const cleaned = cleanValuesForAPI(values, ['telefones']);
+
+        let telefones = cleaned.telefones || [];
+        if (!Array.isArray(telefones)) {
+            telefones = telefones
+                .split(',')
+                .map(t => t.trim())
+                .filter(Boolean);
+        }
+
+        telefones = telefones.map(t => ({ telefone: t }));
+
+        let emails = values.emails || [];
+        if (!Array.isArray(emails)) {
+            emails = emails
+                .split(',')
+                .map(e => e.trim())
+                .filter(Boolean);
+        }
+        
+        emails = emails.map(e => ({ email: e }));
+
+        return {
+            ...cleaned,
+            telefones,
+            emails
+        };
+    }, [cleanValuesForAPI]);
+
     return {
         fetchEnderecoByCEP,
-        cleanValuesForAPI
+        cleanValuesForAPI,
+        prepareContatoForAPI
     };
 };

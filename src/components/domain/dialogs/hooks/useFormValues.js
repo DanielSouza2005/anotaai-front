@@ -8,13 +8,28 @@ export const useFormValues = ({ fields, enderecoFields, formData = {}, entity })
     const idKey = behavior.relatedIdKey || '';
 
     const { getEntityIdKey } = useEntityUtils();
-    const { maskTypes } = useMaskUtils();
+    const { maskTypes, formatValue } = useMaskUtils();
 
     const baseValues = fields.reduce((acc, f) => {
-        const value =
-            f.type === 'select' && f.source
-                ? formData[idKey]?.[getEntityIdKey(f.source)] || ''
-                : formData[f.name] || '';
+        let value;
+
+        if (f.type === 'select' && f.source) {
+            value = formData[idKey]?.[getEntityIdKey(f.source)] || '';
+        } else if (Array.isArray(formData[f.name])) {
+            value = formData[f.name];
+        } else if (f.isList && typeof formData[f.name] === 'string') {
+            value = formData[f.name]
+                .split(',')
+                .map(item => item.trim())
+                .filter(Boolean);
+        } else {
+            value = formData[f.name] || (f.isList ? [] : '');
+        }
+
+        if (f.name === 'telefones' && f.isList && Array.isArray(value)) {
+            value = value.map(tel => formatValue({ name: 'telefone' }, tel));
+        }
+
         return { ...acc, [f.name]: value };
     }, {});
 

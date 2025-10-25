@@ -113,8 +113,33 @@ export const useMaskUtils = () => {
                         field === key
                 );
 
-                if (isMaskedField && typeof value === 'string') {
-                    result[key] = value.replace(/\D/g, '');
+                if (isMaskedField) {
+                    if (typeof value === 'string') {
+                        result[key] = value.replace(/\D/g, '');
+                    }
+                    else if (Array.isArray(value)) {
+                        const subMaskedFields = maskedFields
+                            .filter(field => field.startsWith(`${key}.`))
+                            .map(field => field.substring(key.length + 1));
+
+                        result[key] = value.map(item => {
+                            if (typeof item === 'string') {
+                                return item.replace(/\D/g, '');
+                            } else if (item !== null && typeof item === 'object') {
+                                return removeMasksFromValues(item, subMaskedFields);
+                            }
+                            return item;
+                        });
+                    }
+                    else if (typeof value === 'object' && value !== null) {
+                        const subMaskedFields = maskedFields
+                            .filter(field => field.startsWith(`${key}.`))
+                            .map(field => field.substring(key.length + 1));
+
+                        result[key] = removeMasksFromValues(value, subMaskedFields);
+                    } else {                        
+                        result[key] = value;
+                    }
                 }
                 else if (typeof value === 'object' && value !== null) {
                     const subMaskedFields = maskedFields
@@ -122,8 +147,7 @@ export const useMaskUtils = () => {
                         .map(field => field.substring(key.length + 1));
 
                     result[key] = removeMasksFromValues(value, subMaskedFields);
-                }
-                else {
+                } else {
                     result[key] = value;
                 }
             }

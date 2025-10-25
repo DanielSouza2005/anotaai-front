@@ -26,7 +26,8 @@ import FormDialogActions from './FormDialogActions/FormDialogActions';
 import ObservacoesField from './ObservacoesField/ObservacoesField';
 import PhotoUploader from './PhotoUploader/PhotoUploader';
 import TabbedFormLayout from './TabbedFormLayout/TabbedFormLayout';
-import DialogTransition from './transition/DialogTransitions';
+import DialogTransition from './Transition/DialogTransitions';
+import ListEditorField from './ListEditorField/ListEditorField';
 
 const DIALOG_MODES = {
     CREATE: 'create',
@@ -136,7 +137,7 @@ const BaseDialog = ({
 
     const dialogConfig = getDialogConfig();
 
-    const renderViewField = (field, value, prefix = '') => {
+    const renderViewField = (field, value) => {
         const displayValue = formatValue(field, value ?? '');
 
         if (field.type === 'select' && Array.isArray(field.options)) {
@@ -179,7 +180,7 @@ const BaseDialog = ({
         </Grid>
     );
 
-    const renderViewListField = (label, items = '') => {
+    const renderViewListField = (label, items = '', fieldType) => {
         const itemsArray = Array.isArray(items)
             ? items
             : items.split(',').map(item => item.trim());
@@ -203,7 +204,7 @@ const BaseDialog = ({
                     {itemsArray.length > 0 ? (
                         itemsArray.map((item, index) => (
                             <Typography key={index} variant="body2">
-                                {item}
+                                {fieldType === 'phone' ? formatValue({ name: 'telefone' }, item) : item}
                             </Typography>
                         ))
                     ) : (
@@ -215,6 +216,19 @@ const BaseDialog = ({
             </Box>
         );
     };
+
+    const renderEditListFields = (values, setFieldValue, label, name, placeholder, mask, errors, touched) => (
+        <ListEditorField
+            label={label}
+            name={name}
+            values={values}
+            setFieldValue={setFieldValue}
+            placeholder={placeholder}
+            mask={mask}
+            errors={errors}
+            touched={touched}
+        />
+    );
 
     const renderEditFields = (fieldList, values, errors, touched, setFieldValue, prefix = '') => (
         <Grid container spacing={2} columns={12}>
@@ -245,8 +259,22 @@ const BaseDialog = ({
             {
                 label: titleTab,
                 content: isReadOnly
-                    ? renderViewFields(fields.filter(f => !['cod_contato', 'cod_usuario', 'cod_empresa'].includes(f.name)), formData)
-                    : renderEditFields(fields, values, errors, touched, setFieldValue)
+                    ? renderViewFields(fields.filter(f => !['cod_contato', 'cod_usuario', 'cod_empresa', 'emails', 'telefones'].includes(f.name)), formData)
+                    : renderEditFields(fields.filter(f => !['emails', 'telefones'].includes(f.name)), values, errors, touched, setFieldValue)
+            },
+            {
+                label: 'E-mails',
+                condition: hasContato,
+                content: isReadOnly
+                    ? renderViewListField('E-mails', formData?.emails || [])
+                    : renderEditListFields(values.emails, setFieldValue, 'E-mails', 'emails', "exemplo@dominio.com", "", errors, touched)
+            },
+            {
+                label: 'Telefones',
+                condition: hasContato,
+                content: isReadOnly
+                    ? renderViewListField('Telefones', formData?.telefones || [], 'phone')
+                    : renderEditListFields(values.telefones, setFieldValue, 'Telefones', 'telefones', "(99) 99999-9999", "phone", errors, touched)
             },
             {
                 label: 'Empresa',
@@ -259,16 +287,6 @@ const BaseDialog = ({
                 content: isReadOnly
                     ? renderViewFields(enderecoFields, formData?.endereco, 'endereco')
                     : renderEditFields(enderecoFields, values, errors, touched, setFieldValue, 'endereco')
-            },
-            {
-                label: 'E-mails',
-                condition: hasContato,
-                content: renderViewListField('E-mails', formData?.emails || [])
-            },
-            {
-                label: 'Telefones',
-                condition: hasContato,
-                content: renderViewListField('Telefones', formData?.telefones || [])
             },
             {
                 label: 'Foto',

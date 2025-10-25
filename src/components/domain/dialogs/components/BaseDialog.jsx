@@ -26,7 +26,7 @@ import FormDialogActions from './FormDialogActions/FormDialogActions';
 import ObservacoesField from './ObservacoesField/ObservacoesField';
 import PhotoUploader from './PhotoUploader/PhotoUploader';
 import TabbedFormLayout from './TabbedFormLayout/TabbedFormLayout';
-import DialogTransition from './Transition/DialogTransitions';
+import DialogTransition from './transition/DialogTransitions';
 import ListEditorField from './ListEditorField/ListEditorField';
 
 const DIALOG_MODES = {

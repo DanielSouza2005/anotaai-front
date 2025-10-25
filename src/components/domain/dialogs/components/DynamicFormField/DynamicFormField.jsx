@@ -4,7 +4,7 @@ import { useMaskUtils } from '../../../../../hooks/useMaskUtils';
 import useCEPAutoComplete from '../../hooks/useCEPAutoComplete';
 import SelectField from '../select/SelectField';
 import { DYNAMIC_FORM_FIELD_CONFIG, getDynamicFormFieldStyles } from './styles/DynamicFormFieldStyles';
-import MaskedInput from '../MaskedInput';
+import MaskedInput from '../maskedInput';
 
 const DynamicFormField = ({
     field,

@@ -1,5 +1,6 @@
 import {
     Box,
+    Divider,
     Drawer,
     List,
     useMediaQuery,
@@ -9,7 +10,7 @@ import {
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import animationData from '../../../assets/animations/Session-Expired.json';
-import { menuItems } from '../../../config/menu/menuConfig';
+import { menuItems, menuItemsAdmin } from '../../../config/menu/menuConfig';
 import { useAuth } from '../../../context/auth/AuthContext';
 import LoadingScreen from '../../loadingScreen/LoadingScreen';
 import SidebarFooter from './components/SidebarFooter';
@@ -81,6 +82,20 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
             <Box sx={drawerStyles.menuList}>
                 <List component="nav" sx={{ p: 1 }}>
                     {menuItems.map((item) => (
+                        <SidebarItem
+                            key={item.title}
+                            title={item.title}
+                            icon={item.icon}
+                            basePath={item.basePath}
+                            collapsed={collapsed}
+                        />
+                    ))}
+                </List>
+
+                <Divider sx={{ ml: 2, mr: 2 }} />
+
+                <List component="nav" sx={{ p: 1 }}>
+                    {menuItemsAdmin.map((item) => (
                         <SidebarItem
                             key={item.title}
                             title={item.title}

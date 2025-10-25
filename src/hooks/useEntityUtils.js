@@ -1,7 +1,9 @@
-import { useCallback } from 'react';
+import { History } from '@mui/icons-material';
+import BackupIcon from '@mui/icons-material/Backup';
 import BusinessIcon from '@mui/icons-material/Business';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import GroupIcon from '@mui/icons-material/Group';
+import { useCallback } from 'react';
 import { ENTITY_NAMES } from '../config/entity/entityConfig';
 
 export const useEntityUtils = () => {
@@ -13,6 +15,10 @@ export const useEntityUtils = () => {
                 return 'cod_empresa';
             case ENTITY_NAMES.USUARIO:
                 return 'cod_usuario';
+            case ENTITY_NAMES.BACKUP:
+                return 'cod_backup';
+            case ENTITY_NAMES.BACKUP_LOG:
+                return 'codBackupLog';
             default:
                 throw new Error(`Chave primária desconhecida para a entidade: ${entityName}`);
         }
@@ -26,6 +32,10 @@ export const useEntityUtils = () => {
                 return <GroupIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
             case ENTITY_NAMES.CONTATO:
                 return <EventNoteIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
+            case ENTITY_NAMES.BACKUP:
+                return <BackupIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
+            case ENTITY_NAMES.BACKUP_LOG:
+                return <History fontSize="large" sx={{ mr: 1 }} color="primary" />;
             default:
                 return null;
         }
@@ -39,6 +49,10 @@ export const useEntityUtils = () => {
                 return 'Empresa';
             case ENTITY_NAMES.USUARIO:
                 return 'Usuário';
+            case ENTITY_NAMES.BACKUP:
+                return 'Backup';
+            case ENTITY_NAMES.BACKUP_LOG:
+                return 'Log de Backup';
             default:
                 throw new Error(`Chave primária desconhecida para a entidade: ${entity}`);
         }

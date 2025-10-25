@@ -20,13 +20,29 @@ export const entityConfig = {
         hasObs: false,
         hasEmpresa: () => false,
         hasAvatar: true,
-    }
+    },
+    backup: {
+        label: "Backup",
+        hasPhoto: false,
+        hasObs: false,
+        hasEmpresa: () => false,
+        hasAvatar: false,
+    },
+    backupLog: {
+        label: "Backup Log",
+        hasPhoto: false,
+        hasObs: false,
+        hasEmpresa: () => false,
+        hasAvatar: false,
+    },
 }
 
 export const ENTITY_NAMES = {
-  CONTATO: 'contato',
-  EMPRESA: 'empresa',
-  USUARIO: 'usuario',
+    CONTATO: 'contato',
+    EMPRESA: 'empresa',
+    USUARIO: 'usuario',
+    BACKUP: 'backup',
+    BACKUP_LOG: 'backupLog',
 };
 
 export const getEntityBehavior = (entityName) => {

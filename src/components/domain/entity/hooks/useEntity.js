@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import api from '../../../../services/api/api';
-import { useEntityUtils } from '../../../../hooks/useEntityUtils';
 import { ENTITY_NAMES, getEntityBehavior } from '../../../../config/entity/entityConfig';
+import { useEntityUtils } from '../../../../hooks/useEntityUtils';
+import api from '../../../../services/api/api';
 
 export default function useEntity(entityName) {
     const [rows, setRows] = useState([]);
@@ -53,13 +53,13 @@ export default function useEntity(entityName) {
                     const telefones = contato.telefones
                         ?.map(t => t.telefone)
                         .join(', ') || '';
-                        
+
                     return {
                         ...contato,
                         emails,
-                        telefones,                        
+                        telefones,
                     }
-                    
+
                 });
             }
 
@@ -164,6 +164,16 @@ export default function useEntity(entityName) {
         handleMenuClose();
     };
 
+    const handleDownload = (fileUrl) => {
+        if (!fileUrl) return;
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileUrl.split('/').pop(); 
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const handleRowDoubleClick = useCallback((params) => {
         setFormData(params.row);
         setOpenDetail(true);
@@ -206,6 +216,7 @@ export default function useEntity(entityName) {
         handleCreate,
         handleEdit,
         handleDelete,
+        handleDownload,
         handleRowDoubleClick,
     };
 }

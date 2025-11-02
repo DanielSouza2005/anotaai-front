@@ -11,4 +11,7 @@ export const BackupColums = [
         },
         flex: 1
     },
+    {
+        field: 'acoes'
+    }
 ];

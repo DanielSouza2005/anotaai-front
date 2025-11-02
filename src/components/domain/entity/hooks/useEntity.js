@@ -168,10 +168,11 @@ export default function useEntity(entityName) {
         if (!fileUrl) return;
         const link = document.createElement('a');
         link.href = fileUrl;
-        link.download = fileUrl.split('/').pop(); 
+        link.download = fileUrl.split('/').pop();
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        handleMenuClose();
     };
 
     const handleRowDoubleClick = useCallback((params) => {
@@ -218,6 +219,7 @@ export default function useEntity(entityName) {
         handleDelete,
         handleDownload,
         handleRowDoubleClick,
+        fetchData,
     };
 }
 

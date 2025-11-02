@@ -39,7 +39,6 @@ const BackupConfigDialog = ({ open, onClose, initialValues, onSubmit }) => {
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
             <DialogTitle>Configurar Backup</DialogTitle>
 
-            {/* 🔹 Aqui começa o form */}
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent
                     sx={{
@@ -50,7 +49,6 @@ const BackupConfigDialog = ({ open, onClose, initialValues, onSubmit }) => {
                         pb: 3
                     }}
                 >
-                    {/* Frequência */}
                     <FormControl fullWidth variant="outlined" margin="dense">
                         <InputLabel shrink>Frequência</InputLabel>
                         <Select
@@ -67,7 +65,6 @@ const BackupConfigDialog = ({ open, onClose, initialValues, onSubmit }) => {
                         </Select>
                     </FormControl>
 
-                    {/* Data e Hora do Próximo Backup */}
                     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
                         <DateTimePicker
                             label="Dt. Próximo Backup"
@@ -85,7 +82,6 @@ const BackupConfigDialog = ({ open, onClose, initialValues, onSubmit }) => {
                             }}
                         />
                     </LocalizationProvider>
-
 
                     <FormControlLabel
                         control={

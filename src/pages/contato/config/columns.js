@@ -69,5 +69,8 @@ export const gridContatoColumns = [
         headerName: 'Empresa (Fantasia)',
         flex: 1,
         renderCell: (params) => params.row?.empresa?.fantasia || '',
+    },
+    {
+        field: 'acoes'
     }
 ];

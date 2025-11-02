@@ -20,5 +20,8 @@ export const gridUsuarioFields = [
             return value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '';
         },
         flex: 1
+    },
+    {
+        field: 'acoes'
     }
 ];

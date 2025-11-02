@@ -1,12 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
-import LoginPage from '../pages/login';
 import AppSecurity from '../components/security/AppSecurity';
-import DashboardPage from '../pages/dashboard';
-import ContatosPage from '../pages/contato';
-import EmpresasPage from '../pages/empresa';
-import UsuariosPage from '../pages/usuario';
-import NotFoundPage from '../pages/notFound';
 import BackupPage from '../pages/backup';
+import ContatosPage from '../pages/contato';
+import DashboardPage from '../pages/dashboard';
+import EmpresasPage from '../pages/empresa';
+import ExportacaoPage from '../pages/exportacao';
+import ImportacaoPage from '../pages/importacao';
+import LoginPage from '../pages/login';
+import NotFoundPage from '../pages/notFound';
+import UsuariosPage from '../pages/usuario';
 
 function AppRoutes() {
   return (
@@ -27,6 +29,8 @@ function AppRoutes() {
         <Route path="empresas" element={<EmpresasPage />} />
         <Route path="usuarios" element={<UsuariosPage />} />
         <Route path="backup" element={<BackupPage />} />
+        <Route path="exportacao" element={<ExportacaoPage />} />
+        <Route path="importacao" element={<ImportacaoPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

@@ -29,27 +29,31 @@ const EntityTable = ({
     const { formatValue } = useMaskUtils();
     const styles = getEntityTableStyles();
 
-    const columnsWithActions = [...columns];
+    let columnsWithActions = [...columns];
 
     const hasAcoes = columns.some((col) => col.field === 'acoes');
 
-    if (!hasAcoes) {
-        columnsWithActions.push({
-            field: 'acoes',
-            headerName: '',
-            width: 50,
-            sortable: false,
-            filterable: false,
-            renderCell: (params) => (
-                <IconButton
-                    onClick={(event) =>
-                        handleMenuOpen(event, params.row[getEntityIdKey(entityName)])
-                    }
-                >
-                    <MoreVert />
-                </IconButton>
-            ),
-        });
+    if (hasAcoes) {
+        columnsWithActions = columnsWithActions.map((col) =>
+            col.field === 'acoes'
+                ? {
+                    ...col,
+                    headerName: '',
+                    width: 50,
+                    sortable: false,
+                    filterable: false,
+                    renderCell: (params) => (
+                        <IconButton
+                            onClick={(event) =>
+                                handleMenuOpen(event, params.row[getEntityIdKey(entityName)])
+                            }
+                        >
+                            <MoreVert />
+                        </IconButton>
+                    ),
+                }
+                : col
+        );
     }
 
     const formattedColumns = columnsWithActions.map((col) => {

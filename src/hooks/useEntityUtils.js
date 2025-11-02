@@ -1,4 +1,4 @@
-import { History } from '@mui/icons-material';
+import { FileDownloadOutlined, FileUploadOutlined, History } from '@mui/icons-material';
 import BackupIcon from '@mui/icons-material/Backup';
 import BusinessIcon from '@mui/icons-material/Business';
 import EventNoteIcon from '@mui/icons-material/EventNote';
@@ -19,6 +19,8 @@ export const useEntityUtils = () => {
                 return 'cod_backup';
             case ENTITY_NAMES.BACKUP_LOG:
                 return 'codBackupLog';
+            case ENTITY_NAMES.EXPORTACAO:    
+                return 'cod_exportacaolog'
             default:
                 throw new Error(`Chave primária desconhecida para a entidade: ${entityName}`);
         }
@@ -36,6 +38,10 @@ export const useEntityUtils = () => {
                 return <BackupIcon fontSize="large" sx={{ mr: 1 }} color="primary" />;
             case ENTITY_NAMES.BACKUP_LOG:
                 return <History fontSize="large" sx={{ mr: 1 }} color="primary" />;
+            case ENTITY_NAMES.EXPORTACAO:
+                return <FileUploadOutlined fontSize="large" sx={{ mr: 1 }} color="primary" />;
+            case ENTITY_NAMES.IMPORTACAO:
+                return <FileDownloadOutlined fontSize="large" sx={{ mr: 1 }} color="primary" />;
             default:
                 return null;
         }
@@ -53,6 +59,10 @@ export const useEntityUtils = () => {
                 return 'Backup';
             case ENTITY_NAMES.BACKUP_LOG:
                 return 'Log de Backup';
+            case ENTITY_NAMES.EXPORTACAO:
+                return 'Exportação';
+            case ENTITY_NAMES.IMPORTACAO:
+                return 'Importação';
             default:
                 throw new Error(`Chave primária desconhecida para a entidade: ${entity}`);
         }

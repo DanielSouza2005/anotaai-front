@@ -35,6 +35,20 @@ export const entityConfig = {
         hasEmpresa: () => false,
         hasAvatar: false,
     },
+    exportacao: {
+        label: "Exportação",
+        hasPhoto: false,
+        hasObs: false,
+        hasEmpresa: () => false,
+        hasAvatar: false,
+    },
+    importacao: {
+        label: "Importação",
+        hasPhoto: false,
+        hasObs: false,
+        hasEmpresa: () => false,
+        hasAvatar: false,
+    }
 }
 
 export const ENTITY_NAMES = {
@@ -43,6 +57,8 @@ export const ENTITY_NAMES = {
     USUARIO: 'usuario',
     BACKUP: 'backup',
     BACKUP_LOG: 'backupLog',
+    EXPORTACAO: 'exportar',
+    IMPORTACAO: 'importacao'
 };
 
 export const getEntityBehavior = (entityName) => {

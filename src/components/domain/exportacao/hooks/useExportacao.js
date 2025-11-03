@@ -53,7 +53,6 @@ export function useExportacao(entityName, handleMenuClose, handleDownload, fetch
             handleCloseSolicitarExportacao();
             fetchData();
         } catch (err) {
-            console.error(err);
             toast.error("Erro ao realizar exportação");
         }
     }, [handleCloseSolicitarExportacao, fetchData]);

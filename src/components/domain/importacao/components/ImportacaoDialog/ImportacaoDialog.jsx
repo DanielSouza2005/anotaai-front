@@ -1,6 +1,6 @@
 import {
     Close,
-    FileUploadOutlined
+    FileDownloadOutlined
 } from "@mui/icons-material";
 import {
     Box,
@@ -12,37 +12,28 @@ import {
     DialogTitle,
     Fade,
     FormControl,
-    FormControlLabel,
     IconButton,
     InputLabel,
     MenuItem,
-    Paper,
-    Radio,
-    RadioGroup,
     Select,
     Typography
 } from "@mui/material";
 import { useState } from "react";
 
-const tipoExportacaoOptions = [
-    { label: "Contatos", value: 0 },
-    { label: "Empresas", value: 1 },
+const ENTIDADES = [
+    { label: "Contatos", value: "CONTATO" },
+    { label: "Empresas", value: "EMPRESA" },
 ];
 
-const exportacaoCompletaOptions = [
-    { label: "Exportação Completa", value: 0 },
-    { label: "Somente Cabeçalho", value: 1 },
-];
-
-const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
-    const [dado, setDado] = useState("");
-    const [tipoExportacao, setTipoExportacao] = useState("0");
+const ImportacaoDialog = ({ open, onClose, onImport }) => {
+    const [entidade, setEntidade] = useState("");
+    const [arquivo, setArquivo] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleConfirm = async () => {
-        if (dado === "") {
-            setError("Selecione um dado para exportar.");
+        if (!entidade || !arquivo) {
+            setError("Selecione a entidade e o arquivo para importar.");
             return;
         }
 
@@ -50,18 +41,18 @@ const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
         setLoading(true);
 
         try {
-            await onConfirm(dado, tipoExportacao);
-            onClose();
+            await onImport({ entidade, arquivo });
+            handleCancel();
         } catch (err) {
-            setError("Erro ao realizar exportação");
+            setError("Erro ao processar a importação.");
         } finally {
             setLoading(false);
         }
     };
 
     const handleCancel = () => {
-        setDado("");
-        setTipoExportacao("0");
+        setEntidade("");
+        setArquivo(null);
         setError("");
         onClose();
     };
@@ -91,8 +82,8 @@ const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
                 }}
             >
                 <Box display="flex" alignItems="center" gap={1}>
-                    <FileUploadOutlined />
-                    <Typography>Exportar Dados</Typography>
+                    <FileDownloadOutlined />
+                    <Typography>Importar Dados</Typography>
                 </Box>
                 <IconButton onClick={handleCancel} size="small">
                     <Close />
@@ -107,16 +98,15 @@ const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
                 )}
 
                 <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
-
-                    <InputLabel id="Dado-label">Dado</InputLabel>
+                    <InputLabel id="entidade-label">Entidade</InputLabel>
                     <Select
-                        labelId="Dado-label"
-                        id="Dado-select"
-                        value={dado}
-                        onChange={(e) => setDado(e.target.value)}
-                        label="Dado"
+                        labelId="entidade-label"
+                        id="entidade-select"
+                        value={entidade}
+                        onChange={(e) => setEntidade(e.target.value)}
+                        label="Entidade"
                     >
-                        {tipoExportacaoOptions.map((opt) => (
+                        {ENTIDADES.map((opt) => (
                             <MenuItem key={opt.value} value={opt.value}>
                                 {opt.label}
                             </MenuItem>
@@ -124,36 +114,42 @@ const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
                     </Select>
                 </FormControl>
 
-                <FormControl component="fieldset" fullWidth>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                        Tipo de Exportação
-                    </Typography>
-
-                    <Paper
+                <Box>
+                    <Button
                         variant="outlined"
-                        sx={{
-                            borderRadius: 2,
-                            borderColor: "divider",
-                            p: 1.5,
-                            backgroundColor: "background.default",
-                        }}
+                        component="label"
+                        fullWidth
+                        startIcon={<FileDownloadOutlined />}
+                        sx={{ mb: 1 }}
                     >
-                        <RadioGroup
-                            value={tipoExportacao}
-                            onChange={(e) => setTipoExportacao(e.target.value)}
+                        Selecionar Arquivo
+                        <input
+                            type="file"
+                            hidden
+                            name="arquivo"
+                            accept=".xlsx"
+                            onChange={(e) => setArquivo(e.currentTarget.files[0])}
+                        />
+                    </Button>
+                    {arquivo && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                mt: 0.5,
+                                px: 1,
+                                py: 0.5,
+                                borderRadius: 1,
+                                bgcolor: "background.paper",
+                                fontFamily: "monospace",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                            }}
                         >
-                            {exportacaoCompletaOptions.map((opt) => (
-                                <FormControlLabel
-                                    key={opt.value}
-                                    value={String(opt.value)}
-                                    control={<Radio />}
-                                    label={opt.label}
-                                />
-                            ))}
-                        </RadioGroup>
-                    </Paper>
-                </FormControl>
-
+                            {arquivo.name}
+                        </Typography>
+                    )}
+                </Box>
             </DialogContent>
 
             <DialogActions sx={{ pt: 0 }}>
@@ -161,14 +157,14 @@ const SolicitarExportacaoDialog = ({ open, onClose, onConfirm }) => {
                 <Button
                     onClick={handleConfirm}
                     variant="contained"
-                    disabled={loading}
+                    disabled={!entidade || !arquivo || loading}
                     startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
                 >
-                    {loading ? "Enviando..." : "Exportar"}
+                    {loading ? "Importando..." : "Importar"}
                 </Button>
             </DialogActions>
         </Dialog>
     );
 };
 
-export default SolicitarExportacaoDialog;
+export default ImportacaoDialog;

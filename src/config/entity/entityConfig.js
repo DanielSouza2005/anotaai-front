@@ -58,7 +58,7 @@ export const ENTITY_NAMES = {
     BACKUP: 'backup',
     BACKUP_LOG: 'backupLog',
     EXPORTACAO: 'exportar',
-    IMPORTACAO: 'importacao'
+    IMPORTACAO: 'importar'
 };
 
 export const getEntityBehavior = (entityName) => {

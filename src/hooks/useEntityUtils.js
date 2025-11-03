@@ -21,6 +21,8 @@ export const useEntityUtils = () => {
                 return 'codBackupLog';
             case ENTITY_NAMES.EXPORTACAO:    
                 return 'cod_exportacaolog'
+             case ENTITY_NAMES.IMPORTACAO:       
+               return 'cod_importacaolog';
             default:
                 throw new Error(`Chave primária desconhecida para a entidade: ${entityName}`);
         }
@@ -64,7 +66,7 @@ export const useEntityUtils = () => {
             case ENTITY_NAMES.IMPORTACAO:
                 return 'Importação';
             default:
-                throw new Error(`Chave primária desconhecida para a entidade: ${entity}`);
+                throw new Error(`Label desconhecida para a entidade: ${entity}`);
         }
     }, []);
 

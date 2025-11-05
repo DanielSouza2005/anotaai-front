@@ -22,7 +22,8 @@ import { getSidebarStyles } from './styles/sidebarStyles';
 const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { logout, user, isLoggingOut } = useAuth();
+    const { logout, user, isLoggingOut, isAdmin } = useAuth();
+
     const navigate = useNavigate();
     const [userMenuAnchor, setUserMenuAnchor] = useState(null);
     const userMenuOpen = Boolean(userMenuAnchor);
@@ -92,19 +93,23 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
                     ))}
                 </List>
 
-                <Divider sx={{ ml: 2, mr: 2 }} />
-
-                <List component="nav" sx={{ p: 1 }}>
-                    {menuItemsAdmin.map((item) => (
-                        <SidebarItem
-                            key={item.title}
-                            title={item.title}
-                            icon={item.icon}
-                            basePath={item.basePath}
-                            collapsed={collapsed}
-                        />
-                    ))}
-                </List>
+                {isAdmin && (
+                    <>
+                        <Divider sx={{ ml: 2, mr: 2 }} />
+                        
+                        <List component="nav" sx={{ p: 1 }}>
+                            {menuItemsAdmin.map((item) => (
+                                <SidebarItem
+                                    key={item.title}
+                                    title={item.title}
+                                    icon={item.icon}
+                                    basePath={item.basePath}
+                                    collapsed={collapsed}
+                                />
+                            ))}
+                        </List>
+                    </>
+                )}
             </Box>
 
             <SidebarUserMenu
@@ -118,7 +123,7 @@ const SidebarMenu = ({ open, toggleDrawer, collapsed, setCollapsed }) => {
             />
 
             <SidebarFooter collapsed={collapsed} />
-        </Drawer>
+        </Drawer >
     );
 };
 

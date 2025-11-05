@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -18,7 +19,8 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const decoded = jwtDecode(token);
                     const { data } = await api.get(`/usuario/${decoded.codigo}`);
-                    setUser({ nome: data.nome, email: data.email, foto: data.foto });
+                    setUser({ nome: data.nome, email: data.email, foto: data.foto, admin: data.admin });
+                    setIsAdmin(data.admin === 1);
                 } catch (error) {
                     clearToken();
                     setUser(null);
@@ -42,10 +44,12 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', token);
 
             const decoded = jwtDecode(token);
-            const userData = { nome: decoded.nome, email: decoded.sub, foto: decoded.foto };
+            const { data } = await api.get(`/usuario/${decoded.codigo}`);
+            const userData = { nome: data.nome, email: data.email, foto: data.foto };
             setUser(userData);
+            setIsAdmin(data.admin === 1);
         } catch (error) {
-            throw error.response?.data || 'Erro inesperado ao tentar fazer login.';
+            throw error.response?.data || 'Erro inesperado ao fazer login.';
         }
     };
 
@@ -55,13 +59,14 @@ export const AuthProvider = ({ children }) => {
             clearToken();
             setUser(null);
             setIsLoggingOut(false);
+            setIsAdmin(false);
         }, 2000);
     };
 
     const isAuthenticated = () => !!getToken();
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, loading, isLoggingOut }}>
+        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isAdmin, loading, isLoggingOut }}>
             {children}
         </AuthContext.Provider>
     );

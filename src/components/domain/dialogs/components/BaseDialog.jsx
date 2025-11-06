@@ -5,7 +5,9 @@ import {
     Box,
     Dialog,
     DialogContent,
+    FormControlLabel,
     Grid,
+    Switch,
     TextField,
     Typography
 } from '@mui/material';
@@ -23,11 +25,11 @@ import useTabManagement from '../hooks/useTabManager';
 import DialogHeader from './DialogHeader/DialogHeader';
 import DynamicFormField from './DynamicFormField/DynamicFormField';
 import FormDialogActions from './FormDialogActions/FormDialogActions';
+import ListEditorField from './ListEditorField/ListEditorField';
 import ObservacoesField from './ObservacoesField/ObservacoesField';
 import PhotoUploader from './PhotoUploader/PhotoUploader';
 import TabbedFormLayout from './TabbedFormLayout/TabbedFormLayout';
 import DialogTransition from './transition/DialogTransitions';
-import ListEditorField from './ListEditorField/ListEditorField';
 
 const DIALOG_MODES = {
     CREATE: 'create',
@@ -154,6 +156,21 @@ const BaseDialog = ({
                 .filter(field => field.name !== 'obs')
                 .map(field => {
                     const value = prefix ? data?.[field.name] : formData?.[field.name];
+
+                    if (field.type === 'switch') {
+                        return (
+                            <Grid
+                                key={prefix ? `${prefix}.${field.name}` : field.name}
+                                sx={{ gridColumn: field.type === 'textarea' ? 'span 12' : 'span 6' }}
+                            >
+                                <FormControlLabel
+                                    control={<Switch checked={!!value} disabled />}
+                                    label={field.label}
+                                />
+                            </Grid>
+                        );
+                    }
+
                     return (
                         <Grid
                             key={prefix ? `${prefix}.${field.name}` : field.name}

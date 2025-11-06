@@ -1,3 +1,4 @@
+import { Switch } from "@mui/material";
 import dayjs from "dayjs";
 
 export const gridUsuarioFields = [
@@ -20,6 +21,16 @@ export const gridUsuarioFields = [
             return value ? dayjs(value).format('DD/MM/YYYY HH:mm') : '';
         },
         flex: 1
+    },
+    {
+        field: 'admin',
+        headerName: 'Administrador',
+        renderCell: (params) => (
+            <Switch
+                checked={!!params.value}
+                color="primary"
+            />
+        )
     },
     {
         field: 'acoes'

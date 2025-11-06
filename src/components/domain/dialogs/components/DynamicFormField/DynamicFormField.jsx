@@ -1,10 +1,10 @@
-import { CircularProgress, Grid, TextField, Typography, useTheme } from '@mui/material';
+import { CircularProgress, FormControlLabel, Grid, Switch, TextField, Typography, useTheme } from '@mui/material';
 import { Field } from 'formik';
 import { useMaskUtils } from '../../../../../hooks/useMaskUtils';
 import useCEPAutoComplete from '../../hooks/useCEPAutoComplete';
+import MaskedInput from '../maskedInput';
 import SelectField from '../select/SelectField';
 import { DYNAMIC_FORM_FIELD_CONFIG, getDynamicFormFieldStyles } from './styles/DynamicFormFieldStyles';
-import MaskedInput from '../maskedInput';
 
 const DynamicFormField = ({
     field,
@@ -42,6 +42,7 @@ const DynamicFormField = ({
     const isSelect = field.type === DYNAMIC_FORM_FIELD_CONFIG.fieldTypes.select && field.source;
     const isTextarea = field.type === DYNAMIC_FORM_FIELD_CONFIG.fieldTypes.textarea;
     const isDate = field.type === DYNAMIC_FORM_FIELD_CONFIG.fieldTypes.date;
+    const isSwitch = field.type === DYNAMIC_FORM_FIELD_CONFIG.fieldTypes.switch || field.type === 'switch';
     const isAddressField = prefix === DYNAMIC_FORM_FIELD_CONFIG.specialFields.addressPrefix;
 
     const { handleCEP } = useCEPAutoComplete(prefix, setFieldValue, values, cepLoading, setCepLoading);
@@ -95,6 +96,37 @@ const DynamicFormField = ({
                     margin={DYNAMIC_FORM_FIELD_CONFIG.input.margin}
                     readOnly={readOnly}
                     onBlur={handleCEP}
+                />
+            </Grid>
+        );
+    }
+
+    if (isSwitch) {
+        const value = values?.[prefix]?.[field.name] ?? values?.[field.name] ?? 0;
+        const checked = Number(value) === 1;
+
+        return (
+            <Grid key={fullName} sx={{ gridColumn: `span ${getGridSpan()}` }}>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={(e) => setFieldValue(fullName, e.target.checked ? 1 : 0)}
+                            color="primary"
+                            disabled={readOnly || field.readonly}
+                        />
+                    }
+                    label={
+                        <Typography>
+                            {field.label}
+                            {isFieldRequired(field.name, prefix) && (
+                                <Typography component="span" color="error">
+                                    {DYNAMIC_FORM_FIELD_CONFIG.texts.requiredIndicator}
+                                </Typography>
+                            )}
+                        </Typography>
+                    }
+                    sx={{ mt: 1 }}
                 />
             </Grid>
         );
